@@ -13,6 +13,7 @@ plugins {
 
 private val rootBuild = rootProjectPath / "build.gradle.kts"
 private val uwidgetsModuleBuild = rootProjectPath / "uwidgets" / "build.gradle.kts"
+private val udemoModuleBuild = rootProjectPath / "udemo" / "build.gradle.kts"
 
 tasks.registerAllThatGroupFun("inject",
     ::checkTemplates,
@@ -21,14 +22,20 @@ tasks.registerAllThatGroupFun("inject",
 
 fun checkTemplates() {
     checkRootBuildTemplate(rootBuild)
-    checkKotlinModuleBuildTemplates(uwidgetsModuleBuild)
-    checkMppModuleBuildTemplates(uwidgetsModuleBuild)
+    checkKotlinModuleBuildTemplates(uwidgetsModuleBuild, udemoModuleBuild)
+    checkMppModuleBuildTemplates(uwidgetsModuleBuild, udemoModuleBuild)
+    checkComposeMppModuleBuildTemplates(uwidgetsModuleBuild, udemoModuleBuild)
+    checkMppAppBuildTemplates(udemoModuleBuild)
+    checkComposeMppAppBuildTemplates(udemoModuleBuild)
 }
 
 fun injectTemplates() {
     injectRootBuildTemplate(rootBuild)
-    injectKotlinModuleBuildTemplate(uwidgetsModuleBuild)
-    injectMppModuleBuildTemplate(uwidgetsModuleBuild)
+    injectKotlinModuleBuildTemplate(uwidgetsModuleBuild, udemoModuleBuild)
+    injectMppModuleBuildTemplate(uwidgetsModuleBuild, udemoModuleBuild)
+    injectComposeMppModuleBuildTemplate(uwidgetsModuleBuild, udemoModuleBuild)
+    injectMppAppBuildTemplate(udemoModuleBuild)
+    injectComposeMppAppBuildTemplate(udemoModuleBuild)
 }
 
 // region [Root Build Template]
