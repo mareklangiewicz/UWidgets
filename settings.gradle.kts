@@ -19,6 +19,6 @@ plugins {
 
 rootProject.name = "UWidgets"
 
-include(":uwidgets")
+include(":uwidgets", ":udemo")
 
 
