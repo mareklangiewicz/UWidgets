@@ -14,6 +14,7 @@ plugins {
 
 defaultBuildTemplateForComposeMppApp(
     appMainPackage = "pl.mareklangiewicz.udemo",
+    appMainClass = "UDemoApp_jvmKt",
     details = libs.UWidgets,
 ) {
     implementation(project(":uwidgets"))

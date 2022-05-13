@@ -4,5 +4,6 @@
 /.idea
 /build
 /uwidgets/build
+/udemo/build
 /captures
 my.gradle.log

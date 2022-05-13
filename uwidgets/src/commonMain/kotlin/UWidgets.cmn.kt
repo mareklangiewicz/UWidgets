@@ -5,3 +5,5 @@ package pl.mareklangiewicz.uwidgets
 import androidx.compose.runtime.Composable
 
 @Composable expect fun UBox(content: @Composable () -> Unit)
+
+@Composable expect fun UText(value: String)

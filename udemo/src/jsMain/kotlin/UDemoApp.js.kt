@@ -18,6 +18,7 @@ private fun tryToInstallAppIn(rootElement: Element?) {
         null -> console.warn("UDemoAppJs: Incorrect rootElement")
         else -> renderComposable(root = rootElement) {
             H1 { Text("UDemo App Js") }
+            UDemo()
         }
     }
 }
