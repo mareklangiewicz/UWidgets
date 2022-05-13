@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_VARIABLE")
+
 import org.jetbrains.compose.*
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.plugin.*
@@ -15,6 +17,17 @@ plugins {
 defaultBuildTemplateForComposeMppLib(
     details = libs.UWidgets,
 )
+
+kotlin {
+    sourceSets {
+        // TODO_move to defaultBuildTemplateForComposeMppLib when compose.runtime becomes available on linux native
+        val commonMain by getting {
+            dependencies {
+                implementation(compose.runtime)
+            }
+        }
+    }
+}
 
 // region [Kotlin Module Build Template]
 
