@@ -1,4 +1,4 @@
-package pl.mareklangiewicz.uformat
+package pl.mareklangiewicz.umath
 
 // TODO_later: more multi-platform formatting options
 expect fun Float.str(precision: Int = 2): String
