@@ -12,7 +12,7 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
 @Composable fun UBox(depthIncrease: Int = 1, content: @Composable () -> Unit) {
     val depth = ULocalDepth.current
     val bg = ULocalBackground.current.forDepth(depth)
-    UBasicBox(2.dp, bg, bg.darken(.3f)) {
+    UBasicBox(bg, bg.darken(.3f), 2.dp) {
         CompositionLocalProvider(ULocalDepth provides depth + depthIncrease, content = content)
     }
 }
@@ -26,9 +26,9 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
 }
 
 @Composable expect fun UBasicBox(
-    padding: Dp = 0.dp,
     background: Color = Color.Transparent,
     border: Color = Color.Transparent,
+    padding: Dp = 0.dp,
     content: @Composable () -> Unit,
 )
 

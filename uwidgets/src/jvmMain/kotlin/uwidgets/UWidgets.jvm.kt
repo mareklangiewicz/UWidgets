@@ -13,9 +13,9 @@ import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 
 @Composable actual fun UBasicBox(
-    padding: Dp,
     background: Color,
     border: Color,
+    padding: Dp,
     content: @Composable () -> Unit,
 ) {
     val bwidth = 1.dp

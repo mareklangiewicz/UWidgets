@@ -12,15 +12,15 @@ import pl.mareklangiewicz.uwidgets.UGridType.*
 enum class UGridType { BOX, ROW, COLUMN }
 
 @Composable actual fun UBasicBox(
-    padding: Dp,
     background: Color,
     border: Color,
+    padding: Dp,
     content: @Composable () -> Unit,
 ) = UDiv(BOX, {
     val bwidth = 1.dp
     backgroundColor(background.cssRgba)
     border(bwidth.value.px, LineStyle.Solid, border.cssRgba)
-    padding((bwidth + padding).value.px)
+    padding(padding.value.px)
 }) { content() }
 
 @Composable actual fun UBasicColumn(content: @Composable () -> Unit) = UDiv(COLUMN) { content() }
