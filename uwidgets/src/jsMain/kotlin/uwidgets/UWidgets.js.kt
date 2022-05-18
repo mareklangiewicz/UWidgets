@@ -73,7 +73,6 @@ private fun StyleScope.gridChildFor(type: UGridType) {
 
 private fun StyleScope.gridFor(type: UGridType) {
     display(DisplayStyle.Grid)
-    alignItems(AlignItems.Start)
     justifyItems("start")
     when (type) {
         BOX -> gridTemplateAreas("UBOX")
