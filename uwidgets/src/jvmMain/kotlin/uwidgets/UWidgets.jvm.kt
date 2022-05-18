@@ -12,17 +12,22 @@ import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 
-@Composable actual fun UBasicBox(
-    background: Color,
-    border: Color,
+@Composable actual fun ULessBasicBox(
+    backgroundColor: Color,
+    borderColor: Color,
+    borderWidth: Dp,
     padding: Dp,
     content: @Composable () -> Unit,
 ) {
-    val bwidth = 1.dp
-    Box(Modifier.background(background).border(bwidth, border).padding(bwidth + padding)) {
-        content()
-    }
+    Box(
+        Modifier
+            .background(backgroundColor)
+            .border(borderWidth, borderColor)
+            .padding(borderWidth + padding)
+    ) { content() }
 }
+
+@Composable actual fun UBasicBox(content: @Composable () -> Unit) = Box { content() }
 
 @Composable actual fun UBasicColumn(content: @Composable () -> Unit) = Column { content() }
 
