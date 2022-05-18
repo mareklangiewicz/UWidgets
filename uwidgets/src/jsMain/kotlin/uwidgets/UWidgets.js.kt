@@ -28,50 +28,49 @@ enum class UGridType { BOX, ROW, COLUMN }
 @Composable actual fun UBasicRow(content: @Composable () -> Unit) = UDiv(ROW) { content() }
 
 
-@Composable fun UDiv(gridType: UGridType? = null, addStyle: StyleScope.() -> Unit = {}, content: @Composable () -> Unit) {
+@Composable fun UDiv(
+    gridType: UGridType? = null,
+    addStyle: StyleScope.() -> Unit = {},
+    content: @Composable () -> Unit,
+) {
     val parentGridType = ULocalGridType.current
     Div({
         style {
-            gridType?.let { gridFor(it) }
-            parentGridType?.let { gridChildFor(it) }
+            gridType?.let { ugrid(it) }
+            parentGridType?.let { ugridChildFor(it) }
             addStyle()
         }
     }) { CompositionLocalProvider(ULocalGridType provides gridType) { content() } }
 }
 
-@Composable fun USpan(gridType: UGridType? = null, addStyle: StyleScope.() -> Unit = {}, content: @Composable () -> Unit) {
+@Composable fun USpan(addStyle: StyleScope.() -> Unit = {}, content: @Composable () -> Unit) {
     val parentGridType = ULocalGridType.current
     Span({
         style {
-            gridType?.let { gridFor(it) }
-            parentGridType?.let { gridChildFor(it) }
+            parentGridType?.let { ugridChildFor(it) }
             addStyle()
         }
-    }) { CompositionLocalProvider(ULocalGridType provides gridType) { content() } }
+    }) { CompositionLocalProvider(ULocalGridType provides null) { content() } }
 }
 
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
-@Composable actual fun UText(text: String, center: Boolean, bold: Boolean, mono: Boolean) {
-    USpan(addStyle = {
-        property("text-overflow", "clip")
-        if (center) textAlign("center")
-        if (bold) fontWeight("bold")
-        if (mono) fontFamily("courier")
-    }) { Text(text) }
-}
+@Composable actual fun UText(text: String, center: Boolean, bold: Boolean, mono: Boolean) = USpan({
+    property("text-overflow", "clip")
+    if (center) textAlign("center")
+    if (bold) fontWeight("bold")
+    if (mono) fontFamily("courier")
+}) { Text(text) }
 
 private val ULocalGridType = staticCompositionLocalOf<UGridType?> { null }
 
-private fun StyleScope.gridChildFor(type: UGridType) {
-    when (type) {
-        BOX -> gridArea("UBOX")
-        ROW -> gridRow("UROW")
-        COLUMN -> gridColumn("UCOLUMN")
-    }
+private fun StyleScope.ugridChildFor(parentType: UGridType) = when (parentType) {
+    BOX -> gridArea("UBOX")
+    ROW -> gridRow("UROW")
+    COLUMN -> gridColumn("UCOLUMN")
 }
 
-private fun StyleScope.gridFor(type: UGridType) {
+private fun StyleScope.ugrid(type: UGridType) {
     display(DisplayStyle.Grid)
     justifyItems("start")
     when (type) {
