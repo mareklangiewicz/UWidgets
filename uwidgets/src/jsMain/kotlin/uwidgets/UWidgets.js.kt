@@ -32,8 +32,8 @@ enum class UGridType { BOX, ROW, COLUMN, NONE }
     val parentGridType = ULocalGridType.current
     Div({
         style {
+            gridFor(gridType)
             gridChildFor(parentGridType)
-            display(DisplayStyle.Grid)
             addStyle()
         }
     }) { CompositionLocalProvider(ULocalGridType provides gridType) { content() } }
@@ -55,6 +55,20 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 private val ULocalGridType = staticCompositionLocalOf { NONE }
 
 private fun StyleScope.gridChildFor(type: UGridType) {
-    if (type == BOX || type == ROW) gridRow(1, 2)
-    if (type == BOX || type == COLUMN) gridColumn(1, 2)
+    when (type) {
+        BOX -> gridArea("UBoxArea")
+        ROW -> gridRow("URowArea")
+        COLUMN -> gridColumn("UColumnArea")
+        NONE -> Unit
+    }
+}
+
+private fun StyleScope.gridFor(type: UGridType) {
+    display(DisplayStyle.Grid)
+    when (type) {
+        BOX -> gridTemplateAreas("UBoxArea")
+        ROW -> gridTemplateRows("[URowArea] fit-content(100%)")
+        COLUMN -> gridTemplateColumns("[UColumnArea] fit-content(100%)")
+        NONE -> Unit
+    }
 }
