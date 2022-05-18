@@ -53,8 +53,8 @@ enum class UGridType { BOX, ROW, COLUMN }
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
 @Composable actual fun UText(text: String, center: Boolean, bold: Boolean, mono: Boolean) {
-    // TODO: maxLines 1
     USpan(addStyle = {
+        property("text-overflow", "clip")
         if (center) textAlign("center")
         if (bold) fontWeight("bold")
         if (mono) fontFamily("courier")
