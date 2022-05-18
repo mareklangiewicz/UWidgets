@@ -12,19 +12,29 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
 @Composable fun UBox(depthIncrease: Int = 1, content: @Composable () -> Unit) {
     val depth = ULocalDepth.current
     val bg = ULocalBackground.current.forDepth(depth)
-    URawBox(4.dp, bg, bg.darken(.3f)) {
-        CompositionLocalProvider(ULocalDepth provides depth + depthIncrease) {
-            content()
-        }
+    UBasicBox(2.dp, bg, bg.darken(.3f)) {
+        CompositionLocalProvider(ULocalDepth provides depth + depthIncrease, content = content)
     }
 }
 
-@Composable expect fun URawBox(
+@Composable fun UColumn(depthIncrease: Int = 1, content: @Composable () -> Unit) {
+    UBox(depthIncrease) { UBasicColumn(content) }
+}
+
+@Composable fun URow(depthIncrease: Int = 1, content: @Composable () -> Unit) {
+    UBox(depthIncrease) { UBasicRow(content) }
+}
+
+@Composable expect fun UBasicBox(
     padding: Dp = 0.dp,
     background: Color = Color.Transparent,
     border: Color = Color.Transparent,
     content: @Composable () -> Unit,
 )
+
+@Composable expect fun UBasicColumn(content: @Composable () -> Unit)
+
+@Composable expect fun UBasicRow(content: @Composable () -> Unit)
 
 @Composable expect fun UText(
     text: String,
@@ -41,9 +51,9 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
     depthIncrease: Int = 1,
 ) = UBox(depthIncrease) { UText(text, center, bold, mono) }
 
-private val ULocalDepth = compositionLocalOf { 0 }
+val ULocalDepth = compositionLocalOf { 0 }
 
-private val ULocalBackground = compositionLocalOf { Color.LightGray }
+val ULocalBackground = compositionLocalOf { Color.LightGray }
 
 @Composable private fun Color.forDepth(depth: Int) =
     lighten((depth % 3 + 1) * 0.25f)

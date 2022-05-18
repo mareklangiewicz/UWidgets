@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 
-@Composable actual fun URawBox(
+@Composable actual fun UBasicBox(
     padding: Dp,
     background: Color,
     border: Color,
@@ -23,6 +23,10 @@ import androidx.compose.ui.unit.*
         content()
     }
 }
+
+@Composable actual fun UBasicColumn(content: @Composable () -> Unit) = Column { content() }
+
+@Composable actual fun UBasicRow(content: @Composable () -> Unit) = Row { content() }
 
 @Composable actual fun UText(text: String, center: Boolean, bold: Boolean, mono: Boolean) {
     val style = LocalTextStyle.current.copy(
