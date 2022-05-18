@@ -6,7 +6,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.*
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.css.DisplayStyle.*
 import org.jetbrains.compose.web.dom.*
 import pl.mareklangiewicz.uwidgets.UGridType.*
 
@@ -17,23 +16,34 @@ enum class UGridType { BOX, ROW, COLUMN }
     background: Color,
     border: Color,
     content: @Composable () -> Unit,
-) = UGridDiv(BOX, {
+) = UDiv(BOX, {
     val bwidth = 1.dp
     backgroundColor(background.cssRgba)
     border(bwidth.value.px, LineStyle.Solid, border.cssRgba)
     padding((bwidth + padding).value.px)
 }) { content() }
 
-@Composable actual fun UBasicColumn(content: @Composable () -> Unit) = UGridDiv(COLUMN) { content() }
+@Composable actual fun UBasicColumn(content: @Composable () -> Unit) = UDiv(COLUMN) { content() }
 
-@Composable actual fun UBasicRow(content: @Composable () -> Unit) = UGridDiv(ROW) { content() }
+@Composable actual fun UBasicRow(content: @Composable () -> Unit) = UDiv(ROW) { content() }
 
 
-@Composable fun UGridDiv(gridType: UGridType, addStyle: StyleScope.() -> Unit = {}, content: @Composable () -> Unit) {
+@Composable fun UDiv(gridType: UGridType? = null, addStyle: StyleScope.() -> Unit = {}, content: @Composable () -> Unit) {
     val parentGridType = ULocalGridType.current
     Div({
         style {
-            gridFor(gridType)
+            gridType?.let { gridFor(it) }
+            parentGridType?.let { gridChildFor(it) }
+            addStyle()
+        }
+    }) { CompositionLocalProvider(ULocalGridType provides gridType) { content() } }
+}
+
+@Composable fun USpan(gridType: UGridType? = null, addStyle: StyleScope.() -> Unit = {}, content: @Composable () -> Unit) {
+    val parentGridType = ULocalGridType.current
+    Span({
+        style {
+            gridType?.let { gridFor(it) }
             parentGridType?.let { gridChildFor(it) }
             addStyle()
         }
@@ -44,13 +54,11 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
 @Composable actual fun UText(text: String, center: Boolean, bold: Boolean, mono: Boolean) {
     // TODO: maxLines 1
-    val parentGridType = ULocalGridType.current
-    Span({ style {
-        parentGridType?.let { gridChildFor(it) }
+    USpan(addStyle = {
         if (center) textAlign("center")
         if (bold) fontWeight("bold")
         if (mono) fontFamily("courier")
-    } }) { CompositionLocalProvider(ULocalGridType provides null) { Text(text) } }
+    }) { Text(text) }
 }
 
 private val ULocalGridType = staticCompositionLocalOf<UGridType?> { null }
@@ -65,9 +73,11 @@ private fun StyleScope.gridChildFor(type: UGridType) {
 
 private fun StyleScope.gridFor(type: UGridType) {
     display(DisplayStyle.Grid)
+    alignItems(AlignItems.Start)
+    justifyItems("start")
     when (type) {
         BOX -> gridTemplateAreas("UBOX")
-        ROW -> gridTemplateRows("[UROW] fit-content(100%)")
-        COLUMN -> gridTemplateColumns("[UCOLUMN] fit-content(100%)")
+        ROW -> gridTemplateRows("[UROW]")
+        COLUMN -> gridTemplateColumns("[UCOLUMN]")
     }
 }
