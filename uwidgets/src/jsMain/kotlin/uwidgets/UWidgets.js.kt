@@ -6,10 +6,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.*
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.css.DisplayStyle.*
 import org.jetbrains.compose.web.dom.*
 import pl.mareklangiewicz.uwidgets.UGridType.*
 
-enum class UGridType { BOX, ROW, COLUMN, NONE }
+enum class UGridType { BOX, ROW, COLUMN }
 
 @Composable actual fun UBasicBox(
     padding: Dp,
@@ -33,7 +34,7 @@ enum class UGridType { BOX, ROW, COLUMN, NONE }
     Div({
         style {
             gridFor(gridType)
-            gridChildFor(parentGridType)
+            parentGridType?.let { gridChildFor(it) }
             addStyle()
         }
     }) { CompositionLocalProvider(ULocalGridType provides gridType) { content() } }
@@ -43,32 +44,30 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
 @Composable actual fun UText(text: String, center: Boolean, bold: Boolean, mono: Boolean) {
     // TODO: maxLines 1
-    val gridType = ULocalGridType.current
+    val parentGridType = ULocalGridType.current
     Span({ style {
-        gridChildFor(gridType)
+        parentGridType?.let { gridChildFor(it) }
         if (center) textAlign("center")
         if (bold) fontWeight("bold")
         if (mono) fontFamily("courier")
-    } }) { CompositionLocalProvider(ULocalGridType provides NONE) { Text(text) } }
+    } }) { CompositionLocalProvider(ULocalGridType provides null) { Text(text) } }
 }
 
-private val ULocalGridType = staticCompositionLocalOf { NONE }
+private val ULocalGridType = staticCompositionLocalOf<UGridType?> { null }
 
 private fun StyleScope.gridChildFor(type: UGridType) {
     when (type) {
-        BOX -> gridArea("UBoxArea")
-        ROW -> gridRow("URowArea")
-        COLUMN -> gridColumn("UColumnArea")
-        NONE -> Unit
+        BOX -> gridArea("UBOX")
+        ROW -> gridRow("UROW")
+        COLUMN -> gridColumn("UCOLUMN")
     }
 }
 
 private fun StyleScope.gridFor(type: UGridType) {
     display(DisplayStyle.Grid)
     when (type) {
-        BOX -> gridTemplateAreas("UBoxArea")
-        ROW -> gridTemplateRows("[URowArea] fit-content(100%)")
-        COLUMN -> gridTemplateColumns("[UColumnArea] fit-content(100%)")
-        NONE -> Unit
+        BOX -> gridTemplateAreas("UBOX")
+        ROW -> gridTemplateRows("[UROW] fit-content(100%)")
+        COLUMN -> gridTemplateColumns("[UCOLUMN] fit-content(100%)")
     }
 }

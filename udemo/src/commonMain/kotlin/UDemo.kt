@@ -8,7 +8,7 @@ import pl.mareklangiewicz.uwidgets.*
 fun UDemo() {
     UColumn {
         UBox { UBox { URow { UDemoTexts(3) } } }
-        UBox { UBox { URow { UDemoTexts(10) } } }
+        UBox { UBox { URow { UDemoTexts(15) } } }
         CompositionLocalProvider(ULocalBackground provides Color.hsl(200f, .4f, .8f, .6f)) {
             UBox { UBox { UBox { UDemoTexts() } } }
         }
