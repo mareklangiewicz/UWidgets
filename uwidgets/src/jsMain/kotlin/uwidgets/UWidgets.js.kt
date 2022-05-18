@@ -61,7 +61,7 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
     property("text-overflow", "clip")
     if (center) textAlign("center")
     if (bold) fontWeight("bold")
-    if (mono) fontFamily("courier")
+    if (mono) fontFamily("monospace")
 }) { Text(text) }
 
 private val ULocalGridType = staticCompositionLocalOf<UGridType?> { null }
