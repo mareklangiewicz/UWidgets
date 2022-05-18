@@ -14,7 +14,7 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
     val bg = ULocalBackground.current.forDepth(depth)
     ULessBasicBox(
         backgroundColor = bg,
-        borderColor = bg.darken(.3f),
+        borderColor = bg.darken(.1f),
         borderWidth = 1.dp,
         padding = 2.dp,
     ) {
