@@ -17,7 +17,7 @@ enum class UGridType { BOX, ROW, COLUMN }
     borderWidth: Dp,
     padding: Dp,
     content: @Composable () -> Unit,
-) = UDiv(BOX, {
+) = UDiv(BOX, addStyle = {
     backgroundColor(backgroundColor.cssRgba)
     border(borderWidth.value.px, LineStyle.Solid, borderColor.cssRgba)
     padding(padding.value.px)
@@ -32,13 +32,15 @@ enum class UGridType { BOX, ROW, COLUMN }
 
 @Composable fun UDiv(
     gridType: UGridType? = null,
+    gridStretch: Boolean = false,
+    gridCenter: Boolean = false,
     addStyle: StyleScope.() -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     val parentGridType = ULocalGridType.current
     Div({
         style {
-            gridType?.let { ugrid(it) }
+            gridType?.let { ugrid(it, gridStretch, gridCenter) }
             parentGridType?.let { ugridChildFor(it) }
             addStyle()
         }
@@ -73,9 +75,13 @@ private fun StyleScope.ugridChildFor(parentType: UGridType) {
     if (parentType == BOX || parentType == COLUMN) gridColumn("UCOLUMN", "UCOLUMN")
 }
 
-private fun StyleScope.ugrid(type: UGridType) {
+private fun StyleScope.ugrid(type: UGridType, stretch: Boolean = false, center: Boolean = false) {
     display(DisplayStyle.Grid)
-    justifyItems("start")
+    justifyItems(when {
+        stretch -> "stretch"
+        center -> "center"
+        else -> "start"
+    })
     if (type == BOX || type == ROW) gridTemplateRows("[UROW] auto")
     if (type == BOX || type == COLUMN) gridTemplateColumns("[UCOLUMN] auto")
 }
