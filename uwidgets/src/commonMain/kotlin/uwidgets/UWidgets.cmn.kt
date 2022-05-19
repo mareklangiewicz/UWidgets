@@ -44,13 +44,6 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
 
 @Composable expect fun UBasicRow(content: @Composable () -> Unit)
 
-@Composable expect fun UText(
-    text: String,
-    center: Boolean = false,
-    bold: Boolean = false,
-    mono: Boolean = false,
-)
-
 @Composable fun UBoxedText(
     text: String,
     center: Boolean = false,
@@ -59,9 +52,17 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
     depthIncrease: Int = 1,
 ) = UBox(depthIncrease) { UText(text, center, bold, mono) }
 
+@Composable expect fun UText(
+    text: String,
+    center: Boolean = false,
+    bold: Boolean = false,
+    mono: Boolean = false,
+)
+
+@Composable expect fun UBasicText(text: String)
+
 val ULocalDepth = compositionLocalOf { 0 }
 
 val ULocalBackground = compositionLocalOf { Color.LightGray }
 
-@Composable private fun Color.forDepth(depth: Int) =
-    lighten((depth % 3 + 1) * 0.25f)
+@Composable private fun Color.forDepth(depth: Int) = lighten((depth % 3 + 1) * 0.25f)

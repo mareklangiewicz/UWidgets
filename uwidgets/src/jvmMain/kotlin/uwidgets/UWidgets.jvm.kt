@@ -41,3 +41,5 @@ import androidx.compose.ui.unit.*
     )
     Text(text, maxLines = 1, style = style)
 }
+
+@Composable actual fun UBasicText(text: String) = Text(text, maxLines = 1)

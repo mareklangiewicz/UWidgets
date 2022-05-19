@@ -64,20 +64,18 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
     if (mono) fontFamily("monospace")
 }) { Text(text) }
 
+@Composable actual fun UBasicText(text: String) = Text(text)
+
 private val ULocalGridType = staticCompositionLocalOf<UGridType?> { null }
 
-private fun StyleScope.ugridChildFor(parentType: UGridType) = when (parentType) {
-    BOX -> gridArea("UBOX")
-    ROW -> gridRow("UROW")
-    COLUMN -> gridColumn("UCOLUMN")
+private fun StyleScope.ugridChildFor(parentType: UGridType) {
+    if (parentType == BOX || parentType == ROW) gridRow("UROW", "UROW")
+    if (parentType == BOX || parentType == COLUMN) gridColumn("UCOLUMN", "UCOLUMN")
 }
 
 private fun StyleScope.ugrid(type: UGridType) {
     display(DisplayStyle.Grid)
     justifyItems("start")
-    when (type) {
-        BOX -> gridTemplateAreas("UBOX")
-        ROW -> gridTemplateRows("[UROW]")
-        COLUMN -> gridTemplateColumns("[UCOLUMN]")
-    }
+    if (type == BOX || type == ROW) gridTemplateRows("[UROW] auto")
+    if (type == BOX || type == COLUMN) gridTemplateColumns("[UCOLUMN] auto")
 }
