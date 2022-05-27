@@ -6,6 +6,15 @@ import pl.mareklangiewicz.uwidgets.*
 
 @Composable
 fun UDemo() {
+    UTabs(
+        "UDemo 0" to { UDemo0() },
+        "UDemo 1" to { UText("TODO UDemo1") },
+        "UDemo 2" to { UText("TODO UDemo2") },
+    )
+}
+
+@Composable
+fun UDemo0() {
     UColumn {
         UBox { UBox { URow { UDemoTexts(3) } } }
         UBox { UBox { URow { UDemoTexts(15) } } }

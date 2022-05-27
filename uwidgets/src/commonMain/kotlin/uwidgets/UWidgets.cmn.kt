@@ -66,3 +66,27 @@ val ULocalDepth = compositionLocalOf { 0 }
 val ULocalBackground = compositionLocalOf { Color.LightGray }
 
 @Composable private fun Color.forDepth(depth: Int) = lighten((depth % 3 + 1) * 0.25f)
+
+
+@Composable expect fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit)
+
+@Composable fun UTabs(vararg contents: Pair<String, @Composable () -> Unit>) {
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    UColumn {
+        UTabs(*contents.map { it.first }.toTypedArray()) { idx, tab ->
+            selectedTabIndex = idx
+        }
+        contents[selectedTabIndex].second()
+    }
+}
+
+@Composable
+internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) {
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    URow {
+        tabs.forEachIndexed { index, title ->
+            UBoxedText(title, center = true, bold = index == selectedTabIndex, mono = true)
+            // TODO NOW: onClick change idx and run onSelected
+        }
+    }
+}

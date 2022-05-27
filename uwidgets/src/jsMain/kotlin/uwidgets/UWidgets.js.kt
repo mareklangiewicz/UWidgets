@@ -85,3 +85,6 @@ private fun StyleScope.ugrid(type: UGridType, stretch: Boolean = false, center: 
     if (type == BOX || type == ROW) gridTemplateRows("[UROW] auto")
     if (type == BOX || type == COLUMN) gridTemplateColumns("[UCOLUMN] auto")
 }
+
+@Composable actual fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
+    UTabsCmn(*tabs, onSelected = onSelected)

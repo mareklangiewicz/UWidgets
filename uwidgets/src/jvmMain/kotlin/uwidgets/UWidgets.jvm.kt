@@ -43,3 +43,17 @@ import androidx.compose.ui.unit.*
 }
 
 @Composable actual fun UBasicText(text: String) = Text(text, maxLines = 1)
+
+@Composable actual fun UTabs(vararg tabs: String, onSelected: (index: Int, tab: String) -> Unit) {
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    TabRow(selectedTabIndex = selectedTabIndex) {
+        tabs.forEachIndexed { index, title ->
+            Tab(
+                text = { Text(title, style = MaterialTheme.typography.headlineSmall) },
+                selected = selectedTabIndex == index,
+                onClick = { selectedTabIndex = index; onSelected(index, title) }
+            )
+        }
+    }
+}
+
