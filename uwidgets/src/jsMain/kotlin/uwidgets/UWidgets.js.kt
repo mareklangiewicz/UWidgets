@@ -34,27 +34,31 @@ enum class UGridType { BOX, ROW, COLUMN }
     gridType: UGridType? = null,
     gridStretch: Boolean = false,
     gridCenter: Boolean = false,
-    addStyle: StyleScope.() -> Unit = {},
+    addStyle: (StyleScope.() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     val parentGridType = ULocalGridType.current
+    val onBoxClick = ULocalOnBoxClick.current
     Div({
         style {
             gridType?.let { ugrid(it, gridStretch, gridCenter) }
             parentGridType?.let { ugridChildFor(it) }
-            addStyle()
+            addStyle?.let { it() }
         }
-    }) { CompositionLocalProvider(ULocalGridType provides gridType) { content() } }
+        onBoxClick?.let { onClick { it() } }
+    }) { CompositionLocalProvider(ULocalGridType provides gridType, ULocalOnBoxClick provides null) { content() } }
 }
 
 @Composable fun USpan(addStyle: StyleScope.() -> Unit = {}, content: @Composable () -> Unit) {
     val parentGridType = ULocalGridType.current
+    val onBoxClick = ULocalOnBoxClick.current
     Span({
         style {
             parentGridType?.let { ugridChildFor(it) }
             addStyle()
         }
-    }) { CompositionLocalProvider(ULocalGridType provides null) { content() } }
+        onBoxClick?.let { onClick { it() } }
+    }) { CompositionLocalProvider(ULocalGridType provides null, ULocalOnBoxClick provides null) { content() } }
 }
 
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)

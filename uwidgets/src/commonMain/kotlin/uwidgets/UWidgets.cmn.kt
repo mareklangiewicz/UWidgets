@@ -85,8 +85,18 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     var selectedTabIndex by remember { mutableStateOf(0) }
     URow {
         tabs.forEachIndexed { index, title ->
-            UBoxedText(title, center = true, bold = index == selectedTabIndex, mono = true)
-            // TODO NOW: onClick change idx and run onSelected
+            UOnBoxClick({ selectedTabIndex = index; onSelected(index, title) }) {
+                UBoxedText(title, center = true, bold = index == selectedTabIndex, mono = true)
+            }
         }
     }
 }
+
+@Composable
+fun UOnBoxClick(onBoxClick: () -> Unit, content: @Composable () -> Unit) {
+    CompositionLocalProvider(ULocalOnBoxClick provides onBoxClick, content = content)
+}
+
+// It's a really hacky solution for multiplatform minimalist onClick support.
+// Mostly to avoid more parameters in functions. Probably will be changed later.
+val ULocalOnBoxClick = compositionLocalOf<(() -> Unit)?> { null }
