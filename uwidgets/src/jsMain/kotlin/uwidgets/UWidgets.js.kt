@@ -37,8 +37,8 @@ enum class UGridType { BOX, ROW, COLUMN }
     addStyle: (StyleScope.() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
-    val parentGridType = ULocalGridType.current
-    val onBoxClick = ULocalOnBoxClick.current
+    val parentGridType = LocalUGridType.current
+    val onBoxClick = LocalUOnBoxClick.current
     Div({
         style {
             gridType?.let { ugrid(it, gridStretch, gridCenter) }
@@ -46,19 +46,19 @@ enum class UGridType { BOX, ROW, COLUMN }
             addStyle?.let { it() }
         }
         onBoxClick?.let { onClick { it() } }
-    }) { CompositionLocalProvider(ULocalGridType provides gridType, ULocalOnBoxClick provides null) { content() } }
+    }) { CompositionLocalProvider(LocalUGridType provides gridType, LocalUOnBoxClick provides null) { content() } }
 }
 
 @Composable fun USpan(addStyle: StyleScope.() -> Unit = {}, content: @Composable () -> Unit) {
-    val parentGridType = ULocalGridType.current
-    val onBoxClick = ULocalOnBoxClick.current
+    val parentGridType = LocalUGridType.current
+    val onBoxClick = LocalUOnBoxClick.current
     Span({
         style {
             parentGridType?.let { ugridChildFor(it) }
             addStyle()
         }
         onBoxClick?.let { onClick { it() } }
-    }) { CompositionLocalProvider(ULocalGridType provides null, ULocalOnBoxClick provides null) { content() } }
+    }) { CompositionLocalProvider(LocalUGridType provides null, LocalUOnBoxClick provides null) { content() } }
 }
 
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
@@ -72,7 +72,7 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
 @Composable actual fun UBasicText(text: String) = Text(text)
 
-private val ULocalGridType = staticCompositionLocalOf<UGridType?> { null }
+private val LocalUGridType = staticCompositionLocalOf<UGridType?> { null }
 
 private fun StyleScope.ugridChildFor(parentType: UGridType) {
     if (parentType == BOX || parentType == ROW) gridRow("UROW", "UROW")

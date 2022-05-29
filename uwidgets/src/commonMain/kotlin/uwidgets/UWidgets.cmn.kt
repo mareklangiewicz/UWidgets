@@ -10,15 +10,15 @@ fun Color.lighten(fraction: Float = 0.1f) = lerp(this, Color.White, fraction)
 fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
 
 @Composable fun UBox(depthIncrease: Int = 1, content: @Composable () -> Unit) {
-    val depth = ULocalDepth.current
-    val bg = ULocalBackground.current.forDepth(depth)
+    val depth = LocalUDepth.current
+    val bg = LocalUBackground.current.forDepth(depth)
     ULessBasicBox(
         backgroundColor = bg,
         borderColor = bg.darken(.1f),
         borderWidth = 1.dp,
         padding = 2.dp,
     ) {
-        CompositionLocalProvider(ULocalDepth provides depth + depthIncrease, content = content)
+        CompositionLocalProvider(LocalUDepth provides depth + depthIncrease, content = content)
     }
 }
 
@@ -61,9 +61,9 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
 
 @Composable expect fun UBasicText(text: String)
 
-val ULocalDepth = compositionLocalOf { 0 }
+val LocalUDepth = compositionLocalOf { 0 }
 
-val ULocalBackground = compositionLocalOf { Color.LightGray }
+val LocalUBackground = compositionLocalOf { Color.LightGray }
 
 @Composable private fun Color.forDepth(depth: Int) = lighten((depth % 3 + 1) * 0.25f)
 
@@ -94,9 +94,9 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
 
 @Composable
 fun UOnBoxClick(onBoxClick: () -> Unit, content: @Composable () -> Unit) {
-    CompositionLocalProvider(ULocalOnBoxClick provides onBoxClick, content = content)
+    CompositionLocalProvider(LocalUOnBoxClick provides onBoxClick, content = content)
 }
 
 // It's a really hacky solution for multiplatform minimalist onClick support.
 // Mostly to avoid more parameters in functions. Probably will be changed later.
-val ULocalOnBoxClick = compositionLocalOf<(() -> Unit)?> { null }
+val LocalUOnBoxClick = compositionLocalOf<(() -> Unit)?> { null }

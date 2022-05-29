@@ -28,25 +28,25 @@ import androidx.compose.ui.unit.*
 }
 
 @Composable actual fun UBasicBox(content: @Composable () -> Unit) {
-    val onBoxClick = ULocalOnBoxClick.current
+    val onBoxClick = LocalUOnBoxClick.current
     val modifier = onBoxClick?.let { Modifier.clickable { it() } } ?: Modifier
-    CompositionLocalProvider(ULocalOnBoxClick provides null) {
+    CompositionLocalProvider(LocalUOnBoxClick provides null) {
         Box(modifier) { content() }
     }
 }
 
 @Composable actual fun UBasicColumn(content: @Composable () -> Unit) {
-    val onBoxClick = ULocalOnBoxClick.current
+    val onBoxClick = LocalUOnBoxClick.current
     val modifier = onBoxClick?.let { Modifier.clickable { it() } } ?: Modifier
-    CompositionLocalProvider(ULocalOnBoxClick provides null) {
+    CompositionLocalProvider(LocalUOnBoxClick provides null) {
         Column(modifier) { content() }
     }
 }
 
 @Composable actual fun UBasicRow(content: @Composable () -> Unit) {
-    val onBoxClick = ULocalOnBoxClick.current
+    val onBoxClick = LocalUOnBoxClick.current
     val modifier = onBoxClick?.let { Modifier.clickable { it() } } ?: Modifier
-    CompositionLocalProvider(ULocalOnBoxClick provides null) {
+    CompositionLocalProvider(LocalUOnBoxClick provides null) {
         Row(modifier) { content() }
     }
 }

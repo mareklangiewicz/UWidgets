@@ -18,7 +18,7 @@ fun UDemo0() {
     UColumn {
         UBox { UBox { URow { UDemoTexts(3) } } }
         UBox { UBox { URow { UDemoTexts(15) } } }
-        CompositionLocalProvider(ULocalBackground provides Color.hsl(200f, .4f, .8f, .6f)) {
+        CompositionLocalProvider(LocalUBackground provides Color.hsl(200f, .4f, .8f, .6f)) {
             UBox { UBox { UBox { UDemoTexts() } } }
         }
         UBox { UBox { UColumn { UDemoTexts() } } }
