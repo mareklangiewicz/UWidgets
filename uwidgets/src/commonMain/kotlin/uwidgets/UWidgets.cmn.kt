@@ -5,18 +5,23 @@ package pl.mareklangiewicz.uwidgets
 import androidx.compose.ui.graphics.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
+import pl.mareklangiewicz.utheme.*
+
+enum class UContainerType { UBOX, UROW, UCOLUMN }
+enum class UAlignmentType { USTART, UEND, UCENTER, USTRETCH }
+
 
 fun Color.lighten(fraction: Float = 0.1f) = lerp(this, Color.White, fraction)
 fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
 
 @Composable fun UBox(depthIncrease: Int = 1, content: @Composable () -> Unit) {
     val depth = LocalUDepth.current
-    val bg = LocalUBackground.current.forDepth(depth)
+    val background = UTheme.colors.uboxBackground.forDepth(depth)
     ULessBasicBox(
-        backgroundColor = bg,
-        borderColor = bg.darken(.1f),
-        borderWidth = 1.dp,
-        padding = 2.dp,
+        backgroundColor = background,
+        borderColor = background.darken(.1f),
+        borderWidth = UTheme.sizes.uboxBorderWidth,
+        padding = UTheme.sizes.uboxPadding,
     ) {
         CompositionLocalProvider(LocalUDepth provides depth + depthIncrease, content = content)
     }
@@ -62,8 +67,6 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
 @Composable expect fun UBasicText(text: String)
 
 val LocalUDepth = compositionLocalOf { 0 }
-
-val LocalUBackground = compositionLocalOf { Color.LightGray }
 
 @Composable private fun Color.forDepth(depth: Int) = lighten((depth % 3 + 1) * 0.25f)
 

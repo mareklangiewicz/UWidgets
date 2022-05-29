@@ -7,9 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
-import pl.mareklangiewicz.uwidgets.UGridType.*
-
-enum class UGridType { BOX, ROW, COLUMN }
+import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 @Composable actual fun ULessBasicBox(
     backgroundColor: Color,
@@ -17,21 +15,21 @@ enum class UGridType { BOX, ROW, COLUMN }
     borderWidth: Dp,
     padding: Dp,
     content: @Composable () -> Unit,
-) = UDiv(BOX, addStyle = {
+) = UDiv(UBOX, addStyle = {
     backgroundColor(backgroundColor.cssRgba)
     border(borderWidth.value.px, LineStyle.Solid, borderColor.cssRgba)
     padding(padding.value.px)
 }) { content() }
 
-@Composable actual fun UBasicBox(content: @Composable () -> Unit) = UDiv(BOX) { content() }
+@Composable actual fun UBasicBox(content: @Composable () -> Unit) = UDiv(UBOX) { content() }
 
-@Composable actual fun UBasicColumn(content: @Composable () -> Unit) = UDiv(COLUMN) { content() }
+@Composable actual fun UBasicColumn(content: @Composable () -> Unit) = UDiv(UCOLUMN) { content() }
 
-@Composable actual fun UBasicRow(content: @Composable () -> Unit) = UDiv(ROW) { content() }
+@Composable actual fun UBasicRow(content: @Composable () -> Unit) = UDiv(UROW) { content() }
 
 
 @Composable fun UDiv(
-    gridType: UGridType? = null,
+    gridType: UContainerType? = null,
     gridStretch: Boolean = false,
     gridCenter: Boolean = false,
     addStyle: (StyleScope.() -> Unit)? = null,
@@ -72,22 +70,22 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
 @Composable actual fun UBasicText(text: String) = Text(text)
 
-private val LocalUGridType = staticCompositionLocalOf<UGridType?> { null }
+private val LocalUGridType = staticCompositionLocalOf<UContainerType?> { null }
 
-private fun StyleScope.ugridChildFor(parentType: UGridType) {
-    if (parentType == BOX || parentType == ROW) gridRow("UROW", "UROW")
-    if (parentType == BOX || parentType == COLUMN) gridColumn("UCOLUMN", "UCOLUMN")
+private fun StyleScope.ugridChildFor(parentType: UContainerType) {
+    if (parentType == UBOX || parentType == UROW) gridRow("UROW", "UROW")
+    if (parentType == UBOX || parentType == UCOLUMN) gridColumn("UCOLUMN", "UCOLUMN")
 }
 
-private fun StyleScope.ugrid(type: UGridType, stretch: Boolean = false, center: Boolean = false) {
+private fun StyleScope.ugrid(type: UContainerType, stretch: Boolean = false, center: Boolean = false) {
     display(DisplayStyle.Grid)
     justifyItems(when {
         stretch -> "stretch"
         center -> "center"
         else -> "start"
     })
-    if (type == BOX || type == ROW) gridTemplateRows("[UROW] auto")
-    if (type == BOX || type == COLUMN) gridTemplateColumns("[UCOLUMN] auto")
+    if (type == UBOX || type == UROW) gridTemplateRows("[UROW] auto")
+    if (type == UBOX || type == UCOLUMN) gridTemplateColumns("[UCOLUMN] auto")
 }
 
 @Composable actual fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =

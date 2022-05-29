@@ -2,6 +2,7 @@ package pl.mareklangiewicz.udemo
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
+import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 
 @Composable
@@ -18,7 +19,7 @@ fun UDemo0() {
     UColumn {
         UBox { UBox { URow { UDemoTexts(3) } } }
         UBox { UBox { URow { UDemoTexts(15) } } }
-        CompositionLocalProvider(LocalUBackground provides Color.hsl(200f, .4f, .8f, .6f)) {
+        UTheme(UColors(uboxBackground = Color.hsl(200f, .4f, .8f, .6f))) {
             UBox { UBox { UBox { UDemoTexts() } } }
         }
         UBox { UBox { UColumn { UDemoTexts() } } }
