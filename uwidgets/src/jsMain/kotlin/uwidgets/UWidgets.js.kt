@@ -14,59 +14,84 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     borderColor: Color,
     borderWidth: Dp,
     padding: Dp,
+    onClick: (() -> Unit)?,
     content: @Composable () -> Unit,
-) = UDiv(UBOX, addStyle = {
-    backgroundColor(backgroundColor.cssRgba)
-    border(borderWidth.value.px, LineStyle.Solid, borderColor.cssRgba)
-    padding(padding.value.px)
-}) { content() }
+) = UContainerJs(
+    type = UBOX,
+    addStyle = {
+        backgroundColor(backgroundColor.cssRgba)
+        border(borderWidth.value.px, LineStyle.Solid, borderColor.cssRgba)
+        padding(padding.value.px)
+    },
+    onClick = onClick,
+    content = content
+)
 
-@Composable actual fun UBasicBox(content: @Composable () -> Unit) = UDiv(UBOX) { content() }
-
-@Composable actual fun UBasicColumn(content: @Composable () -> Unit) = UDiv(UCOLUMN) { content() }
-
-@Composable actual fun UBasicRow(content: @Composable () -> Unit) = UDiv(UROW) { content() }
+@Composable actual fun UBasicBox(content: @Composable () -> Unit) = UContainerJs(UBOX) { content() }
+@Composable actual fun UBasicColumn(content: @Composable () -> Unit) = UContainerJs(UCOLUMN) { content() }
+@Composable actual fun UBasicRow(content: @Composable () -> Unit) = UContainerJs(UROW) { content() }
 
 
-@Composable fun UDiv(
+/** @param inline false -> div; true -> span; span have to have type == null */
+@Composable fun UContainerJs(
+    type: UContainerType? = null,
+    inline: Boolean = false,
+    addStyle: (StyleScope.() -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
+    content: @Composable () -> Unit,
+) {
+    require(!inline || type == null) { "span can not define grid layout" }
+    val parentGridType = LocalUGridType.current
+    val astyle: StyleScope.() -> Unit = {
+        parentGridType?.let { ugridChildFor(it) }
+        addStyle?.let { it() }
+    }
+    if (inline) URawContainerJs(inline, addStyle = astyle, onClick = onClick) {
+        CompositionLocalProvider(LocalUGridType provides null) { content() }
+    }
+    else URawGridDiv(
+        gridType = type,
+        addStyle = astyle,
+        onClick = onClick,
+    ) { CompositionLocalProvider(LocalUGridType provides type) { content() } }
+}
+
+@Composable private fun URawGridDiv(
     gridType: UContainerType? = null,
     gridStretch: Boolean = false,
     gridCenter: Boolean = false,
     addStyle: (StyleScope.() -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit,
-) {
-    val parentGridType = LocalUGridType.current
-    val onBoxClick = LocalUOnBoxClick.current
-    Div({
-        style {
-            gridType?.let { ugrid(it, gridStretch, gridCenter) }
-            parentGridType?.let { ugridChildFor(it) }
-            addStyle?.let { it() }
-        }
-        onBoxClick?.let { onClick { it() } }
-    }) { CompositionLocalProvider(LocalUGridType provides gridType, LocalUOnBoxClick provides null) { content() } }
-}
+) = URawContainerJs(
+    inline = false,
+    addStyle = {
+        gridType?.let { ugrid(it, gridStretch, gridCenter) }
+        addStyle?.let { it() }
+    },
+    onClick = onClick,
+) { content() }
 
-@Composable fun USpan(addStyle: StyleScope.() -> Unit = {}, content: @Composable () -> Unit) {
-    val parentGridType = LocalUGridType.current
-    val onBoxClick = LocalUOnBoxClick.current
-    Span({
-        style {
-            parentGridType?.let { ugridChildFor(it) }
-            addStyle()
-        }
-        onBoxClick?.let { onClick { it() } }
-    }) { CompositionLocalProvider(LocalUGridType provides null, LocalUOnBoxClick provides null) { content() } }
+/** @param inline false -> div; true -> span */
+@Composable private fun URawContainerJs(
+    inline: Boolean = false,
+    addStyle: (StyleScope.() -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
+    content: @Composable () -> Unit
+) = when (inline) {
+    true -> Span({ style { addStyle?.let { it() } }; onClick?.let { onClick { it() } } }) { content() }
+    false -> Div({ style { addStyle?.let { it() } }; onClick?.let { onClick { it() } } }) { content() }
 }
 
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
-@Composable actual fun UText(text: String, center: Boolean, bold: Boolean, mono: Boolean) = USpan({
-    property("text-overflow", "clip")
-    if (center) textAlign("center")
-    if (bold) fontWeight("bold")
-    if (mono) fontFamily("monospace")
-}) { Text(text) }
+@Composable actual fun UText(text: String, center: Boolean, bold: Boolean, mono: Boolean) =
+    UContainerJs(inline = true, addStyle = {
+        property("text-overflow", "clip")
+        if (center) textAlign("center")
+        if (bold) fontWeight("bold")
+        if (mono) fontFamily("monospace")
+    }) { Text(text) }
 
 @Composable actual fun UBasicText(text: String) = Text(text)
 

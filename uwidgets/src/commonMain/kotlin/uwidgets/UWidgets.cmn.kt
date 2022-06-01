@@ -22,10 +22,22 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
         borderColor = background.darken(.1f),
         borderWidth = UTheme.sizes.uboxBorderWidth,
         padding = UTheme.sizes.uboxPadding,
+        onClick = LocalUOnBoxClick.current
     ) {
-        CompositionLocalProvider(LocalUDepth provides depth + depthIncrease, content = content)
+        CompositionLocalProvider(LocalUDepth provides depth + depthIncrease, LocalUOnBoxClick provides null, content = content)
     }
 }
+
+// It's a really hacky solution for multiplatform minimalist onClick support.
+// Mostly to avoid more parameters in functions. Probably will be changed later.
+@Composable fun UOnBoxClick(onBoxClick: () -> Unit, content: @Composable () -> Unit) =
+    CompositionLocalProvider(LocalUOnBoxClick provides onBoxClick, content = content)
+
+private val LocalUOnBoxClick = compositionLocalOf<(() -> Unit)?> { null }
+
+private val LocalUDepth = compositionLocalOf { 0 }
+
+
 
 @Composable fun UColumn(depthIncrease: Int = 1, content: @Composable () -> Unit) {
     UBox(depthIncrease) { UBasicColumn(content) }
@@ -40,6 +52,7 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
     borderColor: Color = Color.Transparent,
     borderWidth: Dp = 0.dp,
     padding: Dp = 0.dp,
+    onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 )
 
@@ -65,8 +78,6 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
 )
 
 @Composable expect fun UBasicText(text: String)
-
-val LocalUDepth = compositionLocalOf { 0 }
 
 @Composable private fun Color.forDepth(depth: Int) = lighten((depth % 3 + 1) * 0.25f)
 
@@ -95,11 +106,3 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     }
 }
 
-@Composable
-fun UOnBoxClick(onBoxClick: () -> Unit, content: @Composable () -> Unit) {
-    CompositionLocalProvider(LocalUOnBoxClick provides onBoxClick, content = content)
-}
-
-// It's a really hacky solution for multiplatform minimalist onClick support.
-// Mostly to avoid more parameters in functions. Probably will be changed later.
-val LocalUOnBoxClick = compositionLocalOf<(() -> Unit)?> { null }

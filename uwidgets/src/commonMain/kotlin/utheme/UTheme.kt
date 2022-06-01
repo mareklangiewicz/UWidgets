@@ -17,18 +17,30 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
  * 2. MaterialTheme.shapes
  *    (immutable - simple but less reactive/dynamic)
  */
-@Composable
-fun UTheme(
+@Composable fun UTheme(
     colors: UColors = UTheme.colors,
     sizes: USizes = UTheme.sizes,
     alignments: UAlignments = UTheme.alignments,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) = CompositionLocalProvider(
     LocalUColors provides colors,
     LocalUSizes provides sizes,
     LocalUAlignments provides alignments,
     content = content
 )
+
+/**
+ * Default values are read from outer theme mutable states. It can probably be very inefficient
+ * (recomposing whole subtree when any inherited alignment type changes), but let's not care about that.
+ * For now let's assume compose machinery is clever enough to optimize such cases.
+ * Also, I want to try to keep UWidgets ("micro" widgets) implementation small/"micro".
+ * (so for now I'm reluctant to introducing additional copying like in material3 colorScheme)
+ */
+@Composable fun UAlign(
+    horizontal: UAlignmentType = UTheme.alignments.horizontal,
+    vertical: UAlignmentType = UTheme.alignments.vertical,
+    content: @Composable () -> Unit
+) = UTheme(alignments = UAlignments(horizontal, vertical), content = content)
 
 object UTheme {
 
@@ -48,28 +60,25 @@ object UTheme {
         get() = LocalUAlignments.current
 }
 
-@Stable
-class UColors(uboxBackground: Color = Color.LightGray) {
+@Stable class UColors(uboxBackground: Color = Color.LightGray) {
     /** It's base background - modified by UBox (Color.forDepth etc) */
     var uboxBackground by mutableStateOf(uboxBackground)
 }
 
-@Stable
-class USizes(uboxPadding: Dp = 2.dp, uboxBorderWidth: Dp = 1.dp) {
+@Stable class USizes(uboxPadding: Dp = 2.dp, uboxBorderWidth: Dp = 1.dp) {
     var uboxPadding by mutableStateOf(uboxPadding)
     var uboxBorderWidth by mutableStateOf(uboxBorderWidth)
 }
 
 // TODO NOW: implement alignments
-@Stable
-class UAlignments(horizontal: UAlignmentType = USTART, vertical: UAlignmentType = USTART) {
+@Stable class UAlignments(horizontal: UAlignmentType = USTART, vertical: UAlignmentType = USTART) {
     var horizontal by mutableStateOf(horizontal)
     var vertical by mutableStateOf(vertical)
 }
 
 
-internal val LocalUColors = staticCompositionLocalOf { UColors() }
+private val LocalUColors = staticCompositionLocalOf { UColors() }
 
-internal val LocalUSizes = staticCompositionLocalOf { USizes() }
+private val LocalUSizes = staticCompositionLocalOf { USizes() }
 
-internal val LocalUAlignments = staticCompositionLocalOf { UAlignments() }
+private val LocalUAlignments = staticCompositionLocalOf { UAlignments() }

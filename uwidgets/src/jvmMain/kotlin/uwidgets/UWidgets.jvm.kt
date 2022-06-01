@@ -11,45 +11,33 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
+import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 @Composable actual fun ULessBasicBox(
     backgroundColor: Color,
     borderColor: Color,
     borderWidth: Dp,
     padding: Dp,
+    onClick: (() -> Unit)?,
     content: @Composable () -> Unit,
 ) {
-    Box(
-        Modifier
-            .background(backgroundColor)
-            .border(borderWidth, borderColor)
-            .padding(borderWidth + padding)
-    ) { content() }
+    val m = onClick?.let { Modifier.clickable { it() } } ?: Modifier
+        .background(backgroundColor)
+        .border(borderWidth, borderColor)
+        .padding(borderWidth + padding)
+    UContainerJvm(UBOX, m, content)
 }
 
-@Composable actual fun UBasicBox(content: @Composable () -> Unit) {
-    val onBoxClick = LocalUOnBoxClick.current
-    val modifier = onBoxClick?.let { Modifier.clickable { it() } } ?: Modifier
-    CompositionLocalProvider(LocalUOnBoxClick provides null) {
-        Box(modifier) { content() }
+@Composable fun UContainerJvm(type: UContainerType, modifier: Modifier = Modifier, content: @Composable () -> Unit) =
+    when (type) {
+        UBOX -> Box(modifier) { content() }
+        UROW -> Row(modifier) { content() }
+        UCOLUMN -> Column(modifier) { content() }
     }
-}
 
-@Composable actual fun UBasicColumn(content: @Composable () -> Unit) {
-    val onBoxClick = LocalUOnBoxClick.current
-    val modifier = onBoxClick?.let { Modifier.clickable { it() } } ?: Modifier
-    CompositionLocalProvider(LocalUOnBoxClick provides null) {
-        Column(modifier) { content() }
-    }
-}
-
-@Composable actual fun UBasicRow(content: @Composable () -> Unit) {
-    val onBoxClick = LocalUOnBoxClick.current
-    val modifier = onBoxClick?.let { Modifier.clickable { it() } } ?: Modifier
-    CompositionLocalProvider(LocalUOnBoxClick provides null) {
-        Row(modifier) { content() }
-    }
-}
+@Composable actual fun UBasicBox(content: @Composable () -> Unit) = UContainerJvm(UBOX, content = content)
+@Composable actual fun UBasicColumn(content: @Composable () -> Unit) = UContainerJvm(UCOLUMN, content = content)
+@Composable actual fun UBasicRow(content: @Composable () -> Unit) = UContainerJvm(UROW, content = content)
 
 @Composable actual fun UText(text: String, center: Boolean, bold: Boolean, mono: Boolean) {
     val style = LocalTextStyle.current.copy(
@@ -57,7 +45,7 @@ import androidx.compose.ui.unit.*
         fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
         fontFamily = if (mono) FontFamily.Monospace else FontFamily.Default
     )
-    Text(text, maxLines = 1, style = style)
+    UContainerJvm(UBOX) { Text(text, maxLines = 1, style = style) }
 }
 
 @Composable actual fun UBasicText(text: String) = Text(text, maxLines = 1)
