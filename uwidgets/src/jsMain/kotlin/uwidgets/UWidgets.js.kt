@@ -5,8 +5,11 @@ package pl.mareklangiewicz.uwidgets
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.*
+import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 @Composable actual fun ULessBasicBox(
@@ -42,45 +45,17 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 ) {
     require(!inline || type == null) { "span can not define grid layout" }
     val parentGridType = LocalUGridType.current
-    val astyle: StyleScope.() -> Unit = {
-        parentGridType?.let { ugridChildFor(it) }
-        addStyle?.let { it() }
+    val attrs: AttrsScope<out HTMLElement>.() -> Unit = {
+        style {
+            type?.let { ugrid(it) }
+            parentGridType?.let { ugridChildFor(it) }
+            addStyle?.let { it() }
+        }
+        onClick?.let { onClick { it() } }
     }
-    if (inline) URawContainerJs(inline, addStyle = astyle, onClick = onClick) {
-        CompositionLocalProvider(LocalUGridType provides null) { content() }
+    CompositionLocalProvider(LocalUGridType provides type) {
+        if (inline) Span(attrs) { content() } else Div(attrs) { content() }
     }
-    else URawGridDiv(
-        gridType = type,
-        addStyle = astyle,
-        onClick = onClick,
-    ) { CompositionLocalProvider(LocalUGridType provides type) { content() } }
-}
-
-@Composable private fun URawGridDiv(
-    gridType: UContainerType? = null,
-    gridStretch: Boolean = false,
-    gridCenter: Boolean = false,
-    addStyle: (StyleScope.() -> Unit)? = null,
-    onClick: (() -> Unit)? = null,
-    content: @Composable () -> Unit,
-) = URawContainerJs(
-    inline = false,
-    addStyle = {
-        gridType?.let { ugrid(it, gridStretch, gridCenter) }
-        addStyle?.let { it() }
-    },
-    onClick = onClick,
-) { content() }
-
-/** @param inline false -> div; true -> span */
-@Composable private fun URawContainerJs(
-    inline: Boolean = false,
-    addStyle: (StyleScope.() -> Unit)? = null,
-    onClick: (() -> Unit)? = null,
-    content: @Composable () -> Unit
-) = when (inline) {
-    true -> Span({ style { addStyle?.let { it() } }; onClick?.let { onClick { it() } } }) { content() }
-    false -> Div({ style { addStyle?.let { it() } }; onClick?.let { onClick { it() } } }) { content() }
 }
 
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
