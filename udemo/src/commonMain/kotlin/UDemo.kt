@@ -17,7 +17,7 @@ fun UDemo() = UAlign(USTRETCH, USTRETCH) {
 
 @Composable
 fun UDemo0() = URow {
-    UColumn { UDemoTexts(50, growFactor = 0) }
+    UAlign(USTART, USTART) { UColumn { UDemoTexts(50, growFactor = 0) } }
     UColumn {
         var switch1 by remember { mutableStateOf(USTART) }
         var switch2 by remember { mutableStateOf(USTART) }

@@ -11,7 +11,6 @@ import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.*
 import pl.mareklangiewicz.utheme.*
-import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 @Composable actual fun ULessBasicBox(

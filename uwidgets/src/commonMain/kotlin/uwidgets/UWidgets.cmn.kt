@@ -20,6 +20,7 @@ enum class UAlignmentType(val css: String) {
 fun Color.lighten(fraction: Float = 0.1f) = lerp(this, Color.White, fraction)
 fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
 
+// TODO NOW: move depthIncrease to UTheme; add parameters for optional (fixed?) width and height
 @Composable fun UBox(depthIncrease: Int = 1, content: @Composable () -> Unit) {
     val depth = LocalUDepth.current
     val background = UTheme.colors.uboxBackground.forDepth(depth)
