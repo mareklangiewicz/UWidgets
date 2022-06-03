@@ -8,8 +8,13 @@ import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.utheme.*
 
 enum class UContainerType { UBOX, UROW, UCOLUMN }
-enum class UAlignmentType { USTART, UEND, UCENTER, USTRETCH }
 
+enum class UAlignmentType(val css: String) {
+    USTART("start"), UEND("end"), UCENTER("center"), USTRETCH("stretch");
+    companion object {
+        fun css(css: String) = UAlignmentType.values().first { it.css == css }
+    }
+}
 
 fun Color.lighten(fraction: Float = 0.1f) = lerp(this, Color.White, fraction)
 fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)

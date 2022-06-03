@@ -10,6 +10,8 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.*
+import pl.mareklangiewicz.utheme.*
+import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 @Composable actual fun ULessBasicBox(
@@ -44,19 +46,23 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     content: @Composable () -> Unit,
 ) {
     require(!inline || type == null) { "span can not define grid layout" }
-    val parentGridType = LocalUGridType.current
+    val parentType = LocalUContainerType.current
+    val horizontal = UTheme.alignments.horizontal
+    val vertical = UTheme.alignments.vertical
     val attrs: AttrsScope<out HTMLElement>.() -> Unit = {
         style {
-            type?.let { ugrid(it) }
-            parentGridType?.let { ugridChildFor(it) }
+            type?.let { ugrid(it, horizontal, vertical) }
+            parentType?.let { ugridChildFor(it, horizontal, vertical) }
             addStyle?.let { it() }
         }
         onClick?.let { onClick { it() } }
     }
-    CompositionLocalProvider(LocalUGridType provides type) {
+    CompositionLocalProvider(LocalUContainerType provides type) {
         if (inline) Span(attrs) { content() } else Div(attrs) { content() }
     }
 }
+
+private val LocalUContainerType = staticCompositionLocalOf<UContainerType?> { null }
 
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
@@ -70,23 +76,22 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
 @Composable actual fun UBasicText(text: String) = Text(text)
 
-private val LocalUGridType = staticCompositionLocalOf<UContainerType?> { null }
-
-private fun StyleScope.ugridChildFor(parentType: UContainerType) {
-    if (parentType == UBOX || parentType == UROW) gridRow("UROW", "UROW")
-    if (parentType == UBOX || parentType == UCOLUMN) gridColumn("UCOLUMN", "UCOLUMN")
-}
-
-private fun StyleScope.ugrid(type: UContainerType, stretch: Boolean = false, center: Boolean = false) {
-    display(DisplayStyle.Grid)
-    justifyItems(when {
-        stretch -> "stretch"
-        center -> "center"
-        else -> "start"
-    })
-    if (type == UBOX || type == UROW) gridTemplateRows("[UROW] auto")
-    if (type == UBOX || type == UCOLUMN) gridTemplateColumns("[UCOLUMN] auto")
-}
-
 @Composable actual fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     UTabsCmn(*tabs, onSelected = onSelected)
+
+private fun StyleScope.ugridChildFor(parentType: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
+    if (parentType == UBOX || parentType == UROW) gridRow("UROW", "UROW")
+    if (parentType == UBOX || parentType == UCOLUMN) gridColumn("UCOLUMN", "UCOLUMN")
+    justifySelf(horizontal.css) // I guess it's only useful for children of grids created without UContainerJs
+    alignSelf(vertical.css) // I guess it's only useful for children of grids created without UContainerJs
+}
+
+private fun StyleScope.ugrid(type: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
+    display(DisplayStyle.Grid)
+    justifyItems(horizontal.css)
+    alignItems(vertical.css)
+    val urowCss = if (horizontal == USTRETCH) "1fr" else "auto" // TODO NOW: does 1fr make any sense? (only one row)
+    val ucolumnCss = if (vertical == USTRETCH) "1fr" else "auto" // TODO NOW: as above
+    if (type == UBOX || type == UROW) gridTemplateRows("[UROW] $urowCss")
+    if (type == UBOX || type == UCOLUMN) gridTemplateColumns("[UCOLUMN] $ucolumnCss")
+}
