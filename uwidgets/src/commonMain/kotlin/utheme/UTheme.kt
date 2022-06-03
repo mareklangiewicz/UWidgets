@@ -80,7 +80,7 @@ object UTheme {
     var uboxBorder by mutableStateOf(uboxBorder)
 }
 
-// TODO NOW: implement alignments
+// TODO NOW: implement alignments on JVM
 @Stable class UAlignments(horizontal: UAlignmentType = USTART, vertical: UAlignmentType = USTART) {
     var horizontal by mutableStateOf(horizontal)
     var vertical by mutableStateOf(vertical)

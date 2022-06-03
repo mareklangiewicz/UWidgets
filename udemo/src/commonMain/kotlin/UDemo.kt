@@ -54,10 +54,11 @@ private fun UDemoTexts(
     mono: Boolean = true,
     growFactor: Int = 1,
 ) {
+    require(boxed || !center)
     repeat(count) { i ->
         val c = 'A' + i
         val s = "$c".repeat(1 + i * growFactor)
         if (boxed) UBoxedText(s, center, bold, mono)
-        else UText(s, center, bold, mono)
+        else UText(s, bold, mono)
     }
 }

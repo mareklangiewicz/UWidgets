@@ -57,19 +57,15 @@ private val LocalUOnBoxClick = staticCompositionLocalOf<(() -> Unit)?> { null }
 
 @Composable expect fun UBasicRow(content: @Composable () -> Unit)
 
-@Composable fun UBoxedText(
-    text: String,
-    center: Boolean = false,
-    bold: Boolean = false,
-    mono: Boolean = false,
-) = UBox { UText(text, center, bold, mono) }
+@Composable fun UBoxedText(text: String, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) =
+    UBox {
+        UAlign(
+            if (center) UCENTER else UTheme.alignments.horizontal,
+            if (center) UCENTER else UTheme.alignments.vertical,
+        ) { UText(text, bold, mono) }
+    }
 
-@Composable expect fun UText(
-    text: String,
-    center: Boolean = false,
-    bold: Boolean = false,
-    mono: Boolean = false,
-)
+@Composable expect fun UText(text: String, bold: Boolean = false, mono: Boolean = false)
 
 @Composable expect fun UBasicText(text: String)
 

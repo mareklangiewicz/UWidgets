@@ -67,11 +67,9 @@ private val LocalUContainerType = staticCompositionLocalOf<UContainerType?> { nu
 
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
-@Composable actual fun UText(text: String, center: Boolean, bold: Boolean, mono: Boolean) =
+@Composable actual fun UText(text: String, bold: Boolean, mono: Boolean) =
     UContainerJs(inline = true, addStyle = {
         property("text-overflow", "clip")
-        if (center) textAlign("center")
-        if (center) alignSelf("center") // this overrides UAlign read in UContainerJs
         if (bold) fontWeight("bold")
         if (mono) fontFamily("monospace")
     }) { Text(text) }

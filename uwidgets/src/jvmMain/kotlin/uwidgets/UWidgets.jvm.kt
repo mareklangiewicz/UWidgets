@@ -46,9 +46,8 @@ private inline fun <V: Any> Modifier.thenIfNotNull(value: V?, add: Modifier.(V) 
 @Composable actual fun UBasicColumn(content: @Composable () -> Unit) = UContainerJvm(UCOLUMN, content = content)
 @Composable actual fun UBasicRow(content: @Composable () -> Unit) = UContainerJvm(UROW, content = content)
 
-@Composable actual fun UText(text: String, center: Boolean, bold: Boolean, mono: Boolean) {
+@Composable actual fun UText(text: String, bold: Boolean, mono: Boolean) {
     val style = LocalTextStyle.current.copy(
-        textAlign = if (center) TextAlign.Center else TextAlign.Start,
         fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
         fontFamily = if (mono) FontFamily.Monospace else FontFamily.Default
     )
