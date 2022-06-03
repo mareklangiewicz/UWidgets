@@ -24,7 +24,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     type = UBOX,
     addStyle = {
         backgroundColor(backgroundColor.cssRgba)
-        border(borderWidth.value.px, LineStyle.Solid, borderColor.cssRgba)
+        border(borderWidth.value.px, LineStyle.Solid, borderColor.cssRgba) // in css .px is kinda .dp
         padding(padding.value.px)
     },
     onClick = onClick,

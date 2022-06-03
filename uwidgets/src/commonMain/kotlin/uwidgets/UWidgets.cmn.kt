@@ -17,42 +17,29 @@ enum class UAlignmentType(val css: String) {
     }
 }
 
-fun Color.lighten(fraction: Float = 0.1f) = lerp(this, Color.White, fraction)
-fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction)
+fun Color.lighten(fraction: Float = 0.1f) = lerp(this, Color.White, fraction.coerceIn(0f, 1f))
+fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coerceIn(0f, 1f))
 
-// TODO NOW: move depthIncrease to UTheme; add parameters for optional (fixed?) width and height
-@Composable fun UBox(depthIncrease: Int = 1, content: @Composable () -> Unit) {
-    val depth = LocalUDepth.current
-    val background = UTheme.colors.uboxBackground.forDepth(depth)
-    ULessBasicBox(
-        backgroundColor = background,
-        borderColor = background.darken(.1f),
-        borderWidth = UTheme.sizes.uboxBorderWidth,
-        padding = UTheme.sizes.uboxPadding,
-        onClick = LocalUOnBoxClick.current
-    ) {
-        CompositionLocalProvider(LocalUDepth provides depth + depthIncrease, LocalUOnBoxClick provides null, content = content)
-    }
-}
+// TODO NOW: add parameters for optional (fixed?) width and height
+@Composable fun UBox(content: @Composable () -> Unit) = ULessBasicBox(
+    backgroundColor = UTheme.colors.uboxBackground,
+    borderColor = UTheme.colors.uboxBorder,
+    borderWidth = UTheme.sizes.uboxBorder,
+    padding = UTheme.sizes.uboxPadding,
+    onClick = LocalUOnBoxClick.current
+) { UDepth { CompositionLocalProvider(LocalUOnBoxClick provides null, content = content) } }
 
 // It's a really hacky solution for multiplatform minimalist onClick support.
 // Mostly to avoid more parameters in functions. Probably will be changed later.
 @Composable fun UOnBoxClick(onBoxClick: () -> Unit, content: @Composable () -> Unit) =
     CompositionLocalProvider(LocalUOnBoxClick provides onBoxClick, content = content)
 
-private val LocalUOnBoxClick = compositionLocalOf<(() -> Unit)?> { null }
-
-private val LocalUDepth = compositionLocalOf { 0 }
+private val LocalUOnBoxClick = staticCompositionLocalOf<(() -> Unit)?> { null }
 
 
+@Composable fun UColumn(content: @Composable () -> Unit) = UBox { UBasicColumn(content) }
 
-@Composable fun UColumn(depthIncrease: Int = 1, content: @Composable () -> Unit) {
-    UBox(depthIncrease) { UBasicColumn(content) }
-}
-
-@Composable fun URow(depthIncrease: Int = 1, content: @Composable () -> Unit) {
-    UBox(depthIncrease) { UBasicRow(content) }
-}
+@Composable fun URow(content: @Composable () -> Unit) = UBox { UBasicRow(content) }
 
 @Composable expect fun ULessBasicBox(
     backgroundColor: Color = Color.Transparent,
@@ -74,8 +61,7 @@ private val LocalUDepth = compositionLocalOf { 0 }
     center: Boolean = false,
     bold: Boolean = false,
     mono: Boolean = false,
-    depthIncrease: Int = 1,
-) = UBox(depthIncrease) { UText(text, center, bold, mono) }
+) = UBox { UText(text, center, bold, mono) }
 
 @Composable expect fun UText(
     text: String,
@@ -86,17 +72,13 @@ private val LocalUDepth = compositionLocalOf { 0 }
 
 @Composable expect fun UBasicText(text: String)
 
-@Composable private fun Color.forDepth(depth: Int) = lighten((depth % 3 + 1) * 0.25f)
-
 
 @Composable expect fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit)
 
 @Composable fun UTabs(vararg contents: Pair<String, @Composable () -> Unit>) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     UColumn {
-        UTabs(*contents.map { it.first }.toTypedArray()) { idx, tab ->
-            selectedTabIndex = idx
-        }
+        UTabs(*contents.map { it.first }.toTypedArray()) { idx, _ -> selectedTabIndex = idx }
         contents[selectedTabIndex].second()
     }
 }

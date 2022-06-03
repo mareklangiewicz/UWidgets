@@ -61,13 +61,23 @@ object UTheme {
 }
 
 @Stable class UColors(uboxBackground: Color = Color.LightGray) {
-    /** It's base background - modified by UBox (Color.forDepth etc) */
-    var uboxBackground by mutableStateOf(uboxBackground)
+
+    var uboxBaseBackground by mutableStateOf(uboxBackground)
+
+    val uboxBackground
+        @Composable
+        @ReadOnlyComposable
+        get() = uboxBaseBackground.lighten(UDepth.appearance)
+
+    val uboxBorder
+        @Composable
+        @ReadOnlyComposable
+        get() = uboxBackground.darken(.1f)
 }
 
-@Stable class USizes(uboxPadding: Dp = 2.dp, uboxBorderWidth: Dp = 1.dp) {
+@Stable class USizes(uboxPadding: Dp = 2.dp, uboxBorder: Dp = 1.dp) {
     var uboxPadding by mutableStateOf(uboxPadding)
-    var uboxBorderWidth by mutableStateOf(uboxBorderWidth)
+    var uboxBorder by mutableStateOf(uboxBorder)
 }
 
 // TODO NOW: implement alignments
