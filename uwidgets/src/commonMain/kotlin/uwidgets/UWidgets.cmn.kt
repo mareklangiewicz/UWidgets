@@ -2,8 +2,8 @@
 
 package pl.mareklangiewicz.uwidgets
 
-import androidx.compose.ui.graphics.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
@@ -20,8 +20,8 @@ enum class UAlignmentType(val css: String) {
 fun Color.lighten(fraction: Float = 0.1f) = lerp(this, Color.White, fraction.coerceIn(0f, 1f))
 fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coerceIn(0f, 1f))
 
-// TODO NOW: add parameters for optional (fixed?) width and height
-@Composable fun UBox(content: @Composable () -> Unit) = ULessBasicBox(
+@Composable fun UBox(size: DpSize? = null, content: @Composable () -> Unit) = ULessBasicBox(
+    size = size,
     backgroundColor = UTheme.colors.uboxBackground,
     borderColor = UTheme.colors.uboxBorder,
     borderWidth = UTheme.sizes.uboxBorder,
@@ -37,11 +37,12 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 private val LocalUOnBoxClick = staticCompositionLocalOf<(() -> Unit)?> { null }
 
 
-@Composable fun UColumn(content: @Composable () -> Unit) = UBox { UBasicColumn(content) }
+@Composable fun UColumn(size: DpSize? = null, content: @Composable () -> Unit) = UBox(size) { UBasicColumn(content) }
 
-@Composable fun URow(content: @Composable () -> Unit) = UBox { UBasicRow(content) }
+@Composable fun URow(size: DpSize? = null, content: @Composable () -> Unit) = UBox(size) { UBasicRow(content) }
 
 @Composable expect fun ULessBasicBox(
+    size: DpSize? = null,
     backgroundColor: Color = Color.Transparent,
     borderColor: Color = Color.Transparent,
     borderWidth: Dp = 0.dp,

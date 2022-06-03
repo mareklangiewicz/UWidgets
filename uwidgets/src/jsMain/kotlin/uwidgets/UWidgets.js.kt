@@ -14,6 +14,7 @@ import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 @Composable actual fun ULessBasicBox(
+    size: DpSize?,
     backgroundColor: Color,
     borderColor: Color,
     borderWidth: Dp,
@@ -23,6 +24,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 ) = UContainerJs(
     type = UBOX,
     addStyle = {
+        size?.let { width(it.width.value.px); height(it.height.value.px) }
         backgroundColor(backgroundColor.cssRgba)
         border(borderWidth.value.px, LineStyle.Solid, borderColor.cssRgba) // in css .px is kinda .dp
         padding(padding.value.px)
@@ -69,6 +71,7 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
     UContainerJs(inline = true, addStyle = {
         property("text-overflow", "clip")
         if (center) textAlign("center")
+        if (center) alignSelf("center") // this overrides UAlign read in UContainerJs
         if (bold) fontWeight("bold")
         if (mono) fontFamily("monospace")
     }) { Text(text) }

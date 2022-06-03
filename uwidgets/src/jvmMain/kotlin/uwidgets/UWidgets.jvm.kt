@@ -14,19 +14,26 @@ import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 @Composable actual fun ULessBasicBox(
+    size: DpSize?,
     backgroundColor: Color,
     borderColor: Color,
     borderWidth: Dp,
     padding: Dp,
     onClick: (() -> Unit)?,
     content: @Composable () -> Unit,
-) {
-    val m = onClick?.let { Modifier.clickable { it() } } ?: Modifier
+) = UContainerJvm(
+    type = UBOX,
+    modifier = Modifier
+        .thenIfNotNull(onClick) { clickable { it() } }
+        .thenIfNotNull(size) { size(it) }
         .background(backgroundColor)
         .border(borderWidth, borderColor)
-        .padding(borderWidth + padding)
-    UContainerJvm(UBOX, m, content)
-}
+        .padding(borderWidth + padding),
+    content = content
+)
+
+private inline fun <V: Any> Modifier.thenIfNotNull(value: V?, add: Modifier.(V) -> Modifier): Modifier =
+    if (value != null) then(add(value)) else this
 
 @Composable fun UContainerJvm(type: UContainerType, modifier: Modifier = Modifier, content: @Composable () -> Unit) =
     when (type) {

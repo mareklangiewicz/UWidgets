@@ -2,6 +2,7 @@ package pl.mareklangiewicz.udemo
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
@@ -17,7 +18,7 @@ fun UDemo() = UAlign(USTRETCH, USTRETCH) {
 
 @Composable
 fun UDemo0() = URow {
-    UAlign(USTART, USTART) { UColumn { UDemoTexts(50, growFactor = 0) } }
+    UColumn(DpSize(30.dp, 800.dp)) { UDemoTexts(5, growFactor = 0) }
     UColumn {
         var switch1 by remember { mutableStateOf(USTART) }
         var switch2 by remember { mutableStateOf(USTART) }
@@ -38,7 +39,7 @@ fun UDemo0() = URow {
                 UBox { UBox { UBox { UDemoTexts() } } }
             }
             UAlign(horizontal = switch3, vertical = switch4) {
-                UBox { UBox { UColumn { UDemoTexts() } } }
+                UBox { UBox { UColumn { UDemoTexts(10, growFactor = 3) } } }
             }
         }
     }
