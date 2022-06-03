@@ -16,7 +16,8 @@ fun UDemo() = UAlign(USTRETCH, USTRETCH) {
 }
 
 @Composable
-fun UDemo0() {
+fun UDemo0() = URow {
+    UColumn { UDemoTexts(50, growFactor = 0) }
     UColumn {
         var switch1 by remember { mutableStateOf(USTART) }
         var switch2 by remember { mutableStateOf(USTART) }
@@ -50,10 +51,11 @@ private fun UDemoTexts(
     center: Boolean = true,
     bold: Boolean = true,
     mono: Boolean = true,
+    growFactor: Int = 1,
 ) {
-    for (i in 1..count) {
-        val c = 'A' + i - 1
-        val s = "$c".repeat(i)
+    repeat(count) { i ->
+        val c = 'A' + i
+        val s = "$c".repeat(1 + i * growFactor)
         if (boxed) UBoxedText(s, center, bold, mono)
         else UText(s, center, bold, mono)
     }

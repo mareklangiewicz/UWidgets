@@ -88,10 +88,14 @@ private fun StyleScope.ugridChildFor(parentType: UContainerType, horizontal: UAl
 
 private fun StyleScope.ugrid(type: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
     display(DisplayStyle.Grid)
-    justifyItems(horizontal.css)
-    alignItems(vertical.css)
-    val urowCss = if (horizontal == USTRETCH) "1fr" else "auto" // TODO NOW: does 1fr make any sense? (only one row)
-    val ucolumnCss = if (vertical == USTRETCH) "1fr" else "auto" // TODO NOW: as above
-    if (type == UBOX || type == UROW) gridTemplateRows("[UROW] $urowCss")
-    if (type == UBOX || type == UCOLUMN) gridTemplateColumns("[UCOLUMN] $ucolumnCss")
+    horizontal.css.let {
+        justifyContent(JustifyContent(it))
+        justifyItems(it)
+    }
+    vertical.css.let {
+        alignContent(AlignContent(it))
+        alignItems(it)
+    }
+    if (type == UBOX || type == UROW) gridTemplateRows("[UROW] auto")
+    if (type == UBOX || type == UCOLUMN) gridTemplateColumns("[UCOLUMN] auto")
 }

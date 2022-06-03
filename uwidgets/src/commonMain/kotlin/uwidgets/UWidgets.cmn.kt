@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.utheme.*
+import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
 enum class UContainerType { UBOX, UROW, UCOLUMN }
 
@@ -100,7 +101,7 @@ private val LocalUDepth = compositionLocalOf { 0 }
 }
 
 @Composable
-internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) {
+internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) = UAlign(USTART, USTART) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     URow {
         tabs.forEachIndexed { index, title ->
