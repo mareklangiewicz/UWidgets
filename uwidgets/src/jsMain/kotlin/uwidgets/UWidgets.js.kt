@@ -38,7 +38,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 @Composable actual fun UBasicRow(content: @Composable () -> Unit) = UContainerJs(UROW) { content() }
 
 
-/** @param inline false -> div; true -> span; span have to have type == null */
+/** @param inline false -> div; true -> span (and if type != null: css display: inline-grid instead of grid) */
 @Composable fun UContainerJs(
     type: UContainerType? = null,
     inline: Boolean = false,
@@ -52,7 +52,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     val vertical = UTheme.alignments.vertical
     val attrs: AttrsScope<out HTMLElement>.() -> Unit = {
         style {
-            type?.let { ugrid(it, horizontal, vertical) }
+            type?.let { ugrid(it, horizontal, vertical, inline) }
             parentType?.let { ugridChildFor(it, horizontal, vertical) }
             addStyle?.let { it() }
         }
@@ -80,14 +80,14 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
     UTabsCmn(*tabs, onSelected = onSelected)
 
 private fun StyleScope.ugridChildFor(parentType: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
-    if (parentType == UBOX || parentType == UROW) gridRow("UROW", "UROW")
-    if (parentType == UBOX || parentType == UCOLUMN) gridColumn("UCOLUMN", "UCOLUMN")
+    if (parentType == UBOX || parentType == UROW) gridRow("UROW")
+    if (parentType == UBOX || parentType == UCOLUMN) gridColumn("UCOLUMN")
     justifySelf(horizontal.css) // I guess it's only useful for children of grids created without UContainerJs
     alignSelf(vertical.css) // I guess it's only useful for children of grids created without UContainerJs
 }
 
-private fun StyleScope.ugrid(type: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
-    display(DisplayStyle.Grid)
+private fun StyleScope.ugrid(type: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType, inline: Boolean = false) {
+    display(if (inline) DisplayStyle.LegacyInlineGrid else DisplayStyle.Grid)
     horizontal.css.let {
         justifyContent(JustifyContent(it))
         justifyItems(it)
