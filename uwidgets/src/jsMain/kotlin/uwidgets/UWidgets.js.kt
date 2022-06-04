@@ -46,7 +46,6 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
-    require(!inline || type == null) { "span can not define grid layout" }
     val parentType = LocalUContainerType.current
     val horizontal = UTheme.alignments.horizontal
     val vertical = UTheme.alignments.vertical
