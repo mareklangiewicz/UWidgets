@@ -9,7 +9,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.font.*
-import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
