@@ -15,7 +15,7 @@ import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
-@Composable actual fun ULessBasicBox(
+@Composable internal fun ULessBasicBoxImpl(
     size: DpSize?,
     backgroundColor: Color,
     borderColor: Color,
@@ -92,11 +92,11 @@ private fun Alignment.Companion.ofVertical(vertical: UAlignmentType): Alignment.
     else -> CenterVertically
 }
 
-@Composable actual fun UBasicBox(content: @Composable () -> Unit) = UContainerJvm(UBOX, content = content)
-@Composable actual fun UBasicColumn(content: @Composable () -> Unit) = UContainerJvm(UCOLUMN, content = content)
-@Composable actual fun UBasicRow(content: @Composable () -> Unit) = UContainerJvm(UROW, content = content)
+@Composable internal fun UBasicBoxImpl(content: @Composable () -> Unit) = UContainerJvm(UBOX, content = content)
+@Composable internal fun UBasicColumnImpl(content: @Composable () -> Unit) = UContainerJvm(UCOLUMN, content = content)
+@Composable internal fun UBasicRowImpl(content: @Composable () -> Unit) = UContainerJvm(UROW, content = content)
 
-@Composable actual fun UText(text: String, bold: Boolean, mono: Boolean) {
+@Composable internal fun UTextImpl(text: String, bold: Boolean, mono: Boolean) {
     val style = LocalTextStyle.current.copy(
         fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
         fontFamily = if (mono) FontFamily.Monospace else FontFamily.Default
@@ -104,9 +104,9 @@ private fun Alignment.Companion.ofVertical(vertical: UAlignmentType): Alignment.
     UContainerJvm(UBOX) { Text(text, maxLines = 1, style = style) }
 }
 
-@Composable actual fun UBasicText(text: String) = Text(text, maxLines = 1)
+@Composable internal fun UBasicTextImpl(text: String) = Text(text, maxLines = 1)
 
-@Composable actual fun UTabs(vararg tabs: String, onSelected: (index: Int, tab: String) -> Unit) {
+@Composable internal fun UTabsImpl(vararg tabs: String, onSelected: (index: Int, tab: String) -> Unit) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     TabRow(selectedTabIndex = selectedTabIndex) {
         tabs.forEachIndexed { index, title ->

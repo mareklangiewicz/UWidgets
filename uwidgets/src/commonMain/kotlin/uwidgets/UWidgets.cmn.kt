@@ -41,22 +41,6 @@ private val LocalUOnBoxClick = staticCompositionLocalOf<(() -> Unit)?> { null }
 
 @Composable fun URow(size: DpSize? = null, content: @Composable () -> Unit) = UBox(size) { UBasicRow(content) }
 
-@Composable expect fun ULessBasicBox(
-    size: DpSize? = null,
-    backgroundColor: Color = Color.Transparent,
-    borderColor: Color = Color.Transparent,
-    borderWidth: Dp = 0.dp,
-    padding: Dp = 0.dp,
-    onClick: (() -> Unit)? = null,
-    content: @Composable () -> Unit,
-)
-
-@Composable expect fun UBasicBox(content: @Composable () -> Unit)
-
-@Composable expect fun UBasicColumn(content: @Composable () -> Unit)
-
-@Composable expect fun UBasicRow(content: @Composable () -> Unit)
-
 @Composable fun UBoxedText(text: String, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) =
     UBox {
         UAlign(
@@ -64,13 +48,6 @@ private val LocalUOnBoxClick = staticCompositionLocalOf<(() -> Unit)?> { null }
             if (center) UCENTER else UTheme.alignments.vertical,
         ) { UText(text, bold, mono) }
     }
-
-@Composable expect fun UText(text: String, bold: Boolean = false, mono: Boolean = false)
-
-@Composable expect fun UBasicText(text: String)
-
-
-@Composable expect fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit)
 
 @Composable fun UTabs(vararg contents: Pair<String, @Composable () -> Unit>) {
     var selectedTabIndex by remember { mutableStateOf(0) }

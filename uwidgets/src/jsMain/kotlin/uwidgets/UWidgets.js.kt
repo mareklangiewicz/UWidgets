@@ -13,7 +13,7 @@ import org.w3c.dom.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
-@Composable actual fun ULessBasicBox(
+@Composable internal fun ULessBasicBoxImpl(
     size: DpSize?,
     backgroundColor: Color,
     borderColor: Color,
@@ -33,9 +33,9 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     content = content
 )
 
-@Composable actual fun UBasicBox(content: @Composable () -> Unit) = UContainerJs(UBOX) { content() }
-@Composable actual fun UBasicColumn(content: @Composable () -> Unit) = UContainerJs(UCOLUMN) { content() }
-@Composable actual fun UBasicRow(content: @Composable () -> Unit) = UContainerJs(UROW) { content() }
+@Composable internal fun UBasicBoxImpl(content: @Composable () -> Unit) = UContainerJs(UBOX) { content() }
+@Composable internal fun UBasicColumnImpl(content: @Composable () -> Unit) = UContainerJs(UCOLUMN) { content() }
+@Composable internal fun UBasicRowImpl(content: @Composable () -> Unit) = UContainerJs(UROW) { content() }
 
 
 /** @param inline false -> div; true -> span (and if type != null: css display: inline-grid instead of grid) */
@@ -66,16 +66,16 @@ private val LocalUContainerType = staticCompositionLocalOf<UContainerType?> { nu
 
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
-@Composable actual fun UText(text: String, bold: Boolean, mono: Boolean) =
+@Composable internal fun UTextImpl(text: String, bold: Boolean, mono: Boolean) =
     UContainerJs(inline = true, addStyle = {
         property("text-overflow", "clip")
         if (bold) fontWeight("bold")
         if (mono) fontFamily("monospace")
     }) { Text(text) }
 
-@Composable actual fun UBasicText(text: String) = Text(text)
+@Composable internal fun UBasicTextImpl(text: String) = Text(text)
 
-@Composable actual fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
+@Composable internal fun UTabsImpl(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     UTabsCmn(*tabs, onSelected = onSelected)
 
 private fun StyleScope.ugridChildFor(parentType: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
