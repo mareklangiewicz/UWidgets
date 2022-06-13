@@ -81,8 +81,10 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 private fun StyleScope.ugridChildFor(parentType: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
     if (parentType == UBOX || parentType == UROW) gridRow("UROW")
     if (parentType == UBOX || parentType == UCOLUMN) gridColumn("UCOLUMN")
-    justifySelf(horizontal.css) // I guess it's only useful for children of grids created without UContainerJs
-    alignSelf(vertical.css) // I guess it's only useful for children of grids created without UContainerJs
+    justifySelf(horizontal.css)
+    alignSelf(vertical.css)
+    // justifySelf + alignSelf should be useful if we want to change alignment of some grid children but not all
+    // We can then just additionally wrap these children in UAlign(..) { .. }
 }
 
 private fun StyleScope.ugrid(type: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType, inline: Boolean = false) {
