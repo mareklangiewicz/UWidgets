@@ -4,11 +4,11 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.IntrinsicSize.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.utheme.*
@@ -46,7 +46,7 @@ private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAl
         else -> when (vertical) { USTRETCH -> fillMaxHeight(fraction); else -> this }
     }
 
-@Composable fun UContainerJvm(type: UContainerType, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+@Composable private fun UContainerJvm(type: UContainerType, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     val horizontal = UTheme.alignments.horizontal
     val vertical = UTheme.alignments.vertical
     val m = modifier
@@ -118,4 +118,3 @@ private fun Alignment.Companion.ofVertical(vertical: UAlignmentType): Alignment.
         }
     }
 }
-

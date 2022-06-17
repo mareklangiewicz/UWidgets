@@ -24,13 +24,15 @@ fun UDemo0() = URow {
         var switch2 by remember { mutableStateOf(USTART) }
         var switch3 by remember { mutableStateOf(USTART) }
         var switch4 by remember { mutableStateOf(USTART) }
-        UColumn {
-            UText("Align switchers:")
-            val options = UAlignmentType.values().map { it.css }.toTypedArray()
-            UTabs(*options) { idx, tab -> switch1 = UAlignmentType.css(tab) }
-            UTabs(*options) { idx, tab -> switch2 = UAlignmentType.css(tab) }
-            UTabs(*options) { idx, tab -> switch3 = UAlignmentType.css(tab) }
-            UTabs(*options) { idx, tab -> switch4 = UAlignmentType.css(tab) }
+        UAlign(USTART, USTART) {
+            UColumn {
+                UText("Align switchers:")
+                val options = UAlignmentType.values().map { it.css }.toTypedArray()
+                UTabs(*options) { idx, tab -> switch1 = UAlignmentType.css(tab) }
+                UTabs(*options) { idx, tab -> switch2 = UAlignmentType.css(tab) }
+                UTabs(*options) { idx, tab -> switch3 = UAlignmentType.css(tab) }
+                UTabs(*options) { idx, tab -> switch4 = UAlignmentType.css(tab) }
+            }
         }
         UAlign(horizontal = switch1, vertical = switch2) {
             UBox { UBox { URow { UDemoTexts(3) } } }
