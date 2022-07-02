@@ -26,8 +26,8 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 ) = UContainerJvm(
     type = UBOX,
     modifier = Modifier
-        .addIfNotNull(onClick) { clickable { it() } }
-        .addIfNotNull(size) { size(it) }
+        .andIfNotNull(onClick) { clickable { it() } }
+        .andIfNotNull(size) { size(it) }
         .background(backgroundColor)
         .border(borderWidth, borderColor)
         .padding(borderWidth + padding),
@@ -35,10 +35,10 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 )
 
 // thanIf would be wrong name (we use factory, not just Modifier)
-private inline fun Modifier.addIf(condition: Boolean, add: Modifier.() -> Modifier): Modifier =
+private inline fun Modifier.andIf(condition: Boolean, add: Modifier.() -> Modifier): Modifier =
     if (condition) add() else this // then(add()) would be incorrect
 
-private inline fun <V: Any> Modifier.addIfNotNull(value: V?, add: Modifier.(V) -> Modifier): Modifier =
+private inline fun <V: Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modifier): Modifier =
     if(value != null) add(value) else this
 
 private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAlignmentType, fraction: Float = 1f): Modifier =
