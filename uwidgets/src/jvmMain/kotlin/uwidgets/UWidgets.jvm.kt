@@ -26,19 +26,20 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 ) = UContainerJvm(
     type = UBOX,
     modifier = Modifier
-        .thenIfNotNull(onClick) { clickable { it() } }
-        .thenIfNotNull(size) { size(it) }
+        .addIfNotNull(onClick) { clickable { it() } }
+        .addIfNotNull(size) { size(it) }
         .background(backgroundColor)
         .border(borderWidth, borderColor)
         .padding(borderWidth + padding),
     content = content
 )
 
-private inline fun Modifier.thenIf(condition: Boolean, add: Modifier.() -> Modifier): Modifier =
-    if (condition) then(add()) else this
+// thanIf would be wrong name (we use factory, not just Modifier)
+private inline fun Modifier.addIf(condition: Boolean, add: Modifier.() -> Modifier): Modifier =
+    if (condition) add() else this // then(add()) would be incorrect
 
-private inline fun <V: Any> Modifier.thenIfNotNull(value: V?, add: Modifier.(V) -> Modifier): Modifier =
-    thenIf(value != null) { add(value!!) }
+private inline fun <V: Any> Modifier.addIfNotNull(value: V?, add: Modifier.(V) -> Modifier): Modifier =
+    if(value != null) add(value) else this
 
 private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAlignmentType, fraction: Float = 1f): Modifier =
     when (horizontal) {
@@ -51,62 +52,22 @@ private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAl
     val pvertical = UTheme.alignments.vertical
     val m = modifier
         .ualign(phorizontal, pvertical)
-        // .width(Min)
-        // .fillMaxIfUStretch(horizontal, vertical) // this blows up first child size too much. need access to sth like BoxScope.matchParent
-            // width(Min) is an experiment (probably wrong for my alignment requirements) , but it throws anyway:
-            // IllegalStateException: Asking for intrinsic measurements of SubcomposeLayout layouts is not supported
     when (type) {
-        UBOX -> Box(m, Alignment.of(phorizontal, pvertical)) { content() }
-        // UROW -> Row(m, Arrangement.ofHorizontal(horizontal), Alignment.ofVertical(vertical)) { content() }
-        UROW -> Layout(content = content, modifier = modifier) { measurables, constrains ->
+        UBOX -> Layout(content = content, modifier = m) { measurables, constraints ->
             val placeables = measurables.map {
                 val uhorizontal = it.uChildData?.horizontal ?: phorizontal
                 val uvertical = it.uChildData?.vertical ?: pvertical
                 val itemConstraints = Constraints(
-                    minWidth = if (uhorizontal == USTRETCH) constrains.maxWidth / measurables.size else 0,
-                    maxWidth = if (uhorizontal == USTRETCH) constrains.maxWidth / measurables.size else constrains.maxWidth,
-                    minHeight = if (uvertical == USTRETCH) constrains.maxHeight else constrains.minHeight,
-                    maxHeight = constrains.maxHeight,
+                    minWidth = if (uhorizontal == USTRETCH) constraints.maxWidth else constraints.minWidth,
+                    maxWidth = constraints.maxWidth,
+                    minHeight = if (uvertical == USTRETCH) constraints.maxHeight else constraints.minHeight,
+                    maxHeight = constraints.maxHeight,
                 )
                 it.measure(itemConstraints)
             }
-
-            val parentWidth = if (phorizontal == USTRETCH) constrains.maxWidth else placeables.sumOf { it.width }
-            val parentHeight = if (pvertical == USTRETCH) constrains.maxHeight else placeables.maxOf { it.height }
+            val parentWidth = if (phorizontal == USTRETCH) constraints.maxWidth else placeables.maxOf { it.width }
+            val parentHeight = if (pvertical == USTRETCH) constraints.maxHeight else placeables.maxOf { it.height }
             layout(parentWidth, parentHeight) {
-                var x = 0
-                for ((idx, p) in placeables.withIndex()) {
-                    val uhorizontal = measurables[idx].uChildData?.horizontal ?: phorizontal
-                    val uvertical = measurables[idx].uChildData?.vertical ?: pvertical
-                    p.placeRelative(
-                        x = x,
-                        y = when (uvertical) {
-                            USTART, USTRETCH -> 0
-                            UCENTER -> (parentHeight - p.height) / 2
-                            UEND -> parentHeight - p.height
-                        },
-                    )
-                    x += if (uhorizontal == USTRETCH) parentWidth / placeables.size else p.width
-                }
-            }
-        }
-        UCOLUMN -> Layout(content = content, modifier = modifier) { measurables, constrains ->
-            val placeables = measurables.map {
-                val uhorizontal = it.uChildData?.horizontal ?: phorizontal
-                val uvertical = it.uChildData?.vertical ?: pvertical
-                val itemConstraints = Constraints(
-                    minWidth = if (uhorizontal == USTRETCH) constrains.maxWidth else constrains.minWidth,
-                    maxWidth = constrains.maxWidth,
-                    minHeight = if (uvertical == USTRETCH) constrains.maxHeight / measurables.size else 0,
-                    maxHeight = if (uvertical == USTRETCH) constrains.maxHeight / measurables.size else constrains.maxHeight,
-                )
-                it.measure(itemConstraints)
-            }
-
-            val parentWidth = if (phorizontal == USTRETCH) constrains.maxWidth else placeables.maxOf { it.width }
-            val parentHeight = if (pvertical == USTRETCH) constrains.maxHeight else placeables.sumOf { it.height }
-            layout(parentWidth, parentHeight) {
-                var y = 0
                 for ((idx, p) in placeables.withIndex()) {
                     val uhorizontal = measurables[idx].uChildData?.horizontal ?: phorizontal
                     val uvertical = measurables[idx].uChildData?.vertical ?: pvertical
@@ -116,9 +77,102 @@ private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAl
                             UCENTER -> (parentWidth - p.width) / 2
                             UEND -> parentWidth - p.width
                         },
+                        y = when (uvertical) {
+                            USTART, USTRETCH -> 0
+                            UCENTER -> (parentHeight - p.height) / 2
+                            UEND -> parentHeight - p.height
+                        },
+                    )
+                }
+            }
+        }
+        UROW -> Layout(content = content, modifier = m) { measurables, parentConstraints ->
+            val placeables: MutableList<Placeable?> = measurables.map { measurable ->
+                val uhorizontal = measurable.uChildData?.horizontal ?: phorizontal
+                val uvertical = measurable.uChildData?.vertical ?: pvertical
+                if (uhorizontal == USTRETCH && phorizontal == USTRETCH) return@map null // skip measuring stretched items (will do it later)
+                val itemConstraints = parentConstraints.copy(minHeight = if (uvertical == USTRETCH) parentConstraints.maxHeight else parentConstraints.minHeight)
+                measurable.measure(itemConstraints)
+            }.toMutableList()
+            val parentWidthTaken = placeables.sumOf { it?.width ?: 0 }
+
+            val parentWidth = if (phorizontal == USTRETCH) parentConstraints.maxWidth else parentWidthTaken
+            val parentWidthLeft = parentWidth - parentWidthTaken
+            val itemStretchedCount = placeables.count { it == null }
+            if (parentWidthLeft > 0 && itemStretchedCount > 0) {
+                val itemWidth = parentWidthLeft / itemStretchedCount
+                measurables.forEachIndexed { idx, measurable ->
+                    placeables[idx] == null || return@forEachIndexed
+                    val uhorizontal = measurable.uChildData?.horizontal ?: phorizontal
+                    val uvertical = measurable.uChildData?.vertical ?: pvertical
+                    check(uhorizontal == USTRETCH)
+                    val itemConstraints = parentConstraints.copy(minWidth = itemWidth, maxWidth = itemWidth,
+                        minHeight = if (uvertical == USTRETCH) parentConstraints.maxHeight else parentConstraints.minHeight)
+                    placeables[idx] = measurable.measure(itemConstraints)
+                }
+            }
+            val parentHeight = if (pvertical == USTRETCH) parentConstraints.maxHeight else placeables.maxOf { it?.height ?: 0 }
+            layout(parentWidth, parentHeight) {
+                var x = 0
+                placeables.forEachIndexed { idx, placeable ->
+                    placeable ?: return@forEachIndexed
+                    val uhorizontal = measurables[idx].uChildData?.horizontal ?: phorizontal
+                    val uvertical = measurables[idx].uChildData?.vertical ?: pvertical
+                    placeable.placeRelative(
+                        x = x,
+                        y = when (uvertical) {
+                            USTART, USTRETCH -> 0
+                            UCENTER -> (parentHeight - placeable.height) / 2
+                            UEND -> parentHeight - placeable.height
+                        },
+                    )
+                    x += placeable.width
+                }
+            }
+        }
+        UCOLUMN -> Layout(content = content, modifier = m) { measurables, parentConstraints ->
+            val placeables: MutableList<Placeable?> = measurables.map { measurable ->
+                val uhorizontal = measurable.uChildData?.horizontal ?: phorizontal
+                val uvertical = measurable.uChildData?.vertical ?: pvertical
+                if (uvertical == USTRETCH && pvertical == USTRETCH) return@map null // skip measuring stretched items (will do it later)
+                val itemConstraints = parentConstraints.copy(minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else parentConstraints.minWidth)
+                measurable.measure(itemConstraints)
+            }.toMutableList()
+            val parentHeightTaken = placeables.sumOf { it?.height ?: 0 }
+
+            val parentHeight = if (pvertical == USTRETCH) parentConstraints.maxHeight else parentHeightTaken
+            val parentHeightLeft = parentHeight - parentHeightTaken
+            val itemStretchedCount = placeables.count { it == null }
+
+            if (parentHeightLeft > 0 && itemStretchedCount > 0) {
+                val itemHeight = parentHeightLeft / itemStretchedCount
+                measurables.forEachIndexed { idx, measurable ->
+                    placeables[idx] == null || return@forEachIndexed
+                    val uhorizontal = measurable.uChildData?.horizontal ?: phorizontal
+                    val uvertical = measurable.uChildData?.vertical ?: pvertical
+                    check(uvertical == USTRETCH)
+                    val itemConstraints = parentConstraints.copy(
+                        minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else parentConstraints.minHeight,
+                        minHeight = itemHeight, maxHeight = itemHeight)
+                    placeables[idx] = measurable.measure(itemConstraints)
+                }
+            }
+            val parentWidth = if (phorizontal == USTRETCH) parentConstraints.maxWidth else placeables.maxOf { it?.width ?: 0 }
+            layout(parentWidth, parentHeight) {
+                var y = 0
+                placeables.forEachIndexed { idx, placeable ->
+                    placeable ?: return@forEachIndexed
+                    val uhorizontal = measurables[idx].uChildData?.horizontal ?: phorizontal
+                    val uvertical = measurables[idx].uChildData?.vertical ?: pvertical
+                    placeable.placeRelative(
+                        x = when (uhorizontal) {
+                            USTART, USTRETCH -> 0
+                            UCENTER -> (parentWidth - placeable.width) / 2
+                            UEND -> parentWidth - placeable.width
+                        },
                         y = y,
                     )
-                    y += if (uvertical == USTRETCH) parentHeight / placeables.size else p.height
+                    y += placeable.height
                 }
             }
         }
