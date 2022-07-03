@@ -65,8 +65,8 @@ private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAl
                 )
                 it.measure(itemConstraints)
             }
-            val parentWidth = if (phorizontal == USTRETCH) constraints.maxWidth else placeables.maxOf { it.width }
-            val parentHeight = if (pvertical == USTRETCH) constraints.maxHeight else placeables.maxOf { it.height }
+            val parentWidth = if (phorizontal == USTRETCH) constraints.maxWidth else placeables.maxOfOrNull { it.width } ?: constraints.minWidth
+            val parentHeight = if (pvertical == USTRETCH) constraints.maxHeight else placeables.maxOfOrNull { it.height } ?: constraints.minHeight
             layout(parentWidth, parentHeight) {
                 for ((idx, p) in placeables.withIndex()) {
                     val uhorizontal = measurables[idx].uChildData?.horizontal ?: phorizontal
@@ -111,7 +111,7 @@ private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAl
                     placeables[idx] = measurable.measure(itemConstraints)
                 }
             }
-            val parentHeight = if (pvertical == USTRETCH) parentConstraints.maxHeight else placeables.maxOf { it?.height ?: 0 }
+            val parentHeight = if (pvertical == USTRETCH) parentConstraints.maxHeight else placeables.maxOfOrNull { it?.height ?: 0 } ?: parentConstraints.minHeight
             layout(parentWidth, parentHeight) {
                 var x = 0
                 placeables.forEachIndexed { idx, placeable ->
@@ -157,7 +157,7 @@ private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAl
                     placeables[idx] = measurable.measure(itemConstraints)
                 }
             }
-            val parentWidth = if (phorizontal == USTRETCH) parentConstraints.maxWidth else placeables.maxOf { it?.width ?: 0 }
+            val parentWidth = if (phorizontal == USTRETCH) parentConstraints.maxWidth else placeables.maxOfOrNull { it?.width ?: 0 } ?: parentConstraints.minWidth
             layout(parentWidth, parentHeight) {
                 var y = 0
                 placeables.forEachIndexed { idx, placeable ->
