@@ -233,6 +233,11 @@ private fun Alignment.Companion.ofVertical(vertical: UAlignmentType): Alignment.
 @Composable internal fun UBasicTextImpl(text: String) = Text(text, maxLines = 1)
 
 @Composable internal fun UTabsImpl(vararg tabs: String, onSelected: (index: Int, tab: String) -> Unit) {
+    UTabsImplTabRow(tabs = tabs, onSelected = onSelected)
+    // UTabsCmn(tabs = tabs, onSelected = onSelected)
+}
+
+@Composable private fun UTabsImplTabRow(vararg tabs: String, onSelected: (index: Int, tab: String) -> Unit) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     TabRow(selectedTabIndex = selectedTabIndex) {
         tabs.forEachIndexed { index, title ->
