@@ -47,7 +47,7 @@ private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAl
         else -> when (vertical) { USTRETCH -> fillMaxHeight(fraction); else -> this }
     }
 
-@Composable private fun UContainerJvm(type: UContainerType, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+@Composable fun UContainerJvm(type: UContainerType, modifier: Modifier = Modifier, content: @Composable () -> Unit = {}) {
     val phorizontal = UTheme.alignments.horizontal
     val pvertical = UTheme.alignments.vertical
     val m = modifier
@@ -58,15 +58,15 @@ private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAl
                 val uhorizontal = it.uChildData?.horizontal ?: phorizontal
                 val uvertical = it.uChildData?.vertical ?: pvertical
                 val itemConstraints = Constraints(
-                    minWidth = if (uhorizontal == USTRETCH) constraints.maxWidth else constraints.minWidth,
+                    minWidth = if (uhorizontal == USTRETCH) constraints.maxWidth else 0,
                     maxWidth = constraints.maxWidth,
-                    minHeight = if (uvertical == USTRETCH) constraints.maxHeight else constraints.minHeight,
+                    minHeight = if (uvertical == USTRETCH) constraints.maxHeight else 0,
                     maxHeight = constraints.maxHeight,
                 )
                 it.measure(itemConstraints)
             }
-            val parentWidth = if (phorizontal == USTRETCH) constraints.maxWidth else placeables.maxOfOrNull { it.width } ?: constraints.minWidth
-            val parentHeight = if (pvertical == USTRETCH) constraints.maxHeight else placeables.maxOfOrNull { it.height } ?: constraints.minHeight
+            val parentWidth = if (phorizontal == USTRETCH) constraints.maxWidth else constraints.constrainWidth(placeables.maxOfOrNull { it.width } ?: 0)
+            val parentHeight = if (pvertical == USTRETCH) constraints.maxHeight else constraints.constrainHeight(placeables.maxOfOrNull { it.height } ?: 0)
             layout(parentWidth, parentHeight) {
                 for ((idx, p) in placeables.withIndex()) {
                     val uhorizontal = measurables[idx].uChildData?.horizontal ?: phorizontal
@@ -91,14 +91,19 @@ private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAl
                 val uhorizontal = measurable.uChildData?.horizontal ?: phorizontal
                 val uvertical = measurable.uChildData?.vertical ?: pvertical
                 if (uhorizontal == USTRETCH && phorizontal == USTRETCH) return@map null // skip measuring stretched items (will do it later)
-                val itemConstraints = parentConstraints.copy(minHeight = if (uvertical == USTRETCH) parentConstraints.maxHeight else parentConstraints.minHeight)
+                val itemConstraints = Constraints(
+                    minWidth = 0,
+                    maxWidth = parentConstraints.maxWidth,
+                    minHeight = if (uvertical == USTRETCH) parentConstraints.maxHeight else 0,
+                    maxHeight = parentConstraints.maxHeight
+                )
                 measurable.measure(itemConstraints)
             }.toMutableList()
             val parentWidthTaken = placeables.sumOf { it?.width ?: 0 }
 
-            val parentWidth = if (phorizontal == USTRETCH) parentConstraints.maxWidth else parentWidthTaken
-            val parentWidthLeft = parentWidth - parentWidthTaken
             val itemStretchedCount = placeables.count { it == null }
+            val parentWidth = if (phorizontal == USTRETCH || itemStretchedCount > 0) parentConstraints.maxWidth else parentConstraints.constrainWidth(parentWidthTaken)
+            val parentWidthLeft = parentWidth - parentWidthTaken
             if (parentWidthLeft > 0 && itemStretchedCount > 0) {
                 val itemWidth = parentWidthLeft / itemStretchedCount
                 measurables.forEachIndexed { idx, measurable ->
@@ -106,12 +111,16 @@ private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAl
                     val uhorizontal = measurable.uChildData?.horizontal ?: phorizontal
                     val uvertical = measurable.uChildData?.vertical ?: pvertical
                     check(uhorizontal == USTRETCH)
-                    val itemConstraints = parentConstraints.copy(minWidth = itemWidth, maxWidth = itemWidth,
-                        minHeight = if (uvertical == USTRETCH) parentConstraints.maxHeight else parentConstraints.minHeight)
+                    val itemConstraints = Constraints(
+                        minWidth = itemWidth,
+                        maxWidth = itemWidth,
+                        minHeight = if (uvertical == USTRETCH) parentConstraints.maxHeight else 0,
+                        maxHeight = parentConstraints.maxHeight
+                    )
                     placeables[idx] = measurable.measure(itemConstraints)
                 }
             }
-            val parentHeight = if (pvertical == USTRETCH) parentConstraints.maxHeight else placeables.maxOfOrNull { it?.height ?: 0 } ?: parentConstraints.minHeight
+            val parentHeight = if (pvertical == USTRETCH) parentConstraints.maxHeight else parentConstraints.constrainHeight(placeables.maxOfOrNull { it?.height ?: 0 } ?: 0)
             layout(parentWidth, parentHeight) {
                 var x = 0
                 placeables.forEachIndexed { idx, placeable ->
@@ -135,14 +144,19 @@ private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAl
                 val uhorizontal = measurable.uChildData?.horizontal ?: phorizontal
                 val uvertical = measurable.uChildData?.vertical ?: pvertical
                 if (uvertical == USTRETCH && pvertical == USTRETCH) return@map null // skip measuring stretched items (will do it later)
-                val itemConstraints = parentConstraints.copy(minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else parentConstraints.minWidth)
+                val itemConstraints = Constraints(
+                    minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else 0,
+                    maxWidth = parentConstraints.maxWidth,
+                    minHeight = 0,
+                    maxHeight = parentConstraints.maxHeight,
+                )
                 measurable.measure(itemConstraints)
             }.toMutableList()
             val parentHeightTaken = placeables.sumOf { it?.height ?: 0 }
 
-            val parentHeight = if (pvertical == USTRETCH) parentConstraints.maxHeight else parentHeightTaken
-            val parentHeightLeft = parentHeight - parentHeightTaken
             val itemStretchedCount = placeables.count { it == null }
+            val parentHeight = if (pvertical == USTRETCH || itemStretchedCount > 0) parentConstraints.maxHeight else parentConstraints.constrainHeight(parentHeightTaken)
+            val parentHeightLeft = parentHeight - parentHeightTaken
 
             if (parentHeightLeft > 0 && itemStretchedCount > 0) {
                 val itemHeight = parentHeightLeft / itemStretchedCount
@@ -151,13 +165,16 @@ private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAl
                     val uhorizontal = measurable.uChildData?.horizontal ?: phorizontal
                     val uvertical = measurable.uChildData?.vertical ?: pvertical
                     check(uvertical == USTRETCH)
-                    val itemConstraints = parentConstraints.copy(
-                        minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else parentConstraints.minHeight,
-                        minHeight = itemHeight, maxHeight = itemHeight)
+                    val itemConstraints = Constraints(
+                        minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else 0,
+                        maxWidth = parentConstraints.maxWidth,
+                        minHeight = itemHeight,
+                        maxHeight = itemHeight,
+                    )
                     placeables[idx] = measurable.measure(itemConstraints)
                 }
             }
-            val parentWidth = if (phorizontal == USTRETCH) parentConstraints.maxWidth else placeables.maxOfOrNull { it?.width ?: 0 } ?: parentConstraints.minWidth
+            val parentWidth = if (phorizontal == USTRETCH) parentConstraints.maxWidth else parentConstraints.constrainWidth(placeables.maxOfOrNull { it?.width ?: 0 } ?: 0)
             layout(parentWidth, parentHeight) {
                 var y = 0
                 placeables.forEachIndexed { idx, placeable ->
