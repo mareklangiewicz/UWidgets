@@ -41,17 +41,10 @@ private inline fun Modifier.andIf(condition: Boolean, add: Modifier.() -> Modifi
 private inline fun <V: Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modifier): Modifier =
     if(value != null) add(value) else this
 
-private fun Modifier.fillMaxIfUStretch(horizontal: UAlignmentType, vertical: UAlignmentType, fraction: Float = 1f): Modifier =
-    when (horizontal) {
-        USTRETCH -> when (vertical) {USTRETCH -> fillMaxSize(fraction); else -> fillMaxWidth(fraction) }
-        else -> when (vertical) { USTRETCH -> fillMaxHeight(fraction); else -> this }
-    }
-
 @Composable fun UContainerJvm(type: UContainerType, modifier: Modifier = Modifier, content: @Composable () -> Unit = {}) {
     val phorizontal = UTheme.alignments.horizontal
     val pvertical = UTheme.alignments.vertical
-    val m = modifier
-        .ualign(phorizontal, pvertical)
+    val m = modifier.ualign(phorizontal, pvertical)
     when (type) {
         UBOX -> Layout(content = content, modifier = m) { measurables, constraints ->
             val placeables = measurables.map {
@@ -203,37 +196,6 @@ private class UChildData(val horizontal: UAlignmentType, val vertical: UAlignmen
 private val Measurable.uChildData: UChildData? get() = parentData as? UChildData
 
 fun Modifier.ualign(horizontal: UAlignmentType, vertical: UAlignmentType) = then(UChildData(horizontal, vertical))
-
-private fun Alignment.Companion.of(horizontal: UAlignmentType, vertical: UAlignmentType): Alignment =
-    when(horizontal) {
-        USTART -> when(vertical) { USTART -> TopStart; UEND -> BottomStart; else -> CenterStart }
-        UEND -> when(vertical) { USTART -> TopEnd; UEND -> BottomEnd; else -> CenterEnd }
-        else -> when(vertical) { USTART -> TopCenter; UEND -> BottomCenter; else -> Center }
-    }
-
-private fun Arrangement.ofHorizontal(horizontal: UAlignmentType): Arrangement.Horizontal = when(horizontal) {
-    USTART -> Start
-    UEND -> End
-    else -> SpaceEvenly
-}
-
-private fun Arrangement.ofVertical(vertical: UAlignmentType): Arrangement.Vertical = when(vertical) {
-    USTART -> Top
-    UEND -> Bottom
-    else -> SpaceEvenly
-}
-
-private fun Alignment.Companion.ofHorizontal(horizontal: UAlignmentType): Alignment.Horizontal = when(horizontal) {
-    USTART -> Start
-    UEND -> End
-    else -> CenterHorizontally
-}
-
-private fun Alignment.Companion.ofVertical(vertical: UAlignmentType): Alignment.Vertical = when(vertical) {
-    USTART -> Top
-    UEND -> Bottom
-    else -> CenterVertically
-}
 
 @Composable internal fun UBasicBoxImpl(content: @Composable () -> Unit) = UContainerJvm(UBOX, content = content)
 @Composable internal fun UBasicColumnImpl(content: @Composable () -> Unit) = UContainerJvm(UCOLUMN, content = content)
