@@ -59,18 +59,7 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             layout(parentWidth, parentHeight) {
                 for ((idx, p) in placeables.withIndex()) {
                     val (uhorizontal, uvertical) = measurables[idx].uChildData(phorizontal, pvertical)
-                    p.placeRelative( // TODO: extract this whens logic (also in row/column)
-                        x = when (uhorizontal) {
-                            USTART, USTRETCH -> 0
-                            UCENTER -> (parentWidth - p.width) / 2
-                            UEND -> parentWidth - p.width
-                        },
-                        y = when (uvertical) {
-                            USTART, USTRETCH -> 0
-                            UCENTER -> (parentHeight - p.height) / 2
-                            UEND -> parentHeight - p.height
-                        },
-                    )
+                    p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), uvertical.startPositionFor(p.height, parentHeight))
                 }
             }
         }
@@ -102,22 +91,11 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             val parentWidthTaken2 = placeables.sumOf { it?.width ?: 0 }
             val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical == USTRETCH, parentConstraints)
             layout(parentWidth, parentHeight) {
-                var x = when (phorizontal) {
-                    USTART, USTRETCH -> 0
-                    UCENTER -> (parentWidth - parentWidthTaken2) / 2
-                    UEND -> parentWidth - parentWidthTaken2
-                }
+                var x = phorizontal.startPositionFor(parentWidthTaken2, parentWidth)
                 placeables.forEachIndexed { idx, placeable ->
                     placeable ?: return@forEachIndexed
                     val (_, uvertical) = measurables[idx].uChildData(phorizontal, pvertical)
-                    placeable.placeRelative(
-                        x = x,
-                        y = when (uvertical) {
-                            USTART, USTRETCH -> 0
-                            UCENTER -> (parentHeight - placeable.height) / 2
-                            UEND -> parentHeight - placeable.height
-                        },
-                    )
+                    placeable.placeRelative(x, uvertical.startPositionFor(placeable.height, parentHeight))
                     x += placeable.width
                 }
             }
@@ -150,22 +128,11 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             val parentHeightTaken2 = placeables.sumOf { it?.height ?: 0 }
             val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal == USTRETCH, parentConstraints)
             layout(parentWidth, parentHeight) {
-                var y = when (pvertical) {
-                    USTART, USTRETCH -> 0
-                    UCENTER -> (parentHeight - parentHeightTaken2) / 2
-                    UEND -> parentHeight - parentHeightTaken2
-                }
+                var y = pvertical.startPositionFor(parentHeightTaken2, parentHeight)
                 placeables.forEachIndexed { idx, placeable ->
                     placeable ?: return@forEachIndexed
                     val (uhorizontal, _) = measurables[idx].uChildData(phorizontal, pvertical)
-                    placeable.placeRelative(
-                        x = when (uhorizontal) {
-                            USTART, USTRETCH -> 0
-                            UCENTER -> (parentWidth - placeable.width) / 2
-                            UEND -> parentWidth - placeable.width
-                        },
-                        y = y,
-                    )
+                    placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
                     y += placeable.height
                 }
             }
@@ -191,6 +158,12 @@ private fun Measurable.uChildData(defaultHorizontal: UAlignmentType, defaultVert
     parentData as? UChildData ?: UChildData(defaultHorizontal, defaultVertical)
 
 fun Modifier.ualign(horizontal: UAlignmentType, vertical: UAlignmentType) = then(UChildData(horizontal, vertical))
+
+private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = when (this) {
+    USTART, USTRETCH -> 0
+    UCENTER -> (parentSize - childSize) / 2
+    UEND -> parentSize - childSize
+}
 
 @Composable internal fun UBasicBoxImpl(content: @Composable () -> Unit) = UContainerJvm(UBOX, content = content)
 @Composable internal fun UBasicColumnImpl(content: @Composable () -> Unit) = UContainerJvm(UCOLUMN, content = content)
