@@ -127,27 +127,22 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                 ))
             }.toMutableList()
             val parentHeightTaken = placeables.sumOf { it?.height ?: 0 }
-
             val itemStretchedCount = placeables.count { it == null }
             val parentHeight = if (pvertical == USTRETCH || itemStretchedCount > 0) parentConstraints.maxHeight else parentConstraints.constrainHeight(parentHeightTaken)
             val parentHeightLeft = parentHeight - parentHeightTaken
-
             if (parentHeightLeft > 0 && itemStretchedCount > 0) {
                 val itemHeight = parentHeightLeft / itemStretchedCount
                 measurables.forEachIndexed { idx, measurable ->
                     placeables[idx] == null || return@forEachIndexed
                     val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                     check(uvertical == USTRETCH)
-                    val itemConstraints = Constraints(
-                        minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else 0,
-                        maxWidth = parentConstraints.maxWidth,
-                        minHeight = itemHeight,
-                        maxHeight = itemHeight,
-                    )
-                    placeables[idx] = measurable.measure(itemConstraints)
+                    placeables[idx] = measurable.measure(Constraints(
+                        minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else 0, maxWidth = parentConstraints.maxWidth,
+                        minHeight = itemHeight, maxHeight = itemHeight,
+                    ))
                 }
             }
-            val parentWidth = if (phorizontal == USTRETCH) parentConstraints.maxWidth else parentConstraints.constrainWidth(placeables.maxOfOrNull { it?.width ?: 0 } ?: 0)
+            val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal == USTRETCH, parentConstraints)
             layout(parentWidth, parentHeight) {
                 var y = 0
                 placeables.forEachIndexed { idx, placeable ->
