@@ -141,8 +141,7 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
 }
 
 private fun Iterable<Placeable?>.maxWidthWithin(constraints: Constraints) = constraints.constrainWidth(maxOfOrNull { it?.width ?: 0 } ?: 0)
-private fun Iterable<Placeable?>.maxHeightWithin(constraints: Constraints) =
-    constraints.constrainHeight(maxOfOrNull { it?.height ?: 0 } ?: 0)
+private fun Iterable<Placeable?>.maxHeightWithin(constraints: Constraints) = constraints.constrainHeight(maxOfOrNull { it?.height ?: 0 } ?: 0)
 
 private fun Iterable<Placeable?>.stretchOrMaxWidthWithin(stretch: Boolean, constraints: Constraints) =
     if (stretch) constraints.maxWidth else maxWidthWithin(constraints)
