@@ -16,7 +16,7 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 @Composable internal fun ULessBasicBoxImpl(
-    size: DpSize?,
+    requiredSize: DpSize?,
     backgroundColor: Color,
     borderColor: Color,
     borderWidth: Dp,
@@ -27,7 +27,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     type = UBOX,
     modifier = Modifier
         .andIfNotNull(onClick) { clickable { it() } }
-        .andIfNotNull(size) { size(it) }
+        .andIfNotNull(requiredSize) { requiredSize(it) }
         .background(backgroundColor)
         .border(borderWidth, borderColor)
         .padding(borderWidth + padding),
