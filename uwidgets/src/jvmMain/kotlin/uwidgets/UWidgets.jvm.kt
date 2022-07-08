@@ -83,10 +83,10 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                     maxHeight = parentConstraints.maxHeight
                 ))
             }.toMutableList()
-            val parentWidthTaken = placeables.sumOf { it?.width ?: 0 }
+            val parentWidthTaken1 = placeables.sumOf { it?.width ?: 0 }
             val itemStretchedCount = placeables.count { it == null }
-            val parentWidth = if (phorizontal == USTRETCH || itemStretchedCount > 0) parentConstraints.maxWidth else parentConstraints.constrainWidth(parentWidthTaken)
-            val parentWidthLeft = parentWidth - parentWidthTaken
+            val parentWidth = if (phorizontal == USTRETCH || itemStretchedCount > 0) parentConstraints.maxWidth else parentConstraints.constrainWidth(parentWidthTaken1)
+            val parentWidthLeft = parentWidth - parentWidthTaken1
             if (parentWidthLeft > 0 && itemStretchedCount > 0) {
                 val itemWidth = parentWidthLeft / itemStretchedCount
                 measurables.forEachIndexed { idx, measurable ->
@@ -99,9 +99,14 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                     ))
                 }
             }
+            val parentWidthTaken2 = placeables.sumOf { it?.width ?: 0 }
             val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical == USTRETCH, parentConstraints)
             layout(parentWidth, parentHeight) {
-                var x = 0
+                var x = when (phorizontal) {
+                    USTART, USTRETCH -> 0
+                    UCENTER -> (parentWidth - parentWidthTaken2) / 2
+                    UEND -> parentWidth - parentWidthTaken2
+                }
                 placeables.forEachIndexed { idx, placeable ->
                     placeable ?: return@forEachIndexed
                     val (_, uvertical) = measurables[idx].uChildData(phorizontal, pvertical)
@@ -126,10 +131,10 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                     maxWidth = parentConstraints.maxWidth,
                 ))
             }.toMutableList()
-            val parentHeightTaken = placeables.sumOf { it?.height ?: 0 }
+            val parentHeightTaken1 = placeables.sumOf { it?.height ?: 0 }
             val itemStretchedCount = placeables.count { it == null }
-            val parentHeight = if (pvertical == USTRETCH || itemStretchedCount > 0) parentConstraints.maxHeight else parentConstraints.constrainHeight(parentHeightTaken)
-            val parentHeightLeft = parentHeight - parentHeightTaken
+            val parentHeight = if (pvertical == USTRETCH || itemStretchedCount > 0) parentConstraints.maxHeight else parentConstraints.constrainHeight(parentHeightTaken1)
+            val parentHeightLeft = parentHeight - parentHeightTaken1
             if (parentHeightLeft > 0 && itemStretchedCount > 0) {
                 val itemHeight = parentHeightLeft / itemStretchedCount
                 measurables.forEachIndexed { idx, measurable ->
@@ -142,9 +147,14 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                     ))
                 }
             }
+            val parentHeightTaken2 = placeables.sumOf { it?.height ?: 0 }
             val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal == USTRETCH, parentConstraints)
             layout(parentWidth, parentHeight) {
-                var y = 0
+                var y = when (pvertical) {
+                    USTART, USTRETCH -> 0
+                    UCENTER -> (parentHeight - parentHeightTaken2) / 2
+                    UEND -> parentHeight - parentHeightTaken2
+                }
                 placeables.forEachIndexed { idx, placeable ->
                     placeable ?: return@forEachIndexed
                     val (uhorizontal, _) = measurables[idx].uChildData(phorizontal, pvertical)
