@@ -133,45 +133,62 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             }
             val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
             layout(parentWidth, parentHeight) {
-                var y = 0
-                var idx = 0
-                if (itemStretchedCount > 0) {
-                    while (idx < placeables.size) {
-                        val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
-                        val (uhorizontal, _) = placeable.uChildData(phorizontal, pvertical)
-                        placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
-                        y += placeable.height
-                        idx ++
-                    }
-                } else {
-                    while (idx < placeables.size) { // loop through USTART arranged placeables first
-                        val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
-                        val (uhorizontal, uvertical) = placeable.uChildData(phorizontal, pvertical)
-                        uvertical == USTART || break
-                        placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
-                        y += placeable.height
-                        idx ++
-                    }
-                    y += UCENTER.startPositionFor(fixedHeightTaken, parentHeight) // hack to offset to centered part.
-                    while (idx < placeables.size) { // loop through UCENTER (and USTART treated same as UCENTER) arranged placeables
-                        val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
-                        val (uhorizontal, uvertical) = placeable.uChildData(phorizontal, pvertical)
-                        uvertical == USTART || uvertical == UCENTER || break
-                        placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
-                        y += placeable.height
-                        idx ++
-                    }
-                    y += UCENTER.startPositionFor(fixedHeightTaken, parentHeight) // hack to offset to end part.
-                    while (idx < placeables.size) { // loop through UEND (and all left treated as UEND) arranged placeables
-                        val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
-                        val (uhorizontal, _) = placeable.uChildData(phorizontal, pvertical)
-                        placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
-                        y += placeable.height
-                        idx ++
-                    }
-                }
+                if (itemStretchedCount > 0) layoutAllAsVerticalTopDown(placeables, phorizontal, pvertical, parentWidth)
+                else layoutAllAsVerticalTopCenterBottom(placeables, phorizontal, pvertical, parentWidth, fixedHeightTaken, parentHeight)
             }
         }
+    }
+}
+
+private fun Placeable.PlacementScope.layoutAllAsVerticalTopDown(
+    placeables: List<Placeable?>,
+    parentHorizontal: UAlignmentType,
+    parentVertical: UAlignmentType,
+    parentWidth: Int,
+) {
+    var y = 0
+    for (p in placeables) {
+        p ?: error("placeable is not measured")
+        val (uhorizontal, _) = p.uChildData(parentHorizontal, parentVertical)
+        p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), y)
+        y += p.height
+    }
+}
+
+private fun Placeable.PlacementScope.layoutAllAsVerticalTopCenterBottom(
+    placeables: MutableList<Placeable?>,
+    parentHorizontal: UAlignmentType,
+    parentVertical: UAlignmentType,
+    parentWidth: Int,
+    fixedHeightTaken: Int,
+    parentHeight: Int,
+) {
+    var y = 0
+    var idx = 0
+    while (idx < placeables.size) { // loop through USTART arranged placeables first
+        val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
+        val (uhorizontal, uvertical) = placeable.uChildData(parentHorizontal, parentVertical)
+        uvertical == USTART || break
+        placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
+        y += placeable.height
+        idx++
+    }
+    y += UCENTER.startPositionFor(fixedHeightTaken, parentHeight) // hack to offset to centered part.
+    while (idx < placeables.size) { // loop through UCENTER (and USTART treated same as UCENTER) arranged placeables
+        val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
+        val (uhorizontal, uvertical) = placeable.uChildData(parentHorizontal, parentVertical)
+        uvertical == USTART || uvertical == UCENTER || break
+        placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
+        y += placeable.height
+        idx++
+    }
+    y += UCENTER.startPositionFor(fixedHeightTaken, parentHeight) // hack to offset to end part.
+    while (idx < placeables.size) { // loop through UEND (and all left treated as UEND) arranged placeables
+        val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
+        val (uhorizontal, _) = placeable.uChildData(parentHorizontal, parentVertical)
+        placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
+        y += placeable.height
+        idx++
     }
 }
 
