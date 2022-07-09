@@ -95,8 +95,8 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical, parentConstraints)
             layout(parentWidth, parentHeight) {
                 val p = if (itemStretchedCount > 0) placeables.filterNotNull() else placeables.map { it ?: error("placeable not measured") }
-                if (itemStretchedCount > 0) layoutAllAsHorizontalStartToEnd(p, phorizontal, pvertical, parentHeight)
-                else layoutAllAsHorizontalStartCenterEnd(p, phorizontal, pvertical, parentWidth, parentHeight, fixedWidthTaken)
+                if (itemStretchedCount > 0) placeAllAsHorizontalStartToEnd(p, phorizontal, pvertical, parentHeight)
+                else placeAllAsHorizontalStartCenterEnd(p, phorizontal, pvertical, parentWidth, parentHeight, fixedWidthTaken)
             }
         }
         UCOLUMN -> Layout(content = content, modifier = m) { measurables, parentConstraints ->
@@ -129,14 +129,14 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
             layout(parentWidth, parentHeight) {
                 val p = if (itemStretchedCount > 0) placeables.filterNotNull() else placeables.map { it ?: error("placeable not measured") }
-                if (itemStretchedCount > 0) layoutAllAsVerticalTopToDown(p, phorizontal, pvertical, parentWidth)
-                else layoutAllAsVerticalTopCenterBottom(p, phorizontal, pvertical, parentWidth, parentHeight, fixedHeightTaken)
+                if (itemStretchedCount > 0) placeAllAsVerticalTopToDown(p, phorizontal, pvertical, parentWidth)
+                else placeAllAsVerticalTopCenterBottom(p, phorizontal, pvertical, parentWidth, parentHeight, fixedHeightTaken)
             }
         }
     }
 }
 
-private fun Placeable.PlacementScope.layoutAllAsHorizontalStartToEnd(
+private fun Placeable.PlacementScope.placeAllAsHorizontalStartToEnd(
     placeables: List<Placeable>,
     parentHorizontal: UAlignmentType,
     parentVertical: UAlignmentType,
@@ -150,7 +150,7 @@ private fun Placeable.PlacementScope.layoutAllAsHorizontalStartToEnd(
     }
 }
 
-private fun Placeable.PlacementScope.layoutAllAsVerticalTopToDown(
+private fun Placeable.PlacementScope.placeAllAsVerticalTopToDown(
     placeables: List<Placeable>,
     parentHorizontal: UAlignmentType,
     parentVertical: UAlignmentType,
@@ -164,7 +164,7 @@ private fun Placeable.PlacementScope.layoutAllAsVerticalTopToDown(
     }
 }
 
-private fun Placeable.PlacementScope.layoutAllAsHorizontalStartCenterEnd(
+private fun Placeable.PlacementScope.placeAllAsHorizontalStartCenterEnd(
     placeables: List<Placeable>,
     parentHorizontal: UAlignmentType,
     parentVertical: UAlignmentType,
@@ -201,7 +201,7 @@ private fun Placeable.PlacementScope.layoutAllAsHorizontalStartCenterEnd(
     }
 }
 
-private fun Placeable.PlacementScope.layoutAllAsVerticalTopCenterBottom(
+private fun Placeable.PlacementScope.placeAllAsVerticalTopCenterBottom(
     placeables: List<Placeable>,
     parentHorizontal: UAlignmentType,
     parentVertical: UAlignmentType,
