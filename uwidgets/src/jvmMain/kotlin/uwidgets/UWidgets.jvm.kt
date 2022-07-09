@@ -60,7 +60,7 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical, parentConstraints)
             layout(parentWidth, parentHeight) {
                 for ((idx, p) in placeables.withIndex()) {
-                    val (uhorizontal, uvertical) = measurables[idx].uChildData(phorizontal, pvertical)
+                    val (uhorizontal, uvertical) = p.uChildData(phorizontal, pvertical)
                     p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), uvertical.startPositionFor(p.height, parentHeight))
                 }
             }
@@ -98,7 +98,7 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                 var x = phorizontal.startPositionFor(parentWidthTaken2, parentWidth)
                 placeables.forEachIndexed { idx, placeable ->
                     placeable ?: return@forEachIndexed
-                    val (_, uvertical) = measurables[idx].uChildData(phorizontal, pvertical)
+                    val (_, uvertical) = placeable.uChildData(phorizontal, pvertical)
                     placeable.placeRelative(x, uvertical.startPositionFor(placeable.height, parentHeight))
                     x += placeable.width
                 }
@@ -138,7 +138,7 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                 if (itemStretchedCount > 0) {
                     while (idx < placeables.size) {
                         val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
-                        val (uhorizontal, _) = measurables[idx].uChildData(phorizontal, pvertical)
+                        val (uhorizontal, _) = placeable.uChildData(phorizontal, pvertical)
                         placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
                         y += placeable.height
                         idx ++
@@ -146,7 +146,7 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                 } else {
                     while (idx < placeables.size) { // loop through USTART arranged placeables first
                         val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
-                        val (uhorizontal, uvertical) = measurables[idx].uChildData(phorizontal, pvertical)
+                        val (uhorizontal, uvertical) = placeable.uChildData(phorizontal, pvertical)
                         uvertical == USTART || break
                         placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
                         y += placeable.height
@@ -155,7 +155,7 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                     y += UCENTER.startPositionFor(fixedHeightTaken, parentHeight) // hack to offset to centered part.
                     while (idx < placeables.size) { // loop through UCENTER (and USTART treated same as UCENTER) arranged placeables
                         val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
-                        val (uhorizontal, uvertical) = measurables[idx].uChildData(phorizontal, pvertical)
+                        val (uhorizontal, uvertical) = placeable.uChildData(phorizontal, pvertical)
                         uvertical == USTART || uvertical == UCENTER || break
                         placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
                         y += placeable.height
@@ -164,7 +164,7 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                     y += UCENTER.startPositionFor(fixedHeightTaken, parentHeight) // hack to offset to end part.
                     while (idx < placeables.size) { // loop through UEND (and all left treated as UEND) arranged placeables
                         val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
-                        val (uhorizontal, _) = measurables[idx].uChildData(phorizontal, pvertical)
+                        val (uhorizontal, _) = placeable.uChildData(phorizontal, pvertical)
                         placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
                         y += placeable.height
                         idx ++
@@ -188,7 +188,10 @@ private data class UChildData(val horizontal: UAlignmentType, val vertical: UAli
     override fun Density.modifyParentData(parentData: Any?): Any = this@UChildData
 }
 
-private fun Measurable.uChildData(defaultHorizontal: UAlignmentType, defaultVertical: UAlignmentType) =
+private fun IntrinsicMeasurable.uChildData(defaultHorizontal: UAlignmentType, defaultVertical: UAlignmentType) =
+    parentData as? UChildData ?: UChildData(defaultHorizontal, defaultVertical)
+
+private fun Measured.uChildData(defaultHorizontal: UAlignmentType, defaultVertical: UAlignmentType) =
     parentData as? UChildData ?: UChildData(defaultHorizontal, defaultVertical)
 
 fun Modifier.ualign(horizontal: UAlignmentType, vertical: UAlignmentType) = then(UChildData(horizontal, vertical))
