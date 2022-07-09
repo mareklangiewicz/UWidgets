@@ -50,12 +50,14 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             val placeables = measurables.map {
                 val (uhorizontal, uvertical) = it.uChildData(phorizontal, pvertical)
                 it.measure(Constraints(
-                    minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else 0, maxWidth = parentConstraints.maxWidth,
-                    minHeight = if (uvertical == USTRETCH) parentConstraints.maxHeight else 0, maxHeight = parentConstraints.maxHeight,
+                    minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
+                    maxWidth = parentConstraints.maxWidth,
+                    minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
+                    maxHeight = parentConstraints.maxHeight,
                 ))
             }
-            val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal == USTRETCH, parentConstraints)
-            val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical == USTRETCH, parentConstraints)
+            val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
+            val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical, parentConstraints)
             layout(parentWidth, parentHeight) {
                 for ((idx, p) in placeables.withIndex()) {
                     val (uhorizontal, uvertical) = measurables[idx].uChildData(phorizontal, pvertical)
@@ -68,13 +70,13 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                 val (uhorizontal, uvertical) = it.uChildData(phorizontal, pvertical)
                 uhorizontal == USTRETCH && return@map null // skip measuring stretched items (will do it later)
                 it.measure(Constraints(
-                    minHeight = if (uvertical == USTRETCH) parentConstraints.maxHeight else 0,
+                    minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
                     maxHeight = parentConstraints.maxHeight
                 ))
             }.toMutableList()
             val parentWidthTaken1 = placeables.sumOf { it?.width ?: 0 }
             val itemStretchedCount = placeables.count { it == null }
-            val parentWidth = if (phorizontal == USTRETCH || itemStretchedCount > 0) parentConstraints.maxWidth else parentConstraints.constrainWidth(parentWidthTaken1)
+            val parentWidth = if ((phorizontal == USTRETCH || itemStretchedCount > 0) && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else parentConstraints.constrainWidth(parentWidthTaken1)
             val parentWidthLeft = parentWidth - parentWidthTaken1
             if (parentWidthLeft > 0 && itemStretchedCount > 0) {
                 val itemWidth = parentWidthLeft / itemStretchedCount
@@ -83,13 +85,15 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                     val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                     check(uhorizontal == USTRETCH)
                     placeables[idx] = measurable.measure(Constraints(
-                        minWidth = itemWidth, maxWidth = itemWidth,
-                        minHeight = if (uvertical == USTRETCH) parentConstraints.maxHeight else 0, maxHeight = parentConstraints.maxHeight
+                        minWidth = itemWidth,
+                        maxWidth = itemWidth,
+                        minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
+                        maxHeight = parentConstraints.maxHeight
                     ))
                 }
             }
             val parentWidthTaken2 = placeables.sumOf { it?.width ?: 0 }
-            val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical == USTRETCH, parentConstraints)
+            val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical, parentConstraints)
             layout(parentWidth, parentHeight) {
                 var x = phorizontal.startPositionFor(parentWidthTaken2, parentWidth)
                 placeables.forEachIndexed { idx, placeable ->
@@ -105,13 +109,13 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                 val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                 uvertical == USTRETCH && return@map null // skip measuring stretched items (will do it later)
                 measurable.measure(Constraints(
-                    minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else 0,
+                    minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
                     maxWidth = parentConstraints.maxWidth,
                 ))
             }.toMutableList()
             val parentHeightTaken1 = placeables.sumOf { it?.height ?: 0 }
             val itemStretchedCount = placeables.count { it == null }
-            val parentHeight = if (pvertical == USTRETCH || itemStretchedCount > 0) parentConstraints.maxHeight else parentConstraints.constrainHeight(parentHeightTaken1)
+            val parentHeight = if ((pvertical == USTRETCH || itemStretchedCount > 0) && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else parentConstraints.constrainHeight(parentHeightTaken1)
             val parentHeightLeft = parentHeight - parentHeightTaken1
             if (parentHeightLeft > 0 && itemStretchedCount > 0) {
                 val itemHeight = parentHeightLeft / itemStretchedCount
@@ -120,13 +124,15 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                     val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                     check(uvertical == USTRETCH)
                     placeables[idx] = measurable.measure(Constraints(
-                        minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else 0, maxWidth = parentConstraints.maxWidth,
-                        minHeight = itemHeight, maxHeight = itemHeight,
+                        minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
+                        maxWidth = parentConstraints.maxWidth,
+                        minHeight = itemHeight,
+                        maxHeight = itemHeight,
                     ))
                 }
             }
             val parentHeightTaken2 = placeables.sumOf { it?.height ?: 0 }
-            val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal == USTRETCH, parentConstraints)
+            val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
             layout(parentWidth, parentHeight) {
                 var y = pvertical.startPositionFor(parentHeightTaken2, parentHeight)
                 placeables.forEachIndexed { idx, placeable ->
@@ -143,11 +149,11 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
 private fun Iterable<Placeable?>.maxWidthWithin(constraints: Constraints) = constraints.constrainWidth(maxOfOrNull { it?.width ?: 0 } ?: 0)
 private fun Iterable<Placeable?>.maxHeightWithin(constraints: Constraints) = constraints.constrainHeight(maxOfOrNull { it?.height ?: 0 } ?: 0)
 
-private fun Iterable<Placeable?>.stretchOrMaxWidthWithin(stretch: Boolean, constraints: Constraints) =
-    if (stretch) constraints.maxWidth else maxWidthWithin(constraints)
+private fun Iterable<Placeable?>.stretchOrMaxWidthWithin(uhorizontal: UAlignmentType, constraints: Constraints) =
+    if (uhorizontal == USTRETCH && constraints.hasBoundedWidth) constraints.maxWidth else maxWidthWithin(constraints)
 
-private fun Iterable<Placeable?>.stretchOrMaxHeightWithin(stretch: Boolean, constraints: Constraints) =
-    if (stretch) constraints.maxHeight else maxHeightWithin(constraints)
+private fun Iterable<Placeable?>.stretchOrMaxHeightWithin(uvertical: UAlignmentType, constraints: Constraints) =
+    if (uvertical == USTRETCH && constraints.hasBoundedHeight) constraints.maxHeight else maxHeightWithin(constraints)
 
 private data class UChildData(val horizontal: UAlignmentType, val vertical: UAlignmentType) : ParentDataModifier {
     override fun Density.modifyParentData(parentData: Any?): Any = this@UChildData
