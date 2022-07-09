@@ -133,22 +133,22 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             }
             val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
             layout(parentWidth, parentHeight) {
-                if (itemStretchedCount > 0) layoutAllAsVerticalTopDown(placeables, phorizontal, pvertical, parentWidth)
-                else layoutAllAsVerticalTopCenterBottom(placeables, phorizontal, pvertical, parentWidth, fixedHeightTaken, parentHeight)
+                val p = if (itemStretchedCount > 0) placeables.filterNotNull() else placeables.map { it ?: error("placeable not measured") }
+                if (itemStretchedCount > 0) layoutAllAsVerticalTopDown(p, phorizontal, pvertical, parentWidth)
+                else layoutAllAsVerticalTopCenterBottom(p, phorizontal, pvertical, parentWidth, fixedHeightTaken, parentHeight)
             }
         }
     }
 }
 
 private fun Placeable.PlacementScope.layoutAllAsVerticalTopDown(
-    placeables: List<Placeable?>,
+    placeables: List<Placeable>,
     parentHorizontal: UAlignmentType,
     parentVertical: UAlignmentType,
     parentWidth: Int,
 ) {
     var y = 0
     for (p in placeables) {
-        p ?: error("placeable is not measured")
         val (uhorizontal, _) = p.uChildData(parentHorizontal, parentVertical)
         p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), y)
         y += p.height
@@ -156,7 +156,7 @@ private fun Placeable.PlacementScope.layoutAllAsVerticalTopDown(
 }
 
 private fun Placeable.PlacementScope.layoutAllAsVerticalTopCenterBottom(
-    placeables: MutableList<Placeable?>,
+    placeables: List<Placeable>,
     parentHorizontal: UAlignmentType,
     parentVertical: UAlignmentType,
     parentWidth: Int,
@@ -166,28 +166,28 @@ private fun Placeable.PlacementScope.layoutAllAsVerticalTopCenterBottom(
     var y = 0
     var idx = 0
     while (idx < placeables.size) { // loop through USTART arranged placeables first
-        val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
-        val (uhorizontal, uvertical) = placeable.uChildData(parentHorizontal, parentVertical)
+        val p = placeables[idx]
+        val (uhorizontal, uvertical) = p.uChildData(parentHorizontal, parentVertical)
         uvertical == USTART || break
-        placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
-        y += placeable.height
+        p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), y)
+        y += p.height
         idx++
     }
     y += UCENTER.startPositionFor(fixedHeightTaken, parentHeight) // hack to offset to centered part.
     while (idx < placeables.size) { // loop through UCENTER (and USTART treated same as UCENTER) arranged placeables
-        val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
-        val (uhorizontal, uvertical) = placeable.uChildData(parentHorizontal, parentVertical)
+        val p = placeables[idx]
+        val (uhorizontal, uvertical) = p.uChildData(parentHorizontal, parentVertical)
         uvertical == USTART || uvertical == UCENTER || break
-        placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
-        y += placeable.height
+        p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), y)
+        y += p.height
         idx++
     }
     y += UCENTER.startPositionFor(fixedHeightTaken, parentHeight) // hack to offset to end part.
     while (idx < placeables.size) { // loop through UEND (and all left treated as UEND) arranged placeables
-        val placeable = placeables[idx] ?: error("placeable idx: $idx is not measured")
-        val (uhorizontal, _) = placeable.uChildData(parentHorizontal, parentVertical)
-        placeable.placeRelative(uhorizontal.startPositionFor(placeable.width, parentWidth), y)
-        y += placeable.height
+        val p = placeables[idx]
+        val (uhorizontal, _) = p.uChildData(parentHorizontal, parentVertical)
+        p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), y)
+        y += p.height
         idx++
     }
 }
