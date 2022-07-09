@@ -59,7 +59,7 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
             val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical, parentConstraints)
             layout(parentWidth, parentHeight) {
-                for ((idx, p) in placeables.withIndex()) {
+                for (p in placeables) {
                     val (uhorizontal, uvertical) = p.uChildData(phorizontal, pvertical)
                     p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), uvertical.startPositionFor(p.height, parentHeight))
                 }
@@ -74,10 +74,10 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                     maxHeight = parentConstraints.maxHeight
                 ))
             }.toMutableList()
-            val parentWidthTaken1 = placeables.sumOf { it?.width ?: 0 }
+            val fixedWidthTaken = placeables.sumOf { it?.width ?: 0 }
             val itemStretchedCount = placeables.count { it == null }
-            val parentWidth = if ((phorizontal == USTRETCH || itemStretchedCount > 0) && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else parentConstraints.constrainWidth(parentWidthTaken1)
-            val parentWidthLeft = parentWidth - parentWidthTaken1
+            val parentWidth = if ((phorizontal == USTRETCH || itemStretchedCount > 0) && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else parentConstraints.constrainWidth(fixedWidthTaken)
+            val parentWidthLeft = parentWidth - fixedWidthTaken
             if (parentWidthLeft > 0 && itemStretchedCount > 0) {
                 val itemWidth = parentWidthLeft / itemStretchedCount
                 measurables.forEachIndexed { idx, measurable ->
@@ -92,16 +92,11 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                     ))
                 }
             }
-            val parentWidthTaken2 = placeables.sumOf { it?.width ?: 0 }
             val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical, parentConstraints)
             layout(parentWidth, parentHeight) {
-                var x = phorizontal.startPositionFor(parentWidthTaken2, parentWidth)
-                placeables.forEachIndexed { idx, placeable ->
-                    placeable ?: return@forEachIndexed
-                    val (_, uvertical) = placeable.uChildData(phorizontal, pvertical)
-                    placeable.placeRelative(x, uvertical.startPositionFor(placeable.height, parentHeight))
-                    x += placeable.width
-                }
+                val p = if (itemStretchedCount > 0) placeables.filterNotNull() else placeables.map { it ?: error("placeable not measured") }
+                if (itemStretchedCount > 0) layoutAllAsHorizontalStartToEnd(p, phorizontal, pvertical, parentHeight)
+                else layoutAllAsHorizontalStartCenterEnd(p, phorizontal, pvertical, parentWidth, parentHeight, fixedWidthTaken)
             }
         }
         UCOLUMN -> Layout(content = content, modifier = m) { measurables, parentConstraints ->
@@ -134,14 +129,28 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
             layout(parentWidth, parentHeight) {
                 val p = if (itemStretchedCount > 0) placeables.filterNotNull() else placeables.map { it ?: error("placeable not measured") }
-                if (itemStretchedCount > 0) layoutAllAsVerticalTopDown(p, phorizontal, pvertical, parentWidth)
-                else layoutAllAsVerticalTopCenterBottom(p, phorizontal, pvertical, parentWidth, fixedHeightTaken, parentHeight)
+                if (itemStretchedCount > 0) layoutAllAsVerticalTopToDown(p, phorizontal, pvertical, parentWidth)
+                else layoutAllAsVerticalTopCenterBottom(p, phorizontal, pvertical, parentWidth, parentHeight, fixedHeightTaken)
             }
         }
     }
 }
 
-private fun Placeable.PlacementScope.layoutAllAsVerticalTopDown(
+private fun Placeable.PlacementScope.layoutAllAsHorizontalStartToEnd(
+    placeables: List<Placeable>,
+    parentHorizontal: UAlignmentType,
+    parentVertical: UAlignmentType,
+    parentHeight: Int,
+) {
+    var x = 0
+    for (p in placeables) {
+        val (_, uvertical) = p.uChildData(parentHorizontal, parentVertical)
+        p.placeRelative(x, uvertical.startPositionFor(p.height, parentHeight))
+        x += p.width
+    }
+}
+
+private fun Placeable.PlacementScope.layoutAllAsVerticalTopToDown(
     placeables: List<Placeable>,
     parentHorizontal: UAlignmentType,
     parentVertical: UAlignmentType,
@@ -155,13 +164,50 @@ private fun Placeable.PlacementScope.layoutAllAsVerticalTopDown(
     }
 }
 
+private fun Placeable.PlacementScope.layoutAllAsHorizontalStartCenterEnd(
+    placeables: List<Placeable>,
+    parentHorizontal: UAlignmentType,
+    parentVertical: UAlignmentType,
+    parentWidth: Int,
+    parentHeight: Int,
+    fixedWidthTaken: Int,
+) {
+    var x = 0
+    var idx = 0
+    while (idx < placeables.size) { // loop through USTART arranged placeables first
+        val p = placeables[idx]
+        val (uhorizontal, uvertical) = p.uChildData(parentHorizontal, parentVertical)
+        uhorizontal == USTART || break
+        p.placeRelative(x, uvertical.startPositionFor(p.height, parentHeight))
+        x += p.width
+        idx++
+    }
+    x += UCENTER.startPositionFor(fixedWidthTaken, parentWidth) // hack to offset to centered part.
+    while (idx < placeables.size) { // loop through UCENTER (and USTART treated same as UCENTER) arranged placeables
+        val p = placeables[idx]
+        val (uhorizontal, uvertical) = p.uChildData(parentHorizontal, parentVertical)
+        uhorizontal == USTART || uhorizontal == UCENTER || break
+        p.placeRelative(x, uvertical.startPositionFor(p.height, parentHeight))
+        x += p.width
+        idx++
+    }
+    x += UCENTER.startPositionFor(fixedWidthTaken, parentWidth) // hack to offset to end part.
+    while (idx < placeables.size) { // loop through UEND (and all left treated as UEND) arranged placeables
+        val p = placeables[idx]
+        val (_, uvertical) = p.uChildData(parentHorizontal, parentVertical)
+        p.placeRelative(x, uvertical.startPositionFor(p.height, parentHeight))
+        x += p.width
+        idx++
+    }
+}
+
 private fun Placeable.PlacementScope.layoutAllAsVerticalTopCenterBottom(
     placeables: List<Placeable>,
     parentHorizontal: UAlignmentType,
     parentVertical: UAlignmentType,
     parentWidth: Int,
-    fixedHeightTaken: Int,
     parentHeight: Int,
+    fixedHeightTaken: Int,
 ) {
     var y = 0
     var idx = 0
