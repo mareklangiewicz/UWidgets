@@ -65,14 +65,13 @@ private val LocalUContainerType = staticCompositionLocalOf<UContainerType?> { nu
 
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
-@Composable internal fun UTextImpl(text: String, bold: Boolean, mono: Boolean) =
+// all U*Text has to be wrapped in some of U*Container to make sure all out public text flavors respect UAlign etc.
+@Composable internal fun UTextImpl(text: String, bold: Boolean, mono: Boolean, maxLines: Int) =
     UBasicContainerJs(inline = true, addStyle = {
-        property("text-overflow", "clip")
+        if (maxLines == 1) property("text-overflow", "clip") // TODO: better support for maxLines > 1 on JS
         if (bold) fontWeight("bold")
         if (mono) fontFamily("monospace")
     }) { Text(text) }
-
-@Composable internal fun UBasicTextImpl(text: String) = Text(text)
 
 @Composable internal fun UTabsImpl(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     UTabsCmn(*tabs, onSelected = onSelected)

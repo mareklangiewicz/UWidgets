@@ -43,13 +43,12 @@ private val LocalUOnContainerClick = staticCompositionLocalOf<(() -> Unit)?> { n
 @Composable fun UColumn(size: DpSize? = null, content: @Composable () -> Unit) = UContainer(UCOLUMN, size, content)
 @Composable fun URow(size: DpSize? = null, content: @Composable () -> Unit) = UContainer(UROW, size, content)
 
-@Composable fun UBoxedText(text: String, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) =
-    UBox {
-        UAlign(
-            if (center) UCENTER else UTheme.alignments.horizontal,
-            if (center) UCENTER else UTheme.alignments.vertical,
-        ) { UText(text, bold, mono) }
-    }
+@Composable fun UBoxedText(text: String, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) = UBox {
+    UAlign(
+        if (center) UCENTER else UTheme.alignments.horizontal,
+        if (center) UCENTER else UTheme.alignments.vertical,
+    ) { UText(text, bold, mono) } // UText uses another UBasicContainer(BOX). It's intentional. (to make sure all U*Text respect UAlign etc)
+}
 
 @Composable fun UTabs(vararg contents: Pair<String, @Composable () -> Unit>) {
     var selectedTabIndex by remember { mutableStateOf(0) }

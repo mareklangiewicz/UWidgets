@@ -19,10 +19,6 @@ import androidx.compose.ui.unit.*
 
 @Composable internal actual fun UBasicContainerAct(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerImpl(type, content)
 
-@Composable internal actual fun UTextAct(text: String, bold: Boolean, mono: Boolean) = UTextImpl(text, bold, mono)
+@Composable internal actual fun UTextAct(text: String, bold: Boolean, mono: Boolean, maxLines: Int) = UTextImpl(text, bold, mono, maxLines)
 
-
-@Composable internal actual fun UBasicTextAct(text: String) = UBasicTextImpl(text)
-
-@Composable internal actual fun UTabsAct(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
-    UTabsImpl(*tabs, onSelected = onSelected)
+@Composable internal actual fun UTabsAct(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) = UTabsImpl(*tabs, onSelected = onSelected)

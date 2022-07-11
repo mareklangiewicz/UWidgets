@@ -19,9 +19,7 @@ import androidx.compose.ui.unit.*
 
 @Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerImpl(type, content)
 
-@Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false) = UTextImpl(text, bold, mono)
-
-@Composable fun UBasicText(text: String) = UBasicTextImpl(text)
+@Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) = UTextImpl(text, bold, mono, maxLines)
 
 @Composable fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     UTabsImpl(*tabs, onSelected = onSelected)

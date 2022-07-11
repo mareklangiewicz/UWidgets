@@ -19,9 +19,7 @@ import androidx.compose.ui.unit.*
 
 @Composable internal expect fun UBasicContainerAct(type: UContainerType, content: @Composable () -> Unit)
 
-@Composable internal expect fun UTextAct(text: String, bold: Boolean, mono: Boolean)
-
-@Composable internal expect fun UBasicTextAct(text: String)
+@Composable internal expect fun UTextAct(text: String, bold: Boolean, mono: Boolean, maxLines: Int)
 
 @Composable internal expect fun UTabsAct(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit)
 
@@ -39,9 +37,7 @@ import androidx.compose.ui.unit.*
 
 @Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerAct(type, content)
 
-@Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false) = UTextAct(text, bold, mono)
-
-@Composable fun UBasicText(text: String) = UBasicTextAct(text)
+@Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) = UTextAct(text, bold, mono, maxLines)
 
 @Composable fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     UTabsAct(*tabs, onSelected = onSelected)

@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.utheme.*
@@ -263,15 +264,14 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
     UEND -> parentSize - childSize
 }
 
-@Composable internal fun UTextImpl(text: String, bold: Boolean, mono: Boolean) {
+// all U*Text has to be wrapped in some of U*Container to make sure all out public text flavors respect UAlign etc.
+@Composable internal fun UTextImpl(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) {
     val style = LocalTextStyle.current.copy(
         fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
         fontFamily = if (mono) FontFamily.Monospace else FontFamily.Default
     )
-    UBasicContainerJvm(UBOX) { Text(text, maxLines = 1, style = style) }
+    UBasicContainerJvm(UBOX) { Text(text, maxLines = maxLines, style = style) }
 }
-
-@Composable internal fun UBasicTextImpl(text: String) = Text(text, maxLines = 1)
 
 @Composable internal fun UTabsImpl(vararg tabs: String, useJvmTabRow: Boolean = true, onSelected: (index: Int, tab: String) -> Unit) {
     if (useJvmTabRow) UTabsImplTabRow(tabs = tabs, onSelected = onSelected)
