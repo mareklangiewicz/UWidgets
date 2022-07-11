@@ -13,7 +13,6 @@ import org.w3c.dom.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
-// FIXME: do I need this?
 @Composable internal fun UBasicContainerImpl(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerJs(type) { content() }
 
 @Composable internal fun UCoreContainerImpl(

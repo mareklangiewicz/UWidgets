@@ -16,7 +16,6 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 
-// FIXME: do I need this?
 @Composable internal fun UBasicContainerImpl(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerJvm(type, content = content)
 
 @Composable internal fun UCoreContainerImpl(
