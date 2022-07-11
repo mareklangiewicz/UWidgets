@@ -15,7 +15,12 @@ import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
-@Composable internal fun UCoreBoxImpl(
+
+// FIXME: do I need this?
+@Composable internal fun UBasicContainerImpl(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerJvm(type, content = content)
+
+@Composable internal fun UCoreContainerImpl(
+    type: UContainerType,
     requiredSize: DpSize?,
     backgroundColor: Color,
     borderColor: Color,
@@ -23,8 +28,8 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     padding: Dp,
     onClick: (() -> Unit)?,
     content: @Composable () -> Unit,
-) = UContainerJvm(
-    type = UBOX,
+) = UBasicContainerJvm(
+    type = type,
     modifier = Modifier
         .andIfNotNull(onClick) { clickable { it() } }
         .andIfNotNull(requiredSize) { requiredSize(it) }
@@ -41,7 +46,7 @@ private inline fun Modifier.andIf(condition: Boolean, add: Modifier.() -> Modifi
 private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modifier): Modifier =
     if (value != null) add(value) else this
 
-@Composable fun UContainerJvm(type: UContainerType, modifier: Modifier = Modifier, content: @Composable () -> Unit = {}) {
+@Composable fun UBasicContainerJvm(type: UContainerType, modifier: Modifier = Modifier, content: @Composable () -> Unit = {}) {
     val phorizontal = UTheme.alignments.horizontal
     val pvertical = UTheme.alignments.vertical
     val m = modifier.ualign(phorizontal, pvertical)
@@ -259,14 +264,12 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
     UEND -> parentSize - childSize
 }
 
-@Composable internal fun UContainerImpl(type: UContainerType, content: @Composable () -> Unit) = UContainerJvm(type, content = content)
-
 @Composable internal fun UTextImpl(text: String, bold: Boolean, mono: Boolean) {
     val style = LocalTextStyle.current.copy(
         fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
         fontFamily = if (mono) FontFamily.Monospace else FontFamily.Default
     )
-    UContainerJvm(UBOX) { Text(text, maxLines = 1, style = style) }
+    UBasicContainerJvm(UBOX) { Text(text, maxLines = 1, style = style) }
 }
 
 @Composable internal fun UBasicTextImpl(text: String) = Text(text, maxLines = 1)

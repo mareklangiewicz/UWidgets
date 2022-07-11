@@ -13,7 +13,11 @@ import org.w3c.dom.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
-@Composable internal fun UCoreBoxImpl(
+// FIXME: do I need this?
+@Composable internal fun UBasicContainerImpl(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerJs(type) { content() }
+
+@Composable internal fun UCoreContainerImpl(
+    type: UContainerType,
     size: DpSize?,
     backgroundColor: Color,
     borderColor: Color,
@@ -21,8 +25,8 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     padding: Dp,
     onClick: (() -> Unit)?,
     content: @Composable () -> Unit,
-) = UContainerJs(
-    type = UBOX,
+) = UBasicContainerJs(
+    type = type,
     addStyle = {
         size?.let { width(it.width.value.px); height(it.height.value.px) }
         backgroundColor(backgroundColor.cssRgba)
@@ -33,11 +37,9 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     content = content
 )
 
-@Composable internal fun UContainerImpl(type: UContainerType, content: @Composable () -> Unit) = UContainerJs(type) { content() }
-
 
 /** @param inline false -> div; true -> span (and if type != null: css display: inline-grid instead of grid) */
-@Composable fun UContainerJs(
+@Composable fun UBasicContainerJs(
     type: UContainerType? = null,
     inline: Boolean = false,
     addStyle: (StyleScope.() -> Unit)? = null,
@@ -65,7 +67,7 @@ private val LocalUContainerType = staticCompositionLocalOf<UContainerType?> { nu
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
 @Composable internal fun UTextImpl(text: String, bold: Boolean, mono: Boolean) =
-    UContainerJs(inline = true, addStyle = {
+    UBasicContainerJs(inline = true, addStyle = {
         property("text-overflow", "clip")
         if (bold) fontWeight("bold")
         if (mono) fontFamily("monospace")

@@ -21,26 +21,27 @@ enum class UAlignmentType(val css: String) {
 fun Color.lighten(fraction: Float = 0.1f) = lerp(this, Color.White, fraction.coerceIn(0f, 1f))
 fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coerceIn(0f, 1f))
 
-@Composable fun UBox(size: DpSize? = null, content: @Composable () -> Unit) = UCoreBox(
+@Composable fun UContainer(type: UContainerType, size: DpSize? = null, content: @Composable () -> Unit) = UCoreContainer(
+    type = type,
     size = size,
     backgroundColor = UTheme.colors.uboxBackground,
     borderColor = UTheme.colors.uboxBorder,
     borderWidth = UTheme.sizes.uboxBorder,
     padding = UTheme.sizes.uboxPadding,
-    onClick = LocalUOnBoxClick.current
-) { UDepth { CompositionLocalProvider(LocalUOnBoxClick provides null, content = content) } }
+    onClick = LocalUOnContainerClick.current
+) { UDepth { CompositionLocalProvider(LocalUOnContainerClick provides null, content = content) } }
 
 // It's a really hacky solution for multiplatform minimalist onClick support.
 // Mostly to avoid more parameters in functions. Probably will be changed later.
-@Composable fun UOnBoxClick(onBoxClick: () -> Unit, content: @Composable () -> Unit) =
-    CompositionLocalProvider(LocalUOnBoxClick provides onBoxClick, content = content)
+@Composable fun UOnClick(onContainerClick: () -> Unit, content: @Composable () -> Unit) =
+    CompositionLocalProvider(LocalUOnContainerClick provides onContainerClick, content = content)
 
-private val LocalUOnBoxClick = staticCompositionLocalOf<(() -> Unit)?> { null }
+private val LocalUOnContainerClick = staticCompositionLocalOf<(() -> Unit)?> { null }
 
 
-@Composable fun UColumn(size: DpSize? = null, content: @Composable () -> Unit) = UBox(size) { UContainer(UCOLUMN, content) }
-
-@Composable fun URow(size: DpSize? = null, content: @Composable () -> Unit) = UBox(size) { UContainer(UROW, content) }
+@Composable fun UBox(size: DpSize? = null, content: @Composable () -> Unit) = UContainer(UBOX, size, content)
+@Composable fun UColumn(size: DpSize? = null, content: @Composable () -> Unit) = UContainer(UCOLUMN, size, content)
+@Composable fun URow(size: DpSize? = null, content: @Composable () -> Unit) = UContainer(UROW, size, content)
 
 @Composable fun UBoxedText(text: String, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) =
     UBox {
@@ -63,7 +64,7 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     var selectedTabIndex by remember { mutableStateOf(0) }
     URow {
         tabs.forEachIndexed { index, title ->
-            UOnBoxClick({ selectedTabIndex = index; onSelected(index, title) }) {
+            UOnClick({ selectedTabIndex = index; onSelected(index, title) }) {
                 UBoxedText(title, center = true, bold = index == selectedTabIndex, mono = true)
             }
         }

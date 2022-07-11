@@ -6,7 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 
-@Composable internal expect fun UCoreBoxAct(
+@Composable internal expect fun UCoreContainerAct(
+    type: UContainerType,
     size: DpSize?,
     backgroundColor: Color,
     borderColor: Color,
@@ -16,7 +17,7 @@ import androidx.compose.ui.unit.*
     content: @Composable () -> Unit,
 )
 
-@Composable internal expect fun UContainerAct(type: UContainerType, content: @Composable () -> Unit)
+@Composable internal expect fun UBasicContainerAct(type: UContainerType, content: @Composable () -> Unit)
 
 @Composable internal expect fun UTextAct(text: String, bold: Boolean, mono: Boolean)
 
@@ -25,7 +26,8 @@ import androidx.compose.ui.unit.*
 @Composable internal expect fun UTabsAct(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit)
 
 
-@Composable fun UCoreBox(
+@Composable fun UCoreContainer(
+    type: UContainerType,
     size: DpSize? = null,
     backgroundColor: Color = Color.Transparent,
     borderColor: Color = Color.Transparent,
@@ -33,9 +35,9 @@ import androidx.compose.ui.unit.*
     padding: Dp = 0.dp,
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit,
-) = UCoreBoxAct(size, backgroundColor, borderColor, borderWidth, padding, onClick, content)
+) = UCoreContainerAct(type, size, backgroundColor, borderColor, borderWidth, padding, onClick, content)
 
-@Composable fun UContainer(type: UContainerType, content: @Composable () -> Unit) = UContainerAct(type, content)
+@Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerAct(type, content)
 
 @Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false) = UTextAct(text, bold, mono)
 
