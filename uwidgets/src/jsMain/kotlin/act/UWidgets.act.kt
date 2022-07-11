@@ -6,7 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.*
 
-@Composable internal actual fun ULessBasicBoxAct(
+@Composable internal actual fun UCoreBoxAct(
     size: DpSize?,
     backgroundColor: Color,
     borderColor: Color,
@@ -14,11 +14,9 @@ import androidx.compose.ui.unit.*
     padding: Dp,
     onClick: (() -> Unit)?,
     content: @Composable () -> Unit,
-) = ULessBasicBoxImpl(size, backgroundColor, borderColor, borderWidth, padding, onClick, content)
+) = UCoreBoxImpl(size, backgroundColor, borderColor, borderWidth, padding, onClick, content)
 
-@Composable internal actual fun UBasicBoxAct(content: @Composable () -> Unit) = UBasicBoxImpl(content)
-@Composable internal actual fun UBasicColumnAct(content: @Composable () -> Unit) = UBasicColumnImpl(content)
-@Composable internal actual fun UBasicRowAct(content: @Composable () -> Unit) = UBasicRowImpl(content)
+@Composable internal actual fun UContainerAct(type: UContainerType, content: @Composable () -> Unit) = UContainerImpl(type, content)
 
 @Composable internal actual fun UTextAct(text: String, bold: Boolean, mono: Boolean) = UTextImpl(text, bold, mono)
 

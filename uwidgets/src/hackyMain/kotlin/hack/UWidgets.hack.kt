@@ -6,7 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 
-@Composable fun ULessBasicBox(
+@Composable fun UCoreBox(
     size: DpSize? = null,
     backgroundColor: Color = Color.Transparent,
     borderColor: Color = Color.Transparent,
@@ -14,13 +14,9 @@ import androidx.compose.ui.unit.*
     padding: Dp = 0.dp,
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit,
-) = ULessBasicBoxImpl(size, backgroundColor, borderColor, borderWidth, padding, onClick, content)
+) = UCoreBoxImpl(size, backgroundColor, borderColor, borderWidth, padding, onClick, content)
 
-@Composable fun UBasicBox(content: @Composable () -> Unit) = UBasicBoxImpl(content)
-
-@Composable fun UBasicColumn(content: @Composable () -> Unit) = UBasicColumnImpl(content)
-
-@Composable fun UBasicRow(content: @Composable () -> Unit) = UBasicRowImpl(content)
+@Composable fun UContainer(type: UContainerType, content: @Composable () -> Unit) = UContainerImpl(content)
 
 @Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false) = UTextImpl(text, bold, mono)
 

@@ -13,7 +13,7 @@ import org.w3c.dom.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
-@Composable internal fun ULessBasicBoxImpl(
+@Composable internal fun UCoreBoxImpl(
     size: DpSize?,
     backgroundColor: Color,
     borderColor: Color,
@@ -33,9 +33,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     content = content
 )
 
-@Composable internal fun UBasicBoxImpl(content: @Composable () -> Unit) = UContainerJs(UBOX) { content() }
-@Composable internal fun UBasicColumnImpl(content: @Composable () -> Unit) = UContainerJs(UCOLUMN) { content() }
-@Composable internal fun UBasicRowImpl(content: @Composable () -> Unit) = UContainerJs(UROW) { content() }
+@Composable internal fun UContainerImpl(type: UContainerType, content: @Composable () -> Unit) = UContainerJs(type) { content() }
 
 
 /** @param inline false -> div; true -> span (and if type != null: css display: inline-grid instead of grid) */

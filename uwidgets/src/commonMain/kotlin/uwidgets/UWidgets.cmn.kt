@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
+import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 enum class UContainerType { UBOX, UROW, UCOLUMN }
 
@@ -20,7 +21,7 @@ enum class UAlignmentType(val css: String) {
 fun Color.lighten(fraction: Float = 0.1f) = lerp(this, Color.White, fraction.coerceIn(0f, 1f))
 fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coerceIn(0f, 1f))
 
-@Composable fun UBox(size: DpSize? = null, content: @Composable () -> Unit) = ULessBasicBox(
+@Composable fun UBox(size: DpSize? = null, content: @Composable () -> Unit) = UCoreBox(
     size = size,
     backgroundColor = UTheme.colors.uboxBackground,
     borderColor = UTheme.colors.uboxBorder,
@@ -37,9 +38,9 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 private val LocalUOnBoxClick = staticCompositionLocalOf<(() -> Unit)?> { null }
 
 
-@Composable fun UColumn(size: DpSize? = null, content: @Composable () -> Unit) = UBox(size) { UBasicColumn(content) }
+@Composable fun UColumn(size: DpSize? = null, content: @Composable () -> Unit) = UBox(size) { UContainer(UCOLUMN, content) }
 
-@Composable fun URow(size: DpSize? = null, content: @Composable () -> Unit) = UBox(size) { UBasicRow(content) }
+@Composable fun URow(size: DpSize? = null, content: @Composable () -> Unit) = UBox(size) { UContainer(UROW, content) }
 
 @Composable fun UBoxedText(text: String, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) =
     UBox {

@@ -15,7 +15,7 @@ import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
-@Composable internal fun ULessBasicBoxImpl(
+@Composable internal fun UCoreBoxImpl(
     requiredSize: DpSize?,
     backgroundColor: Color,
     borderColor: Color,
@@ -259,9 +259,7 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
     UEND -> parentSize - childSize
 }
 
-@Composable internal fun UBasicBoxImpl(content: @Composable () -> Unit) = UContainerJvm(UBOX, content = content)
-@Composable internal fun UBasicColumnImpl(content: @Composable () -> Unit) = UContainerJvm(UCOLUMN, content = content)
-@Composable internal fun UBasicRowImpl(content: @Composable () -> Unit) = UContainerJvm(UROW, content = content)
+@Composable internal fun UContainerImpl(type: UContainerType, content: @Composable () -> Unit) = UContainerJvm(type, content = content)
 
 @Composable internal fun UTextImpl(text: String, bold: Boolean, mono: Boolean) {
     val style = LocalTextStyle.current.copy(

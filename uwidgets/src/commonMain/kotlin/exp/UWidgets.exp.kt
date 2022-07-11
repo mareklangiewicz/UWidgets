@@ -6,7 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 
-@Composable internal expect fun ULessBasicBoxAct(
+@Composable internal expect fun UCoreBoxAct(
     size: DpSize?,
     backgroundColor: Color,
     borderColor: Color,
@@ -16,11 +16,7 @@ import androidx.compose.ui.unit.*
     content: @Composable () -> Unit,
 )
 
-@Composable internal expect fun UBasicBoxAct(content: @Composable () -> Unit)
-
-@Composable internal expect fun UBasicColumnAct(content: @Composable () -> Unit)
-
-@Composable internal expect fun UBasicRowAct(content: @Composable () -> Unit)
+@Composable internal expect fun UContainerAct(type: UContainerType, content: @Composable () -> Unit)
 
 @Composable internal expect fun UTextAct(text: String, bold: Boolean, mono: Boolean)
 
@@ -29,7 +25,7 @@ import androidx.compose.ui.unit.*
 @Composable internal expect fun UTabsAct(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit)
 
 
-@Composable fun ULessBasicBox(
+@Composable fun UCoreBox(
     size: DpSize? = null,
     backgroundColor: Color = Color.Transparent,
     borderColor: Color = Color.Transparent,
@@ -37,13 +33,9 @@ import androidx.compose.ui.unit.*
     padding: Dp = 0.dp,
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit,
-) = ULessBasicBoxAct(size, backgroundColor, borderColor, borderWidth, padding, onClick, content)
+) = UCoreBoxAct(size, backgroundColor, borderColor, borderWidth, padding, onClick, content)
 
-@Composable fun UBasicBox(content: @Composable () -> Unit) = UBasicBoxAct(content)
-
-@Composable fun UBasicColumn(content: @Composable () -> Unit) = UBasicColumnAct(content)
-
-@Composable fun UBasicRow(content: @Composable () -> Unit) = UBasicRowAct(content)
+@Composable fun UContainer(type: UContainerType, content: @Composable () -> Unit) = UContainerAct(type, content)
 
 @Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false) = UTextAct(text, bold, mono)
 
