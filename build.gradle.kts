@@ -1,11 +1,7 @@
-import pl.mareklangiewicz.defaults.*
 import pl.mareklangiewicz.ure.*
 import pl.mareklangiewicz.utils.*
 
-plugins {
-    id("io.github.gradle-nexus.publish-plugin") version vers.nexusPublishGradlePlugin
-    kotlin("multiplatform") version vers.kotlin apply false
-}
+plugins { id("io.github.gradle-nexus.publish-plugin") version vers.nexusPublishGradlePlugin }
 
 // defaultGroupAndVerAndDescription(libs.UWidgets)
 
@@ -15,28 +11,10 @@ private val rootBuild = rootProjectPath / "build.gradle.kts"
 private val uwidgetsModuleBuild = rootProjectPath / "uwidgets" / "build.gradle.kts"
 private val udemoModuleBuild = rootProjectPath / "udemo" / "build.gradle.kts"
 
-tasks.registerAllThatGroupFun("inject",
-    ::checkTemplates,
-    ::injectTemplates,
-)
+tasks.registerAllThatGroupFun("inject", ::checkTemplates, ::injectTemplates)
 
-fun checkTemplates() {
-    checkRootBuildTemplate(rootBuild)
-    checkKotlinModuleBuildTemplates(uwidgetsModuleBuild, udemoModuleBuild)
-    checkMppModuleBuildTemplates(uwidgetsModuleBuild, udemoModuleBuild)
-    checkComposeMppModuleBuildTemplates(uwidgetsModuleBuild, udemoModuleBuild)
-    checkMppAppBuildTemplates(udemoModuleBuild)
-    checkComposeMppAppBuildTemplates(udemoModuleBuild)
-}
-
-fun injectTemplates() {
-    injectRootBuildTemplate(rootBuild)
-    injectKotlinModuleBuildTemplate(uwidgetsModuleBuild, udemoModuleBuild)
-    injectMppModuleBuildTemplate(uwidgetsModuleBuild, udemoModuleBuild)
-    injectComposeMppModuleBuildTemplate(uwidgetsModuleBuild, udemoModuleBuild)
-    injectMppAppBuildTemplate(udemoModuleBuild)
-    injectComposeMppAppBuildTemplate(udemoModuleBuild)
-}
+fun checkTemplates() = checkAllKnownRegionsInProject()
+fun injectTemplates() = injectAllKnownRegionsInProject()
 
 // region [Root Build Template]
 
