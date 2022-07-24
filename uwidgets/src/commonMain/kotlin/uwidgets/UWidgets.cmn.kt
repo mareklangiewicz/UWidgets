@@ -5,6 +5,7 @@ package pl.mareklangiewicz.uwidgets
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
+import pl.mareklangiewicz.umath.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
@@ -70,3 +71,23 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     }
 }
 
+@Composable fun UProgress(
+    pos: Double,
+    min: Double = 0.0,
+    max: Double = 1.0,
+    bold: Boolean = false,
+) {
+    val fraction = (pos - min) / (max - min)
+    val gapwidth = 100
+    val w1 = (gapwidth * fraction).toInt()
+    val w2 = gapwidth - w1
+    UAlign(UCENTER, UCENTER) {
+        URow {
+            UText(min.str, bold = bold, mono = true)
+            UCoreContainer(UBOX, DpSize(w1.dp, 4.dp), Color.Blue, padding = 2.dp) {}
+            UText(pos.str, bold = bold, mono = true)
+            UCoreContainer(UBOX, DpSize(w2.dp, 4.dp), Color.White, padding = 2.dp) {}
+            UText(max.str, bold = bold, mono = true)
+        }
+    }
+}
