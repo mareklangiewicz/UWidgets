@@ -10,26 +10,14 @@ import pl.mareklangiewicz.utils.*
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose") version vers.composeJb
-    // id("maven-publish")
-    // id("signing")
+    id("maven-publish")
+    id("signing")
 }
-
 
 defaultBuildTemplateForComposeMppLib(
     details = libs.UWidgets,
     withComposeCompilerFix = true,
 )
-
-kotlin {
-    sourceSets {
-        // TODO_move to defaultBuildTemplateForComposeMppLib when compose.runtime becomes available on linux native
-        val commonMain by getting {
-            dependencies {
-                implementation(compose.runtime)
-            }
-        }
-    }
-}
 
 // region [Kotlin Module Build Template]
 

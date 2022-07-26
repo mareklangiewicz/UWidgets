@@ -1,15 +1,12 @@
+import pl.mareklangiewicz.defaults.*
 import pl.mareklangiewicz.ure.*
 import pl.mareklangiewicz.utils.*
 
 plugins { id("io.github.gradle-nexus.publish-plugin") version vers.nexusPublishGradlePlugin }
 
-// defaultGroupAndVerAndDescription(libs.UWidgets)
+defaultGroupAndVerAndDescription(libs.UWidgets)
 
-// defaultSonatypeOssStuffFromSystemEnvs()
-
-private val rootBuild = rootProjectPath / "build.gradle.kts"
-private val uwidgetsModuleBuild = rootProjectPath / "uwidgets" / "build.gradle.kts"
-private val udemoModuleBuild = rootProjectPath / "udemo" / "build.gradle.kts"
+defaultSonatypeOssStuffFromSystemEnvs()
 
 tasks.registerAllThatGroupFun("inject", ::checkTemplates, ::injectTemplates)
 
