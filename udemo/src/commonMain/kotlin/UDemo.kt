@@ -3,6 +3,7 @@ package pl.mareklangiewicz.udemo
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
+import kotlinx.coroutines.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
@@ -11,7 +12,7 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 fun UDemo() = UAlign(USTRETCH, USTRETCH) {
     UTabs(
         "UDemo 0" to { UDemo0() },
-        "UDemo 1" to { UText("TODO UDemo1") },
+        "UDemo 1" to { UDemo1() },
         "UDemo 2" to { UText("TODO UDemo2") },
     )
 }
@@ -63,4 +64,20 @@ private fun UDemoTexts(
         if (boxed) UBoxedText(s, center, bold, mono)
         else UText(s, bold, mono)
     }
+}
+@Composable
+fun UDemo1() = URow {
+    UMenuTree(
+        "XYZ".cbtree(
+            "AAA".cbtree(
+                "aaa1".cbtree { println("aaa1") },
+                "aaa2".cbtree { println("aaa2") },
+            ),
+            "BBB".cbtree(
+                "bbb1".cbtree { println("bbb1") },
+                "bbb2".cbtree { println("bbb2") },
+            ),
+        ),
+        Dispatchers.Default
+    )
 }

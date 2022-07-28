@@ -22,17 +22,6 @@ defaultBuildTemplateForComposeMppApp(
     implementation(project(":uwidgets"))
 }
 
-kotlin {
-    sourceSets {
-        // TODO_move to defaultBuildTemplateForComposeMppLib when compose.runtime becomes available on linux native
-        val commonMain by getting {
-            dependencies {
-                implementation(compose.runtime)
-            }
-        }
-    }
-}
-
 // Fixes webpack-cli incompatibility by pinning the newest version.
 // https://youtrack.jetbrains.com/issue/KT-52776/KJS-Gradle-Webpack-version-update-despite-yarnlock-breaks-KotlinJS-build
 rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
