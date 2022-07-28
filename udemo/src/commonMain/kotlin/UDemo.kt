@@ -38,7 +38,7 @@ fun UDemo0() = URow {
         UAlign(horizontal = switch1, vertical = switch2) {
             UBox { UBox { URow { UDemoTexts(3) } } }
             UBox { UBox { URow { UDemoTexts(15) } } }
-            UTheme(UColors(uboxBackground = Color.hsl(200f, .4f, .8f, .6f))) {
+            UTheme(lightBluishUColors()) {
                 UBox { UBox { UBox { UDemoTexts() } } }
             }
             UAlign(horizontal = switch3, vertical = switch4) {
@@ -65,8 +65,13 @@ private fun UDemoTexts(
         else UText(s, bold, mono)
     }
 }
-@Composable
-fun UDemo1() = URow {
+@Composable fun UDemo1() = URow {
+    UTheme(lightUColors()) { SomeMenuTree() }
+    UTheme(darkUColors()) { SomeMenuTree() }
+    UTheme(lightBluishUColors()) { SomeMenuTree() }
+}
+
+@Composable private fun SomeMenuTree() {
     UMenuTree(
         "XYZ".cbtree(
             "AAA".cbtree(
@@ -76,6 +81,9 @@ fun UDemo1() = URow {
             "BBB".cbtree(
                 "bbb1".cbtree { println("bbb1") },
                 "bbb2".cbtree { println("bbb2") },
+                "bCCC".cbtree(
+                    "ccc".cbtree { println("ccc") }
+                )
             ),
         ),
         Dispatchers.Default

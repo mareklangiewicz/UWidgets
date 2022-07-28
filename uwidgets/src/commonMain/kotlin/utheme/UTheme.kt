@@ -60,19 +60,47 @@ object UTheme {
         get() = LocalUAlignments.current
 }
 
-@Stable class UColors(uboxBackground: Color = Color.LightGray) {
 
-    var uboxBaseBackground by mutableStateOf(uboxBackground)
+fun lightUColors(
+    uboxBaseBackground: Color = Color.White,
+    uboxTintBackground: Color = Color.Gray,
+    uboxTintBorder: Color = Color.Gray.copy(alpha = .1f),
+) = UColors(uboxBaseBackground, uboxTintBackground, uboxTintBorder)
+
+fun darkUColors(
+    uboxBaseBackground: Color = Color.Black,
+    uboxTintBackground: Color = Color.Gray,
+    uboxTintBorder: Color = Color.Gray.copy(alpha = .1f),
+) = UColors(uboxBaseBackground, uboxTintBackground, uboxTintBorder)
+
+fun lightBluishUColors(
+    uboxBaseBackground: Color = Color.White,
+    uboxTintBackground: Color = Color.Blue,
+    uboxTintBorder: Color = Color.Blue.copy(alpha = .1f),
+) = UColors(uboxBaseBackground, uboxTintBackground, uboxTintBorder)
+
+
+@Stable class UColors(
+    uboxBaseBackground: Color,
+    uboxTintBackground: Color,
+    uboxTintBorder: Color,
+) {
+
+    var uboxBaseBackground by mutableStateOf(uboxBaseBackground)
+    var uboxTintBackground by mutableStateOf(uboxTintBackground)
+    var uboxTintBorder by mutableStateOf(uboxTintBorder)
 
     val uboxBackground
         @Composable
         @ReadOnlyComposable
-        get() = uboxBaseBackground.lighten(UDepth.appearance)
+        get() = uboxTintBackground
+            .copy(alpha = uboxTintBackground.alpha * UDepth.appearance)
+            .compositeOver(uboxBaseBackground)
 
     val uboxBorder
         @Composable
         @ReadOnlyComposable
-        get() = uboxBackground.darken(.1f)
+        get() = uboxTintBorder.compositeOver(uboxBackground)
 }
 
 @Stable class USizes(uboxPadding: Dp = 2.dp, uboxBorder: Dp = 1.dp) {
@@ -86,7 +114,7 @@ object UTheme {
 }
 
 
-private val LocalUColors = staticCompositionLocalOf { UColors() }
+private val LocalUColors = staticCompositionLocalOf { lightUColors() }
 
 private val LocalUSizes = staticCompositionLocalOf { USizes() }
 
