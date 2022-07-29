@@ -65,6 +65,7 @@ private fun UDemoTexts(
         else UText(s, bold, mono)
     }
 }
+
 @Composable fun UDemo1() = URow {
     UTheme(lightUColors()) { SomeMenuTree() }
     UTheme(darkUColors()) { SomeMenuTree() }

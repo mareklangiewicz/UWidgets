@@ -26,6 +26,7 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
     type = type,
     size = size,
     margin = UTheme.sizes.uboxMargin,
+    contentColor = UTheme.colors.uboxContent,
     backgroundColor = UTheme.colors.uboxBackground,
     borderColor = UTheme.colors.uboxBorder,
     borderWidth = UTheme.sizes.uboxBorder,

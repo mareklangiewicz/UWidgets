@@ -23,6 +23,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     type: UContainerType,
     requiredSize: DpSize?,
     margin: Dp,
+    contentColor: Color,
     backgroundColor: Color,
     borderColor: Color,
     borderWidth: Dp,
@@ -37,9 +38,8 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         .andIfNotNull(requiredSize) { requiredSize(it) }
         .background(backgroundColor)
         .border(borderWidth, borderColor)
-        .padding(borderWidth + padding),
-    content = content
-)
+        .padding(borderWidth + padding)
+) { CompositionLocalProvider(LocalContentColor provides contentColor) { content() } }
 
 // thanIf would be wrong name (we use factory, not just Modifier)
 private inline fun Modifier.andIf(condition: Boolean, add: Modifier.() -> Modifier): Modifier =

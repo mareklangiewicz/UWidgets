@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.*
     type: UContainerType,
     size: DpSize?,
     margin: Dp,
+    contentColor: Color,
     backgroundColor: Color,
     borderColor: Color,
     borderWidth: Dp,
@@ -29,13 +30,14 @@ import androidx.compose.ui.unit.*
     type: UContainerType,
     size: DpSize? = null,
     margin: Dp = 0.dp,
+    contentColor: Color = Color.Black,
     backgroundColor: Color = Color.Transparent,
     borderColor: Color = Color.Transparent,
     borderWidth: Dp = 0.dp,
     padding: Dp = 0.dp,
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit,
-) = UCoreContainerAct(type, size, margin, backgroundColor, borderColor, borderWidth, padding, onClick, content)
+) = UCoreContainerAct(type, size, margin, contentColor, backgroundColor, borderColor, borderWidth, padding, onClick, content)
 
 @Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerAct(type, content)
 

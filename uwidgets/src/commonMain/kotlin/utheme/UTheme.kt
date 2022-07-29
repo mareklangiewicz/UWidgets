@@ -1,7 +1,6 @@
 package pl.mareklangiewicz.utheme
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
@@ -58,53 +57,6 @@ object UTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalUAlignments.current
-}
-
-
-fun lightUColors(
-    uboxBaseBackground: Color = Color.White,
-    uboxTintBackground: Color = Color.Gray,
-    uboxTintBorder: Color = Color.Black.copy(alpha = .1f),
-) = UColors(uboxBaseBackground, uboxTintBackground, uboxTintBorder)
-
-fun darkUColors(
-    uboxBaseBackground: Color = Color.DarkDarkGray, // Black here would be wrong because we always want border to be a bit darker.
-    uboxTintBackground: Color = Color.Gray,
-    uboxTintBorder: Color = Color.Black.copy(alpha = .4f),
-) = UColors(uboxBaseBackground, uboxTintBackground, uboxTintBorder)
-
-val Color.Companion.DarkDarkGray get() = Color(0xFF222222)
-val Color.Companion.DarkDarkBlue get() = Color(0xFF000022)
-val Color.Companion.DarkBlue get() = Color(0xFF000044)
-
-fun lightBluishUColors(
-    uboxBaseBackground: Color = Color.White,
-    uboxTintBackground: Color = Color.Blue,
-    uboxTintBorder: Color = Color.DarkBlue.copy(alpha = .1f),
-) = UColors(uboxBaseBackground, uboxTintBackground, uboxTintBorder)
-
-
-@Stable class UColors(
-    uboxBaseBackground: Color,
-    uboxTintBackground: Color,
-    uboxTintBorder: Color,
-) {
-
-    var uboxBaseBackground by mutableStateOf(uboxBaseBackground)
-    var uboxTintBackground by mutableStateOf(uboxTintBackground)
-    var uboxTintBorder by mutableStateOf(uboxTintBorder)
-
-    val uboxBackground
-        @Composable
-        @ReadOnlyComposable
-        get() = uboxTintBackground
-            .copy(alpha = uboxTintBackground.alpha * UDepth.appearance)
-            .compositeOver(uboxBaseBackground)
-
-    val uboxBorder
-        @Composable
-        @ReadOnlyComposable
-        get() = uboxTintBorder.compositeOver(uboxBackground)
 }
 
 @Stable class USizes(uboxMargin: Dp = 1.dp, uboxBorder: Dp = 1.dp, uboxPadding: Dp = 1.dp) {

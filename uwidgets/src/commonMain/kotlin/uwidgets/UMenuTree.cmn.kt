@@ -23,15 +23,17 @@ fun UMenuTree(tree: UCallbackTree, dispatcher: CoroutineDispatcher) {
     when {
         subt.isEmpty() -> {
             UOnClick({ scope.launch(dispatcher) { tree.callback?.invoke() }}) {
-                UBox { UText(tree.label!!) }
+                UBoxedText(tree.label!!, mono = true)
             }
         }
         else -> UColumn {
-            tree.label?.let { UBox { UBoxedText(it, bold = true) } }
+            tree.label?.let { UBox { UBoxedText(it, center = true, bold = true, mono = true) } }
             for (t in subt) UMenuTree(t, dispatcher)
         }
     }
 }
+
+// TODO NOW: UButton that appears clickable on JVM AND JS; use it in all places where it makes sense
 
 @Composable
 fun UMenuTreeWithFilter(tree: UCallbackTree, dispatcher: CoroutineDispatcher) {

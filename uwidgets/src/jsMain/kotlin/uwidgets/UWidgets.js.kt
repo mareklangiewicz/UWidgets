@@ -19,6 +19,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     type: UContainerType,
     size: DpSize?,
     margin: Dp,
+    contentColor: Color,
     backgroundColor: Color,
     borderColor: Color,
     borderWidth: Dp,
@@ -29,6 +30,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     type = type,
     addStyle = {
         size?.let { width(it.width.value.px); height(it.height.value.px) }
+        color(contentColor.cssRgba)
         margin(margin.value.px)
         backgroundColor(backgroundColor.cssRgba)
         border(borderWidth.value.px, LineStyle.Solid, borderColor.cssRgba) // in css .px is kinda .dp

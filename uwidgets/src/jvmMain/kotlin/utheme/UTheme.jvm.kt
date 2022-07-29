@@ -6,8 +6,9 @@ import androidx.compose.runtime.*
 import pl.mareklangiewicz.utheme.*
 
 @Composable fun m3UColors(
+    uboxContent: Color = MaterialTheme.colorScheme.primary,
     uboxBaseBackground: Color = MaterialTheme.colorScheme.background,
     uboxTintBackground: Color = MaterialTheme.colorScheme.onBackground,
     uboxTintBorder: Color = MaterialTheme.colorScheme.secondary.copy(alpha = .1f),
-) = UColors(uboxBaseBackground, uboxTintBackground, uboxTintBorder)
+) = UColors(uboxContent, uboxBaseBackground, uboxTintBackground, uboxTintBorder)
 
