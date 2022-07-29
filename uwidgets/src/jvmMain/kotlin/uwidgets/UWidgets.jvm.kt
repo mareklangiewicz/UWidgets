@@ -22,6 +22,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 @Composable internal fun UCoreContainerImpl(
     type: UContainerType,
     requiredSize: DpSize?,
+    margin: Dp,
     backgroundColor: Color,
     borderColor: Color,
     borderWidth: Dp,
@@ -31,6 +32,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 ) = UBasicContainerJvm(
     type = type,
     modifier = Modifier
+        .padding(margin)
         .andIfNotNull(onClick) { clickable { it() } }
         .andIfNotNull(requiredSize) { requiredSize(it) }
         .background(backgroundColor)

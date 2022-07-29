@@ -25,6 +25,7 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 @Composable fun UContainer(type: UContainerType, size: DpSize? = null, content: @Composable () -> Unit) = UCoreContainer(
     type = type,
     size = size,
+    margin = UTheme.sizes.uboxMargin,
     backgroundColor = UTheme.colors.uboxBackground,
     borderColor = UTheme.colors.uboxBorder,
     borderWidth = UTheme.sizes.uboxBorder,
@@ -84,9 +85,9 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     UAlign(UCENTER, UCENTER) {
         URow {
             UText(min.str, bold = bold, mono = true)
-            UCoreContainer(UBOX, DpSize(w1.dp, 4.dp), Color.Blue, padding = 2.dp) {}
+            UCoreContainer(UBOX, DpSize(w1.dp, 4.dp), backgroundColor = Color.Blue, padding = 2.dp) {}
             UText(pos.str, bold = bold, mono = true)
-            UCoreContainer(UBOX, DpSize(w2.dp, 4.dp), Color.White, padding = 2.dp) {}
+            UCoreContainer(UBOX, DpSize(w2.dp, 4.dp), backgroundColor = Color.White, padding = 2.dp) {}
             UText(max.str, bold = bold, mono = true)
         }
     }

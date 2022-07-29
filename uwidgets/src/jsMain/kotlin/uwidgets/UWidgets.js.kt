@@ -18,6 +18,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 @Composable internal fun UCoreContainerImpl(
     type: UContainerType,
     size: DpSize?,
+    margin: Dp,
     backgroundColor: Color,
     borderColor: Color,
     borderWidth: Dp,
@@ -28,6 +29,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     type = type,
     addStyle = {
         size?.let { width(it.width.value.px); height(it.height.value.px) }
+        margin(margin.value.px)
         backgroundColor(backgroundColor.cssRgba)
         border(borderWidth.value.px, LineStyle.Solid, borderColor.cssRgba) // in css .px is kinda .dp
         padding(padding.value.px)

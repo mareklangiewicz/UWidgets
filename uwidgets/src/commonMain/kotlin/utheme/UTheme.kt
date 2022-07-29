@@ -103,9 +103,10 @@ fun lightBluishUColors(
         get() = uboxTintBorder.compositeOver(uboxBackground)
 }
 
-@Stable class USizes(uboxPadding: Dp = 2.dp, uboxBorder: Dp = 1.dp) {
-    var uboxPadding by mutableStateOf(uboxPadding)
+@Stable class USizes(uboxMargin: Dp = 1.dp, uboxBorder: Dp = 1.dp, uboxPadding: Dp = 1.dp) {
+    var uboxMargin by mutableStateOf(uboxMargin)
     var uboxBorder by mutableStateOf(uboxBorder)
+    var uboxPadding by mutableStateOf(uboxPadding)
 }
 
 @Stable class UAlignments(horizontal: UAlignmentType = USTART, vertical: UAlignmentType = USTART) {

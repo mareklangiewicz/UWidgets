@@ -9,13 +9,14 @@ import androidx.compose.ui.unit.*
 @Composable fun UCoreContainer(
     type: UContainerType,
     size: DpSize? = null,
+    margin: Dp = 0.dp,
     backgroundColor: Color = Color.Transparent,
     borderColor: Color = Color.Transparent,
     borderWidth: Dp = 0.dp,
     padding: Dp = 0.dp,
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit,
-) = UCoreContainerImpl(type, size, backgroundColor, borderColor, borderWidth, padding, onClick, content)
+) = UCoreContainerImpl(type, size, margin, backgroundColor, borderColor, borderWidth, padding, onClick, content)
 
 @Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerImpl(type, content)
 
