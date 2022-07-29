@@ -68,17 +68,19 @@ fun lightUColors(
 ) = UColors(uboxBaseBackground, uboxTintBackground, uboxTintBorder)
 
 fun darkUColors(
-    uboxBaseBackground: Color = Color.DarkDarkGray,
+    uboxBaseBackground: Color = Color.DarkDarkGray, // Black here would be wrong because we always want border to be a bit darker.
     uboxTintBackground: Color = Color.Gray,
     uboxTintBorder: Color = Color.Black.copy(alpha = .4f),
 ) = UColors(uboxBaseBackground, uboxTintBackground, uboxTintBorder)
 
 val Color.Companion.DarkDarkGray get() = Color(0xFF222222)
+val Color.Companion.DarkDarkBlue get() = Color(0xFF000022)
+val Color.Companion.DarkBlue get() = Color(0xFF000044)
 
 fun lightBluishUColors(
     uboxBaseBackground: Color = Color.White,
     uboxTintBackground: Color = Color.Blue,
-    uboxTintBorder: Color = Color.Blue.copy(alpha = .1f),
+    uboxTintBorder: Color = Color.DarkBlue.copy(alpha = .1f),
 ) = UColors(uboxBaseBackground, uboxTintBackground, uboxTintBorder)
 
 
