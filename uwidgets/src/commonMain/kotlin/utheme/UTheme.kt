@@ -64,14 +64,16 @@ object UTheme {
 fun lightUColors(
     uboxBaseBackground: Color = Color.White,
     uboxTintBackground: Color = Color.Gray,
-    uboxTintBorder: Color = Color.Gray.copy(alpha = .1f),
+    uboxTintBorder: Color = Color.Black.copy(alpha = .1f),
 ) = UColors(uboxBaseBackground, uboxTintBackground, uboxTintBorder)
 
 fun darkUColors(
-    uboxBaseBackground: Color = Color.Black,
+    uboxBaseBackground: Color = Color.DarkDarkGray,
     uboxTintBackground: Color = Color.Gray,
-    uboxTintBorder: Color = Color.Gray.copy(alpha = .1f),
+    uboxTintBorder: Color = Color.Black.copy(alpha = .4f),
 ) = UColors(uboxBaseBackground, uboxTintBackground, uboxTintBorder)
+
+val Color.Companion.DarkDarkGray get() = Color(0xFF222222)
 
 fun lightBluishUColors(
     uboxBaseBackground: Color = Color.White,

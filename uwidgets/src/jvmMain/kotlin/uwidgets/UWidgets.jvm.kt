@@ -275,7 +275,7 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
     UBasicContainerJvm(UBOX) { Text(text, maxLines = maxLines, style = style) }
 }
 
-@Composable internal fun UTabsImpl(vararg tabs: String, useJvmTabRow: Boolean = true, onSelected: (index: Int, tab: String) -> Unit) {
+@Composable internal fun UTabsImpl(vararg tabs: String, useJvmTabRow: Boolean = false, onSelected: (index: Int, tab: String) -> Unit) {
     if (useJvmTabRow) UTabsImplTabRow(tabs = tabs, onSelected = onSelected)
     else UTabsCmn(tabs = tabs, onSelected = onSelected)
 }
