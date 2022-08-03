@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.*
@@ -15,7 +16,9 @@ import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
+import pl.mareklangiewicz.uwidgets.UScrollerType.*
 
+enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
 
 @Composable internal fun UBasicContainerImpl(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerJvm(type, content = content)
 
@@ -29,17 +32,48 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     borderWidth: Dp,
     padding: Dp,
     onClick: (() -> Unit)?,
+    withHorizontalScroll: Boolean,
+    withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
-) = UBasicContainerJvm(
-    type = type,
-    modifier = Modifier
-        .padding(margin)
-        .andIfNotNull(onClick) { clickable { it() } }
-        .andIfNotNull(requiredSize) { requiredSize(it) }
-        .background(backgroundColor)
-        .border(borderWidth, borderColor)
-        .padding(borderWidth + padding)
-) { CompositionLocalProvider(LocalContentColor provides contentColor) { content() } }
+) {
+    val hScrollS = if (withHorizontalScroll) rememberScrollState() else null
+    val vScrollS = if (withVerticalScroll) rememberScrollState() else null
+    // TODO NOW: check how it works for either or both enabled
+    UBasicContainerJvm(
+        type = type,
+        modifier = Modifier
+            .padding(margin)
+            .andIfNotNull(onClick) { clickable { it() } }
+            .andIfNotNull(requiredSize) { requiredSize(it) }
+            .background(backgroundColor)
+            .border(borderWidth, borderColor)
+            .padding(borderWidth + padding)
+            .andIfNotNull(hScrollS) { horizontalScroll(UBASIC, it) }
+            .andIfNotNull(vScrollS) { verticalScroll(UBASIC, it) }
+    ) { CompositionLocalProvider(LocalContentColor provides contentColor) { content() } }
+}
+
+
+fun Modifier.horizontalScroll(type: UScrollerType, state: ScrollState): Modifier = this
+    .drawWithContent {
+        require(type == UBASIC) // TODO later: implement different UScrollerTypes
+        drawContent()
+        // TODO NOW: scroller
+        if (state.maxValue > 0 && state.maxValue < Int.MAX_VALUE)
+        drawCircle(Color.Blue.copy(alpha = .1f), size.minDimension * .5f * state.value / state.maxValue)
+    }
+    .horizontalScroll(state)
+
+fun Modifier.verticalScroll(type: UScrollerType, state: ScrollState): Modifier = this
+    .drawWithContent {
+        require(type == UBASIC) // TODO later: implement different UScrollerTypes
+        drawContent()
+        // TODO NOW: scroller
+        if (state.maxValue > 0 && state.maxValue < Int.MAX_VALUE)
+            drawCircle(Color.Green.copy(alpha = .1f), size.minDimension * .5f * state.value / state.maxValue)
+    }
+    .verticalScroll(state)
+
 
 // thanIf would be wrong name (we use factory, not just Modifier)
 private inline fun Modifier.andIf(condition: Boolean, add: Modifier.() -> Modifier): Modifier =

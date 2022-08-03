@@ -15,8 +15,10 @@ import androidx.compose.ui.unit.*
     borderWidth: Dp = 0.dp,
     padding: Dp = 0.dp,
     onClick: (() -> Unit)? = null,
+    withHorizontalScroll: Boolean = false,
+    withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UCoreContainerImpl(type, size, margin, backgroundColor, borderColor, borderWidth, padding, onClick, content)
+) = UCoreContainerImpl(type, size, margin, backgroundColor, borderColor, borderWidth, padding, onClick, withHorizontalScroll, withVerticalScroll, content)
 
 @Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerImpl(type, content)
 

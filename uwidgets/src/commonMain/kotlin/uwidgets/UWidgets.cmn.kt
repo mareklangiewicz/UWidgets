@@ -22,7 +22,13 @@ enum class UAlignmentType(val css: String) {
 fun Color.lighten(fraction: Float = 0.1f) = lerp(this, Color.White, fraction.coerceIn(0f, 1f))
 fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coerceIn(0f, 1f))
 
-@Composable fun UContainer(type: UContainerType, size: DpSize? = null, content: @Composable () -> Unit) = UCoreContainer(
+@Composable fun UContainer(
+    type: UContainerType,
+    size: DpSize? = null,
+    withHorizontalScroll: Boolean = false,
+    withVerticalScroll: Boolean = false,
+    content: @Composable () -> Unit,
+) = UCoreContainer(
     type = type,
     size = size,
     margin = UTheme.sizes.uboxMargin,
@@ -31,7 +37,9 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
     borderColor = UTheme.colors.uboxBorder,
     borderWidth = UTheme.sizes.uboxBorder,
     padding = UTheme.sizes.uboxPadding,
-    onClick = LocalUOnContainerClick.current
+    onClick = LocalUOnContainerClick.current,
+    withHorizontalScroll = withHorizontalScroll,
+    withVerticalScroll = withVerticalScroll,
 ) { UDepth { CompositionLocalProvider(LocalUOnContainerClick provides null, content = content) } }
 
 // It's a really hacky solution for multiplatform minimalist onClick support.
@@ -42,9 +50,26 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 private val LocalUOnContainerClick = staticCompositionLocalOf<(() -> Unit)?> { null }
 
 
-@Composable fun UBox(size: DpSize? = null, content: @Composable () -> Unit) = UContainer(UBOX, size, content)
-@Composable fun UColumn(size: DpSize? = null, content: @Composable () -> Unit) = UContainer(UCOLUMN, size, content)
-@Composable fun URow(size: DpSize? = null, content: @Composable () -> Unit) = UContainer(UROW, size, content)
+@Composable fun UBox(
+    size: DpSize? = null,
+    withHorizontalScroll: Boolean = false,
+    withVerticalScroll: Boolean = false,
+    content: @Composable () -> Unit,
+) = UContainer(UBOX, size, withHorizontalScroll, withVerticalScroll, content)
+
+@Composable fun UColumn(
+    size: DpSize? = null,
+    withHorizontalScroll: Boolean = false,
+    withVerticalScroll: Boolean = false,
+    content: @Composable () -> Unit,
+) = UContainer(UCOLUMN, size, withHorizontalScroll, withVerticalScroll, content)
+
+@Composable fun URow(
+    size: DpSize? = null,
+    withHorizontalScroll: Boolean = false,
+    withVerticalScroll: Boolean = false,
+    content: @Composable () -> Unit,
+) = UContainer(UROW, size, withHorizontalScroll, withVerticalScroll, content)
 
 @Composable fun UBoxedText(text: String, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) = UBox {
     UAlign(

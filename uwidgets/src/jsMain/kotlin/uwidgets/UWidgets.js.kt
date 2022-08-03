@@ -25,6 +25,8 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     borderWidth: Dp,
     padding: Dp,
     onClick: (() -> Unit)?,
+    withHorizontalScroll: Boolean,
+    withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
 ) = UBasicContainerJs(
     type = type,
@@ -35,6 +37,8 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         backgroundColor(backgroundColor.cssRgba)
         border(borderWidth.value.px, LineStyle.Solid, borderColor.cssRgba) // in css .px is kinda .dp
         padding(padding.value.px)
+        overflowX(if (withHorizontalScroll) "auto" else "clip") // TODO NOW: make sure we clip the similarly on both platforms
+        overflowY(if (withVerticalScroll) "auto" else "clip")
     },
     onClick = onClick,
     content = content

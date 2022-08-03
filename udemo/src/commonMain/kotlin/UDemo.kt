@@ -1,19 +1,19 @@
 package pl.mareklangiewicz.udemo
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
+import pl.mareklangiewicz.umath.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
 @Composable
-fun UDemo() = UAlign(USTRETCH, USTRETCH) {
+fun UDemo(udemo2size: Int = 100) = UAlign(USTRETCH, USTRETCH) {
     UTabs(
         "UDemo 0" to { UDemo0() },
         "UDemo 1" to { UDemo1() },
-        "UDemo 2" to { UText("TODO UDemo2") },
+        "UDemo 2" to { UBox(udemo2size.dp.squared) { UDemo1() } },
     )
 }
 
@@ -66,13 +66,13 @@ private fun UDemoTexts(
     }
 }
 
-@Composable fun UDemo1() = URow {
+@Composable fun UDemo1() = URow(withHorizontalScroll = true, withVerticalScroll = true) {
     UTheme(lightUColors()) { SomeMenuTree() }
     UTheme(darkUColors()) { SomeMenuTree() }
     UTheme(lightBluishUColors()) { SomeMenuTree() }
 }
 
-@Composable private fun SomeMenuTree() {
+@Composable fun SomeMenuTree() {
     UMenuTree(
         "XYZ".cbtree(
             "AAA".cbtree(
