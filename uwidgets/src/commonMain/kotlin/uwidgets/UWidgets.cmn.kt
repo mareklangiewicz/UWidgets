@@ -81,7 +81,7 @@ private val LocalUOnContainerClick = staticCompositionLocalOf<(() -> Unit)?> { n
 @Composable fun UTabs(vararg contents: Pair<String, @Composable () -> Unit>) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     UColumn {
-        UTabs(*contents.map { it.first }.toTypedArray()) { idx, _ -> selectedTabIndex = idx }
+        UTabs(*contents.map { it.first }.toTypedArray()) { idx, tab -> selectedTabIndex = idx } // Renaming tab -> _ breaks layout inspector in AS!!
         contents[selectedTabIndex].second()
     }
 }
