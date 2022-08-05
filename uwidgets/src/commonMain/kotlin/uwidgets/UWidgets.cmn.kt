@@ -38,16 +38,21 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
     borderWidth = UTheme.sizes.uboxBorder,
     padding = UTheme.sizes.uboxPadding,
     onClick = LocalUOnContainerClick.current,
+    onDebugEvent = LocalUOnContainerDebugEvent.current,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,
-) { UDepth { CompositionLocalProvider(LocalUOnContainerClick provides null, content = content) } }
+) { UDepth { CompositionLocalProvider(LocalUOnContainerClick provides null, LocalUOnContainerDebugEvent provides null, content = content) } }
 
 // It's a really hacky solution for multiplatform minimalist onClick support.
 // Mostly to avoid more parameters in functions. Probably will be changed later.
 @Composable fun UOnClick(onContainerClick: () -> Unit, content: @Composable () -> Unit) =
     CompositionLocalProvider(LocalUOnContainerClick provides onContainerClick, content = content)
 
+@Composable fun UOnDebugEvent(onDebugEvent: (Any) -> Unit, content: @Composable () -> Unit) =
+    CompositionLocalProvider(LocalUOnContainerDebugEvent provides onDebugEvent, content = content)
+
 private val LocalUOnContainerClick = staticCompositionLocalOf<(() -> Unit)?> { null }
+private val LocalUOnContainerDebugEvent = staticCompositionLocalOf<((Any) -> Unit)?> { null }
 
 
 @Composable fun UBox(

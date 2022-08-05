@@ -32,6 +32,7 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
     borderWidth: Dp,
     padding: Dp,
     onClick: (() -> Unit)?,
+    onDebugEvent: ((Any) -> Unit)?, // TODO NOW: use it
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
@@ -82,12 +83,18 @@ private inline fun Modifier.andIf(condition: Boolean, add: Modifier.() -> Modifi
 private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modifier): Modifier =
     if (value != null) add(value) else this
 
-@Composable fun UBasicContainerJvm(type: UContainerType, modifier: Modifier = Modifier, content: @Composable () -> Unit = {}) {
+@Composable fun UBasicContainerJvm(
+    type: UContainerType,
+    modifier: Modifier = Modifier,
+    onDebugEvent: ((Any) -> Unit)? = null,
+    content: @Composable () -> Unit = {},
+) {
     val phorizontal = UTheme.alignments.horizontal
     val pvertical = UTheme.alignments.vertical
     val m = modifier.ualign(phorizontal, pvertical)
+    Layout(content = content, modifier = m) { measurables, parentConstraints ->
     when (type) {
-        UBOX -> Layout(content = content, modifier = m) { measurables, parentConstraints ->
+        UBOX -> {
             val placeables = measurables.map { measurable ->
                 val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                 measurable.measure(parentConstraints.copy(
@@ -104,11 +111,11 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                 }
             }
         }
-        UROW -> Layout(content = content, modifier = m) { measurables, parentConstraints ->
+        UROW -> {
             val placeables: MutableList<Placeable?> = measurables.map { measurable ->
                 val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                 // skip measuring stretched items (when normal bounded row width) (will measure it later)
-                uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth &&return@map null
+                uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth && return@map null
                 measurable.measure(parentConstraints.copy(
                     minWidth = 0,
                     minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
@@ -138,7 +145,7 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                 else placeAllAsHorizontalGroupsStartCenterEnd(p, phorizontal, pvertical, parentWidth, parentHeight, fixedWidthTaken)
             }
         }
-        UCOLUMN -> Layout(content = content, modifier = m) { measurables, parentConstraints ->
+        UCOLUMN -> {
             val placeables: MutableList<Placeable?> = measurables.map { measurable ->
                 val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                 // skip measuring stretched items (when normal bounded column height) (will measure it later)
@@ -172,6 +179,7 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
                 else placeAllAsVerticalGroupsTopCenterBottom(p, phorizontal, pvertical, parentWidth, parentHeight, fixedHeightTaken)
             }
         }
+    }
     }
 }
 

@@ -25,6 +25,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     borderWidth: Dp,
     padding: Dp,
     onClick: (() -> Unit)?,
+    onDebugEvent: ((Any) -> Unit)?, // TODO NOW: use
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,

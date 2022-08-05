@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.*
     borderWidth: Dp,
     padding: Dp,
     onClick: (() -> Unit)?,
+    onDebugEvent: ((Any) -> Unit)? = null,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
@@ -38,10 +39,25 @@ import androidx.compose.ui.unit.*
     borderWidth: Dp = 0.dp,
     padding: Dp = 0.dp,
     onClick: (() -> Unit)? = null,
+    onDebugEvent: ((Any) -> Unit)? = null,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UCoreContainerAct(type, size, margin, contentColor, backgroundColor, borderColor, borderWidth, padding, onClick, withHorizontalScroll, withVerticalScroll, content)
+) = UCoreContainerAct(
+    type = type,
+    size = size,
+    margin = margin,
+    contentColor = contentColor,
+    backgroundColor = backgroundColor,
+    borderColor = borderColor,
+    borderWidth = borderWidth,
+    padding = padding,
+    onClick = onClick,
+    onDebugEvent = onDebugEvent,
+    withHorizontalScroll = withHorizontalScroll,
+    withVerticalScroll = withVerticalScroll,
+    content = content
+)
 
 @Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerAct(type, content)
 

@@ -75,7 +75,7 @@ private fun UDemoTexts(
 
 @Composable fun UDemo2(size: DpSize, withHorizontalScroll: Boolean = true, withVerticalScroll: Boolean = true) =
     UColumn(size, withHorizontalScroll = withHorizontalScroll, withVerticalScroll = withVerticalScroll) {
-        UDemoTexts(40, growFactor = 4)
+        UDemoTexts(growFactor = 4)
     }
 
 @Composable fun SomeMenuTree() {
