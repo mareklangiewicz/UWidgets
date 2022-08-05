@@ -9,11 +9,11 @@ import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
 @Composable
-fun UDemo(udemo2size: Int = 400) = UAlign(USTRETCH, USTRETCH) {
+fun UDemo(udemo2size: Int = 400, withHorizontalScrollsEnabed: Boolean = true, withVerticalScrollsEnabled: Boolean = true) = UAlign(USTRETCH, USTRETCH) {
     UTabs(
         "UDemo 0" to { UDemo0() },
-        "UDemo 1" to { UDemo1() },
-        "UDemo 2" to { UDemo2(udemo2size.dp.squared) },
+        "UDemo 1" to { UDemo1(withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
+        "UDemo 2" to { UDemo2(udemo2size.dp.squared, withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
     )
 }
 
@@ -66,15 +66,17 @@ private fun UDemoTexts(
     }
 }
 
-@Composable fun UDemo1() = URow(withHorizontalScroll = true, withVerticalScroll = true) {
-    UTheme(lightUColors()) { SomeMenuTree() }
-    UTheme(darkUColors()) { SomeMenuTree() }
-    UTheme(lightBluishUColors()) { SomeMenuTree() }
-}
+@Composable fun UDemo1(withHorizontalScroll: Boolean = true, withVerticalScroll: Boolean = true) =
+    URow(withHorizontalScroll = withHorizontalScroll, withVerticalScroll = withVerticalScroll) {
+        UTheme(lightUColors()) { SomeMenuTree() }
+        UTheme(darkUColors()) { SomeMenuTree() }
+        UTheme(lightBluishUColors()) { SomeMenuTree() }
+    }
 
-@Composable fun UDemo2(size: DpSize) = UColumn(size, withHorizontalScroll = true, withVerticalScroll = true) {
-    UDemoTexts(40, growFactor = 4)
-}
+@Composable fun UDemo2(size: DpSize, withHorizontalScroll: Boolean = true, withVerticalScroll: Boolean = true) =
+    UColumn(size, withHorizontalScroll = withHorizontalScroll, withVerticalScroll = withVerticalScroll) {
+        UDemoTexts(40, growFactor = 4)
+    }
 
 @Composable fun SomeMenuTree() {
     UMenuTree(
