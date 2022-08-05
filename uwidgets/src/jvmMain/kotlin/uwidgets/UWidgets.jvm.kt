@@ -88,9 +88,9 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
     val m = modifier.ualign(phorizontal, pvertical)
     when (type) {
         UBOX -> Layout(content = content, modifier = m) { measurables, parentConstraints ->
-            val placeables = measurables.map {
-                val (uhorizontal, uvertical) = it.uChildData(phorizontal, pvertical)
-                it.measure(parentConstraints.copy(
+            val placeables = measurables.map { measurable ->
+                val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
+                measurable.measure(parentConstraints.copy(
                     minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
                     minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
                 ))
@@ -105,10 +105,11 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             }
         }
         UROW -> Layout(content = content, modifier = m) { measurables, parentConstraints ->
-            val placeables: MutableList<Placeable?> = measurables.map {
-                val (uhorizontal, uvertical) = it.uChildData(phorizontal, pvertical)
-                uhorizontal == USTRETCH && return@map null // skip measuring stretched items (will do it later)
-                it.measure(parentConstraints.copy(
+            val placeables: MutableList<Placeable?> = measurables.map { measurable ->
+                val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
+                // skip measuring stretched items (when normal bounded row width) (will measure it later)
+                uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth &&return@map null
+                measurable.measure(parentConstraints.copy(
                     minWidth = 0,
                     minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
                 ))
@@ -139,7 +140,8 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
         UCOLUMN -> Layout(content = content, modifier = m) { measurables, parentConstraints ->
             val placeables: MutableList<Placeable?> = measurables.map { measurable ->
                 val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
-                uvertical == USTRETCH && return@map null // skip measuring stretched items (will do it later)
+                // skip measuring stretched items (when normal bounded column height) (will measure it later)
+                uvertical == USTRETCH && parentConstraints.hasBoundedHeight && return@map null
                 measurable.measure(parentConstraints.copy(
                     minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
                     minHeight = 0,
