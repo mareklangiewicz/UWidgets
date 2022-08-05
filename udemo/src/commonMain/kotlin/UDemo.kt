@@ -9,11 +9,12 @@ import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
 @Composable
-fun UDemo(udemo2size: Int = 100) = UAlign(USTRETCH, USTRETCH) {
+fun UDemo(udemo2size: Int = 400) = UAlign(USTRETCH, USTRETCH) {
     UTabs(
         "UDemo 0" to { UDemo0() },
         "UDemo 1" to { UDemo1() },
-        "UDemo 2" to { UBox(udemo2size.dp.squared) { UDemo1() } },
+        // "UDemo 2" to { UBox(udemo2size.dp.squared) { UDemo1() } },
+        "UDemo 2" to { UDemo2() },
     )
 }
 
@@ -70,6 +71,10 @@ private fun UDemoTexts(
     UTheme(lightUColors()) { SomeMenuTree() }
     UTheme(darkUColors()) { SomeMenuTree() }
     UTheme(lightBluishUColors()) { SomeMenuTree() }
+}
+
+@Composable fun UDemo2() = UColumn(withHorizontalScroll = true, withVerticalScroll = true) {
+    UDemoTexts(40, growFactor = 4)
 }
 
 @Composable fun SomeMenuTree() {
