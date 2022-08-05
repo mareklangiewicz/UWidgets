@@ -132,9 +132,10 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             }
             val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical, parentConstraints)
             layout(parentWidth, parentHeight) {
+                // I do filterNotNull, because some stretched items can be skipped totally when no place left after measuring fixed items
                 val p = if (itemStretchedCount > 0) placeables.filterNotNull() else placeables.map { it ?: error("placeable not measured") }
                 if (itemStretchedCount > 0) placeAllAsHorizontalStartToEnd(p, phorizontal, pvertical, parentHeight)
-                else placeAllAsHorizontalStartCenterEnd(p, phorizontal, pvertical, parentWidth, parentHeight, fixedWidthTaken)
+                else placeAllAsHorizontalGroupsStartCenterEnd(p, phorizontal, pvertical, parentWidth, parentHeight, fixedWidthTaken)
             }
         }
         UCOLUMN -> Layout(content = content, modifier = m) { measurables, parentConstraints ->
@@ -165,9 +166,10 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
             }
             val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
             layout(parentWidth, parentHeight) {
+                // I do filterNotNull, because some stretched items can be skipped totally when no place left after measuring fixed items
                 val p = if (itemStretchedCount > 0) placeables.filterNotNull() else placeables.map { it ?: error("placeable not measured") }
                 if (itemStretchedCount > 0) placeAllAsVerticalTopToDown(p, phorizontal, pvertical, parentWidth)
-                else placeAllAsVerticalTopCenterBottom(p, phorizontal, pvertical, parentWidth, parentHeight, fixedHeightTaken)
+                else placeAllAsVerticalGroupsTopCenterBottom(p, phorizontal, pvertical, parentWidth, parentHeight, fixedHeightTaken)
             }
         }
     }
@@ -201,7 +203,8 @@ private fun Placeable.PlacementScope.placeAllAsVerticalTopToDown(
     }
 }
 
-private fun Placeable.PlacementScope.placeAllAsHorizontalStartCenterEnd(
+// Any USTRETCH items are treated as belonging to current group (start or center or end)
+private fun Placeable.PlacementScope.placeAllAsHorizontalGroupsStartCenterEnd(
     placeables: List<Placeable>,
     parentHorizontal: UAlignmentType,
     parentVertical: UAlignmentType,
@@ -214,7 +217,7 @@ private fun Placeable.PlacementScope.placeAllAsHorizontalStartCenterEnd(
     while (idx < placeables.size) { // loop through USTART arranged placeables first
         val p = placeables[idx]
         val (uhorizontal, uvertical) = p.uChildData(parentHorizontal, parentVertical)
-        uhorizontal == USTART || break
+        uhorizontal == USTART || uhorizontal == USTRETCH || break
         p.placeRelative(x, uvertical.startPositionFor(p.height, parentHeight))
         x += p.width
         idx++
@@ -223,7 +226,7 @@ private fun Placeable.PlacementScope.placeAllAsHorizontalStartCenterEnd(
     while (idx < placeables.size) { // loop through UCENTER (and USTART treated same as UCENTER) arranged placeables
         val p = placeables[idx]
         val (uhorizontal, uvertical) = p.uChildData(parentHorizontal, parentVertical)
-        uhorizontal == USTART || uhorizontal == UCENTER || break
+        uhorizontal == UEND && break
         p.placeRelative(x, uvertical.startPositionFor(p.height, parentHeight))
         x += p.width
         idx++
@@ -238,7 +241,8 @@ private fun Placeable.PlacementScope.placeAllAsHorizontalStartCenterEnd(
     }
 }
 
-private fun Placeable.PlacementScope.placeAllAsVerticalTopCenterBottom(
+// Any USTRETCH items are treated as belonging to current group (top or center or bottom)
+private fun Placeable.PlacementScope.placeAllAsVerticalGroupsTopCenterBottom(
     placeables: List<Placeable>,
     parentHorizontal: UAlignmentType,
     parentVertical: UAlignmentType,
@@ -251,7 +255,7 @@ private fun Placeable.PlacementScope.placeAllAsVerticalTopCenterBottom(
     while (idx < placeables.size) { // loop through USTART arranged placeables first
         val p = placeables[idx]
         val (uhorizontal, uvertical) = p.uChildData(parentHorizontal, parentVertical)
-        uvertical == USTART || break
+        uvertical == USTART || uvertical == USTRETCH || break
         p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), y)
         y += p.height
         idx++
@@ -260,7 +264,7 @@ private fun Placeable.PlacementScope.placeAllAsVerticalTopCenterBottom(
     while (idx < placeables.size) { // loop through UCENTER (and USTART treated same as UCENTER) arranged placeables
         val p = placeables[idx]
         val (uhorizontal, uvertical) = p.uChildData(parentHorizontal, parentVertical)
-        uvertical == USTART || uvertical == UCENTER || break
+        uvertical == UEND && break
         p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), y)
         y += p.height
         idx++
