@@ -13,7 +13,7 @@ fun UDemo(udemo2size: Int = 400, withHorizontalScrollsEnabed: Boolean = true, wi
     UTabs(
         "UDemo 0" to { UDemo0() },
         "UDemo 1" to { UDemo1(withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
-        "UDemo 2" to { UDemo2(udemo2size.dp.squared, withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
+        "UDemo 2" to { UDemo2(udemo2size.dp.square, withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
     )
 }
 

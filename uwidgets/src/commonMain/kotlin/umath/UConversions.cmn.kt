@@ -13,4 +13,5 @@ val Number.int get() = toInt()
 val Number.dbl get() = toDouble()
 
 
-val Dp.squared get() = DpSize(this, this)
+val Dp.square get() = DpSize(this, this)
+val Int.square get() = IntSize(this, this)

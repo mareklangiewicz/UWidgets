@@ -10,6 +10,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
@@ -50,7 +51,8 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
             .border(borderWidth, borderColor)
             .padding(borderWidth + padding)
             .andIfNotNull(hScrollS) { horizontalScroll(UBASIC, it) }
-            .andIfNotNull(vScrollS) { verticalScroll(UBASIC, it) }
+            .andIfNotNull(vScrollS) { verticalScroll(UBASIC, it) },
+        onDebugEvent = onDebugEvent,
     ) { CompositionLocalProvider(LocalContentColor provides contentColor) { content() } }
 }
 
@@ -61,7 +63,7 @@ fun Modifier.horizontalScroll(type: UScrollerType, state: ScrollState): Modifier
         drawContent()
         // TODO NOW: scroller
         if (state.maxValue > 0 && state.maxValue < Int.MAX_VALUE)
-        drawCircle(Color.Blue.copy(alpha = .1f), size.minDimension * .5f * state.value / state.maxValue)
+            drawCircle(Color.Blue.copy(alpha = .1f), size.minDimension * .5f * state.value / state.maxValue)
     }
     .horizontalScroll(state)
 
