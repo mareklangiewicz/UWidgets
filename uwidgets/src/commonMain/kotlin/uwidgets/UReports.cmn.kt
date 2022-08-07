@@ -18,7 +18,7 @@ typealias OnUReport = (UReport) -> Unit
 // TODO NOW: rename to UReports; rename .report to invoke (operator); rename .ureports to history?; save instant timestamps in history!!
 class UReportsModel(val log: OnUReport = { println(it.ustr) } ) {
     val ureports = mutableStateListOf<UReport>()
-    fun report(r: UReport) {
+    operator fun invoke(r: UReport) {
         log(r)
         ureports.add(r)
     }

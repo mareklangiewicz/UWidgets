@@ -22,7 +22,7 @@ fun UMenuTree(tree: UCallbackTree, dispatcher: CoroutineDispatcher) {
     require(subt.isEmpty() || tree.callback == null) { "Tree with sub trees and callback" }
     when {
         subt.isEmpty() -> {
-            UOnClick({ scope.launch(dispatcher) { tree.callback?.invoke() }}) {
+            UOnContainerClick({ scope.launch(dispatcher) { tree.callback?.invoke() }}) {
                 UBoxedText(tree.label!!, mono = true)
             }
         }

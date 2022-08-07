@@ -45,10 +45,11 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 
 // It's a really hacky solution for multiplatform minimalist onClick support.
 // Mostly to avoid more parameters in functions. Probably will be changed later.
-@Composable fun UOnClick(onContainerClick: () -> Unit, content: @Composable () -> Unit) =
+@Composable fun UOnContainerClick(onContainerClick: () -> Unit, content: @Composable () -> Unit) =
     CompositionLocalProvider(LocalUOnContainerClick provides onContainerClick, content = content)
 
-@Composable fun UOnReport(onUReport: OnUReport, content: @Composable () -> Unit) =
+// TODO NOW: use it, demo it!!, test it
+@Composable fun UOnContainerReport(onUReport: OnUReport, content: @Composable () -> Unit) =
     CompositionLocalProvider(LocalUOnContainerReport provides onUReport, content = content)
 
 private val LocalUOnContainerClick = staticCompositionLocalOf<(() -> Unit)?> { null }
@@ -96,7 +97,7 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     var selectedTabIndex by remember { mutableStateOf(0) }
     URow {
         tabs.forEachIndexed { index, title ->
-            UOnClick({ selectedTabIndex = index; onSelected(index, title) }) {
+            UOnContainerClick({ selectedTabIndex = index; onSelected(index, title) }) {
                 UBoxedText(title, center = true, bold = index == selectedTabIndex, mono = true)
             }
         }

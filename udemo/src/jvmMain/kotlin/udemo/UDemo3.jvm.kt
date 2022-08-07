@@ -14,7 +14,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     val reportsModel = rememberUReportsModel()
     URow {
         UColumn(size, withHorizontalScroll = withHorizontalScroll, withVerticalScroll = withVerticalScroll) {
-            UBasicContainerJvm(UCOLUMN, Modifier.reportMeasuringAndPlacement("demo3", reportsModel::report)) {
+            UBasicContainerJvm(UCOLUMN, Modifier.reportMeasuringAndPlacement("demo3", reportsModel::invoke)) {
                 UDemoTexts(growFactor = 4)
             }
         }
