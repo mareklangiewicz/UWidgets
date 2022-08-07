@@ -115,11 +115,11 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     val w2 = gapwidth - w1
     UAlign(UCENTER, UCENTER) {
         URow {
-            UText(min.str, bold = bold, mono = true)
+            UText(min.ustr, bold = bold, mono = true)
             UCoreContainer(UBOX, DpSize(w1.dp, 4.dp), backgroundColor = Color.Blue, padding = 2.dp) {}
-            UText(pos.str, bold = bold, mono = true)
+            UText(pos.ustr, bold = bold, mono = true)
             UCoreContainer(UBOX, DpSize(w2.dp, 4.dp), backgroundColor = Color.White, padding = 2.dp) {}
-            UText(max.str, bold = bold, mono = true)
+            UText(max.ustr, bold = bold, mono = true)
         }
     }
 }

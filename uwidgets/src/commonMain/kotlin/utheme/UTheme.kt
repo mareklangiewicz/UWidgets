@@ -28,6 +28,10 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
     content = content
 )
 
+// TODO_someday: support themes resembling winamp themes like:
+// https://twitter.com/Ajumplakdibampa/status/1555828578667085824
+// (maybe also more classic ones)
+
 /**
  * Default values are read from outer theme mutable states. It can probably be very inefficient
  * (recomposing whole subtree when any inherited alignment type changes), but let's not care about that.
