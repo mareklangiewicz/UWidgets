@@ -78,8 +78,6 @@ fun UDemo0() = URow {
         UDemoTexts(growFactor = 4)
     }
 
-@Composable expect fun UDemo3(size: DpSize, withHorizontalScroll: Boolean = true, withVerticalScroll: Boolean = true)
-
 @Composable fun SomeMenuTree() {
     UMenuTree(
         "XYZ".cbtree(
