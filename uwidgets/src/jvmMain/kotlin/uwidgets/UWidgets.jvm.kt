@@ -33,7 +33,7 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
     borderWidth: Dp,
     padding: Dp,
     onClick: (() -> Unit)?,
-    onDebugEvent: ((Any) -> Unit)?, // TODO NOW: use it
+    onUReport: OnUReport?, // TODO NOW: use it
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
@@ -52,7 +52,7 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
             .padding(borderWidth + padding)
             .andIfNotNull(hScrollS) { horizontalScroll(UBASIC, it) }
             .andIfNotNull(vScrollS) { verticalScroll(UBASIC, it) },
-        onDebugEvent = onDebugEvent,
+        onUReport = onUReport,
     ) { CompositionLocalProvider(LocalContentColor provides contentColor) { content() } }
 }
 
@@ -88,7 +88,7 @@ private inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) 
 @Composable fun UBasicContainerJvm(
     type: UContainerType,
     modifier: Modifier = Modifier,
-    onDebugEvent: ((Any) -> Unit)? = null,
+    onUReport: OnUReport? = null,
     content: @Composable () -> Unit = {},
 ) {
     val phorizontal = UTheme.alignments.horizontal

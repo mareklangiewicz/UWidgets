@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.*
     borderWidth: Dp,
     padding: Dp,
     onClick: (() -> Unit)?,
-    onDebugEvent: ((Any) -> Unit)?,
+    onUReport: OnUReport?,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.*
     borderWidth = borderWidth,
     padding = padding,
     onClick = onClick,
-    onDebugEvent = onDebugEvent,
+    onUReport = onUReport,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,
     content = content

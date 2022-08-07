@@ -13,8 +13,10 @@ typealias UReport = Pair<String, Any>
     // No actual new type here because I want easier composability with any random code with callbacks.
     // Stringly-typed style is justified in UReports. Reflection/when/is<type> constructs are encouraged here.
 
-// TODO: rename to UReports; rename .report to invoke (operator); rename .ureports to history?; save instant timestamps in history!!
-class UReportsModel(val log: (UReport) -> Unit = { println(it.ustr) } ) {
+typealias OnUReport = (UReport) -> Unit
+
+// TODO NOW: rename to UReports; rename .report to invoke (operator); rename .ureports to history?; save instant timestamps in history!!
+class UReportsModel(val log: OnUReport = { println(it.ustr) } ) {
     val ureports = mutableStateListOf<UReport>()
     fun report(r: UReport) {
         log(r)
@@ -22,7 +24,7 @@ class UReportsModel(val log: (UReport) -> Unit = { println(it.ustr) } ) {
     }
 }
 
-@Composable fun rememberUReportsModel(log: (UReport) -> Unit = { println(it.ustr) } ) = remember { UReportsModel(log) }
+@Composable fun rememberUReportsModel(log: OnUReport = { println(it.ustr) } ) = remember { UReportsModel(log) }
 
 @Suppress("UNCHECKED_CAST")
 fun <T> UReport.reported(key: String? = null, checkData: T.() -> Boolean = { true }) {
