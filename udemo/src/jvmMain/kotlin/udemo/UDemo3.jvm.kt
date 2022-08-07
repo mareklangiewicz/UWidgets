@@ -6,7 +6,7 @@ import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
-@Composable actual fun UDemo3(
+@Composable internal fun UDemo3Impl(
     size: DpSize,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,

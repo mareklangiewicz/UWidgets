@@ -4,4 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
 
 
-@Composable expect fun UDemo3(size: DpSize, withHorizontalScroll: Boolean = true, withVerticalScroll: Boolean = true)
+@Composable fun UDemo3(size: DpSize, withHorizontalScroll: Boolean = true, withVerticalScroll: Boolean = true) =
+    UDemo3Act(size, withHorizontalScroll, withVerticalScroll)
+
+@Composable expect fun UDemo3Act(size: DpSize, withHorizontalScroll: Boolean, withVerticalScroll: Boolean)
