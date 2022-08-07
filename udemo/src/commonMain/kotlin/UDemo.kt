@@ -14,6 +14,7 @@ fun UDemo(udemo2size: Int = 400, withHorizontalScrollsEnabed: Boolean = true, wi
         "UDemo 0" to { UDemo0() },
         "UDemo 1" to { UDemo1(withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
         "UDemo 2" to { UDemo2(udemo2size.dp.square, withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
+        "UDemo 3 Platform" to { UDemo3(udemo2size.dp.square, withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
     )
 }
 
@@ -48,8 +49,7 @@ fun UDemo0() = URow {
     }
 }
 
-@Composable
-private fun UDemoTexts(
+@Composable fun UDemoTexts(
     count: Int = 20,
     boxed: Boolean = true,
     center: Boolean = true,
@@ -77,6 +77,8 @@ private fun UDemoTexts(
     UColumn(size, withHorizontalScroll = withHorizontalScroll, withVerticalScroll = withVerticalScroll) {
         UDemoTexts(growFactor = 4)
     }
+
+@Composable expect fun UDemo3(size: DpSize, withHorizontalScroll: Boolean = true, withVerticalScroll: Boolean = true)
 
 @Composable fun SomeMenuTree() {
     UMenuTree(

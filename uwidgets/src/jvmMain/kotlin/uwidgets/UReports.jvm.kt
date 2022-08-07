@@ -28,3 +28,22 @@ import pl.mareklangiewicz.umath.*
     }
 }
 
+// TODO NOW!!! Drawing constraints etc on top of actual nodes - with new canvas text support
+// and integrate this micro report system with onDebugEvent
+
+fun Modifier.reportMeasuring(tag: String, report: (UReport) -> Unit): Modifier = layout { measurable, constraints ->
+    report("$tag measure with" to constraints)
+    val placeable = measurable.measure(constraints)
+    report("$tag measured" to placeable.udata)
+    layout(placeable.width, placeable.height) { placeable.place(0, 0) }
+}
+
+fun Modifier.reportPlacement(tag: String, report: (UReport) -> Unit): Modifier = onPlaced {
+    report("$tag placed" to it.udata)
+}
+
+fun Modifier.reportMeasuringAndPlacement(tag: String, report: (UReport) -> Unit): Modifier =
+    reportMeasuring(tag, report).reportPlacement(tag, report)
+
+fun UReport.reportedPlacement(tag: String, checkData: ULayoutCoordinatesData.() -> Boolean = { true }) =
+    reported("$tag placed", checkData)
