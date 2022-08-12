@@ -8,28 +8,27 @@ import pl.mareklangiewicz.umath.*
  * (debug stuff like layouts, constraints, etc)
  */
 
-/** First is key, second is reported data. */
-typealias UReport = Pair<String, Any>
+/** First is nano-time of report creation, second is some key, third is reported data. */
+typealias UReport = Triple<Long, String, Any>
     // No actual new type here because I want easier composability with any random code with callbacks.
     // Stringly-typed style is justified in UReports. Reflection/when/is<type> constructs are encouraged here.
 
 typealias OnUReport = (UReport) -> Unit
 
-// TODO NOW: rename to UReports; rename .report to invoke (operator); rename .ureports to history?; save instant timestamps in history!!
-class UReportsModel(val log: OnUReport = { println(it.ustr) } ) {
-    val ureports = mutableStateListOf<UReport>()
+class UReports(val log: OnUReport = { println(it.ustr) } ) {
+    val history = mutableStateListOf<UReport>()
     operator fun invoke(r: UReport) {
         log(r)
-        ureports.add(r)
+        history.add(r)
     }
 }
 
-@Composable fun rememberUReportsModel(log: OnUReport = { println(it.ustr) } ) = remember { UReportsModel(log) }
+@Composable fun rememberUReports(log: OnUReport = { println(it.ustr) } ) = remember { UReports(log) }
 
 @Suppress("UNCHECKED_CAST")
 fun <T> UReport.reported(key: String? = null, checkData: T.() -> Boolean = { true }) {
-    if (key != null) check (first == key) { "Unexpected key: $first != $key"}
-    val data = second as T
+    if (key != null) check (second == key) { "Unexpected key: $second != $key"}
+    val data = third as T
     check(data.checkData()) { "Unexpected data reported at: $key"}
 }
 

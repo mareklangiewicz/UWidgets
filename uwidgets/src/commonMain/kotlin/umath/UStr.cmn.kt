@@ -23,6 +23,7 @@ val Any?.ustr: String
         is Float -> ustr()
         is Offset -> "(${x.ustr},${y.ustr})"
         is Pair<*, *> -> "${first.ustr} to ${second.ustr}"
+        is Triple<*, *, *> -> "${first.ustr} to ${second.ustr} tre ${third.ustr}"
         is Rect -> "rect: ${topLeft.ustr} - ${bottomRight.ustr}"
         is Placeable -> "placeable: $width x $height, measured = $measuredWidth x $measuredHeight"
         is Constraints -> "constraints: min = $minWidth x $minHeight, max = $maxWidth x $maxHeight"
