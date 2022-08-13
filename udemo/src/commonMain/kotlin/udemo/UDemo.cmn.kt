@@ -3,6 +3,7 @@ package pl.mareklangiewicz.udemo
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
+import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.umath.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
@@ -82,14 +83,14 @@ fun UDemo0() = URow {
     UMenuTree(
         "XYZ".cbtree(
             "AAA".cbtree(
-                "aaa1".cbtree { println("aaa1") },
-                "aaa2".cbtree { println("aaa2") },
+                "aaa1".cbtree { ulogw("aaa1") },
+                "aaa2".cbtree { ulogw("aaa2") },
             ),
             "BBB".cbtree(
-                "bbb1".cbtree { println("bbb1") },
-                "bbb2".cbtree { println("bbb2") },
+                "bbb1".cbtree { ulogw("bbb1") },
+                "bbb2".cbtree { ulogw("bbb2") },
                 "bCCC".cbtree(
-                    "ccc".cbtree { println("ccc") }
+                    "ccc".cbtree { ulogw("ccc") }
                 )
             ),
         ),

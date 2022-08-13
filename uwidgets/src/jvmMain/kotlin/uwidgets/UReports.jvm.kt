@@ -46,5 +46,5 @@ fun Modifier.reportPlacement(tag: String, onUReport: OnUReport): Modifier = onPl
 fun Modifier.reportMeasuringAndPlacement(tag: String, onUReport: OnUReport): Modifier =
     reportMeasuring(tag, onUReport).reportPlacement(tag, onUReport)
 
-fun UReport.reportedPlacement(tag: String, checkData: ULayoutCoordinatesData.() -> Boolean = { true }) =
-    reported("$tag placed", checkData)
+fun UReport.hasPlacement(tag: String, checkData: ULayoutCoordinatesData.() -> Boolean = { true }) =
+    has("$tag placed", checkData)
