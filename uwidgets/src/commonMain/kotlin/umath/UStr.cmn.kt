@@ -29,7 +29,7 @@ val Any?.ustr: String
         is Constraints -> "constraints: min = $minWidth x $minHeight, max = $maxWidth x $maxHeight"
         is UPlaceableData -> "placeable: $width x $height, measured = $measuredWidth x $measuredHeight"
         is ULayoutCoordinatesData -> "coordinates: size = $size, bounds in parent = ${boundsInParent.ustr}, attached = ${isAttached.ustr}, parent layout = ${parentLayoutCoordinatesData.markIfNull()}, parent = ${parentCoordinatesData.markIfNull()}"
-        else -> toString().limit(32, "..")
+        else -> toString().limit(64, "..")
     }
 
 fun String.limit(limit: Int = 32, limitIndicator: String = "..") =

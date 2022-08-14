@@ -2,7 +2,6 @@ package pl.mareklangiewicz.playgrounds
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.desktop.ui.tooling.preview.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.*
@@ -19,14 +18,9 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 
-@Preview @Composable fun MyUBoxPreview() = MyExaminedLayoutPlayground(UBOX)
-@Preview @Composable fun MyURowPreview() = MyExaminedLayoutPlayground(UROW)
-@Preview @Composable fun MyUColumnPreview() = MyExaminedLayoutPlayground(UCOLUMN)
-@Preview @Composable fun MyAnimatedContentPreview() = MyAnimatedContentPlayground()
-
 @Composable fun MyExaminedLayoutPlayground(type: UContainerType = UBOX) {
 
-    val reportsModel = rememberUReports { ulogw("rspek ${it.ustr}") } // rspek so I can filter logs with uspek/rspek/spek
+    val ureports = rememberUReports { ulogw("rspek ${it.ustr}") } // rspek so I can filter logs with uspek/rspek/spek
 
     Column(Modifier.fillMaxWidth()) {
         MyExaminedLayout(
@@ -35,9 +29,9 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
             withSon2Red = true,
             withSon3Green = true,
             withSon4Blue = false,
-            onUReport = reportsModel::invoke,
+            onUReport = ureports::invoke,
         )
-        UReportsUi(reportsModel, Modifier.height(400.dp))
+        UReportsUi(ureports, Modifier.height(400.dp))
     }
 }
 
