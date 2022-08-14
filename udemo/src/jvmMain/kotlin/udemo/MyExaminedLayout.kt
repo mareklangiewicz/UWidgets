@@ -58,7 +58,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 @Composable fun RigidFather(
     type: UContainerType = UBOX,
     size: DpSize = 400.dp.square,
-    report: (UReport) -> Unit = {},
+    onUReport: OnUReport = {},
     content: @Composable () -> Unit,
 ) {
     val m = Modifier
@@ -66,8 +66,8 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         .border(4.dp, Color.Blue)
         .padding(4.dp)
         .requiredSize(size)
-        .reportMeasuringAndPlacement("rigid father", report)
-    UBasicContainerJvm(type, m, content = content)
+        .reportMeasuringAndPlacement("rigid father", onUReport)
+    UBasicContainerJvm(type, m, onUReport, content)
 }
 
 @Composable fun ColoredSon(
@@ -82,7 +82,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         .background(color.copy(alpha = color.alpha * .8f), RoundedCornerShape(4.dp))
         .run { if (sizeRequired) requiredSize(size) else size(size) }
         .reportMeasuringAndPlacement("$tag inner", onUReport)
-    UBasicContainerJvm(UBOX, m)
+    UBasicContainerJvm(UBOX, m, onUReport)
 }
 
 
