@@ -11,16 +11,16 @@ import pl.mareklangiewicz.uspek.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 import kotlin.math.*
 
-private val ureports = UReports { ulogw("rspek ${it.ustr}") } // rspek so I can filter logs with uspek/rspek/spek
-
-private operator fun UReports.get(idx: Int) = history[idx]
-
-private fun UReports.eqAt(vararg indices: Int) {
-    val expected = this[indices[0]]
-    for (i in indices.drop(1)) this[i].hasKeyAndData(expected.second, expected.third)
-}
-
 fun ComposeContentTestRule.MyExaminedLayoutUSpekFun() = with(density) {
+
+    val ureports = UReports { ulogw("rspek ${it.ustr}") } // rspek so I can filter logs with uspek/rspek/spek
+
+    operator fun UReports.get(idx: Int) = history[idx]
+
+    fun UReports.eqAt(vararg indices: Int) {
+        val expected = this[indices[0]]
+        for (i in indices.drop(1)) this[i].hasKeyAndData(expected.second, expected.third)
+    }
 
     ureports.history.clear()
 
