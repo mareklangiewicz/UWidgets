@@ -15,14 +15,7 @@ fun ComposeContentTestRule.MyExaminedLayoutUSpekFun() = with(density) {
 
     val ureports = UReports { ulogw("rspek ${it.ustr}") } // rspek so I can filter logs with uspek/rspek/spek
 
-    operator fun UReports.get(idx: Int) = history[idx]
-
-    fun UReports.eqAt(vararg indices: Int) {
-        val expected = this[indices[0]]
-        for (i in indices.drop(1)) this[i].hasKeyAndData(expected.second, expected.third)
-    }
-
-    ureports.history.clear()
+    ureports.clear()
 
     "On MyExaminedLayout" o {
         var type by mutableStateOf(UBOX)
@@ -49,7 +42,7 @@ fun ComposeContentTestRule.MyExaminedLayoutUSpekFun() = with(density) {
 
             "With no children" o {
 
-                "only root rigid father is measured and placed" o { ureports.history.size eq 3 }
+                "only root rigid father is measured and placed" o { ureports.size eq 3 }
 
                 "rigid father gets measured with fixed constraints" o {
                     ureports[0].hasKeyAndData("rigid father measure with", rigidSizePx.copyToAllConstraints())
@@ -112,7 +105,7 @@ fun ComposeContentTestRule.MyExaminedLayoutUSpekFun() = with(density) {
                         ureports[21].hasPlacement("blue son outer") { size == rigidSizePx && positionInParent == Offset.Zero }
                         ureports[22].hasPlacement("blue son inner") { size == rigidSizePx && positionInParent == Offset.Zero }
                     }
-                    "no other reports" o { ureports.history.size eq 23 }
+                    "no other reports" o { ureports.size eq 23 }
                 }
 
                 "When green son stretched horizontally gets enabled" o {
@@ -148,7 +141,7 @@ fun ComposeContentTestRule.MyExaminedLayoutUSpekFun() = with(density) {
                                 && boundsInParent.bottom.roundToInt() == rigidSizePx.height
                         }
                     }
-                    "no other reports" o { ureports.history.size eq 23 }
+                    "no other reports" o { ureports.size eq 23 }
                 }
                 // TODO: other types UROW UCOLUMN
             }

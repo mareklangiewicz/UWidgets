@@ -6,8 +6,6 @@ import androidx.compose.ui.geometry.*
 import androidx.compose.ui.unit.*
 import kotlin.math.*
 
-infix fun <A, B, C> Pair<A, B>.tre(c: C) = Triple(first, second, c)
-
 val Number.int get() = toInt()
 val Number.dbl get() = toDouble()
 
