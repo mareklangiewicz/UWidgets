@@ -5,10 +5,9 @@ import androidx.compose.ui.geometry.*
 import androidx.compose.ui.test.junit4.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.playgrounds.*
+import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
-import pl.mareklangiewicz.umath.*
 import pl.mareklangiewicz.uspek.*
-import pl.mareklangiewicz.usystem.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 import kotlin.math.*
 

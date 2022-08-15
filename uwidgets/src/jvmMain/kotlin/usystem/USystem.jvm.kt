@@ -1,7 +1,7 @@
 package pl.mareklangiewicz.usystem
 
-internal fun Float.ustrImpl(precision: Int): String = "%.${precision}f".format(this)
-internal fun Double.ustrImpl(precision: Int): String = "%.${precision}f".format(this)
+internal fun Float.toUStrImpl(precision: Int): String = "%.${precision}f".format(this)
+internal fun Double.toUStrImpl(precision: Int): String = "%.${precision}f".format(this)
 
 internal fun nowTimeMSImpl(): Long = System.currentTimeMillis()
 

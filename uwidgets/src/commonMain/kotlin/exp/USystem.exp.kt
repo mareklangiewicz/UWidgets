@@ -2,8 +2,8 @@
 
 package pl.mareklangiewicz.usystem
 
-fun Float.ustr(precision: Int = 2): String = ustrAct(precision)
-fun Double.ustr(precision: Int = 2): String = ustrAct(precision)
+fun Float.toUStr(precision: Int = 2): String = toUStrAct(precision)
+fun Double.toUStr(precision: Int = 2): String = toUStrAct(precision)
 
 fun nowTimeMS(): Long = nowTimeMSAct()
 
@@ -11,8 +11,8 @@ fun nowTimeMS(): Long = nowTimeMSAct()
 inline fun <R> syncMaybe(lock: Any, block: () -> R): R = syncMaybeAct(lock, block)
 
 
-expect fun Float.ustrAct(precision: Int): String
-expect fun Double.ustrAct(precision: Int): String
+expect fun Float.toUStrAct(precision: Int): String
+expect fun Double.toUStrAct(precision: Int): String
 
 expect fun nowTimeMSAct(): Long
 

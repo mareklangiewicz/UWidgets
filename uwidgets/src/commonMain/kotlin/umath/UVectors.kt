@@ -1,6 +1,6 @@
 package pl.mareklangiewicz.umath
 
-import pl.mareklangiewicz.usystem.*
+import pl.mareklangiewicz.udata.*
 
 
 fun lerp(start: Int, stop: Int, fraction: Float = 0.5f) = lerp(start.toFloat(), stop.toFloat(), fraction).toInt()

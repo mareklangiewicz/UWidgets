@@ -10,8 +10,8 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
+import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
-import pl.mareklangiewicz.usystem.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*

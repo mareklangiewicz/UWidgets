@@ -1,7 +1,7 @@
 package pl.mareklangiewicz.usystem
 
-actual fun Float.ustrAct(precision: Int): String = ustrImpl(precision)
-actual fun Double.ustrAct(precision: Int): String = ustrImpl(precision)
+actual fun Float.toUStrAct(precision: Int): String = toUStrImpl(precision)
+actual fun Double.toUStrAct(precision: Int): String = toUStrImpl(precision)
 
 actual fun nowTimeMSAct(): Long = nowTimeMSImpl()
 
