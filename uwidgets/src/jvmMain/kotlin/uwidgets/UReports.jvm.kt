@@ -14,20 +14,24 @@ import pl.mareklangiewicz.udata.*
 // TODO: move it to common code using other uwidgets
 @Composable fun UReportsUi(reports: UReports, modifier: Modifier = Modifier) {
     CompositionLocalProvider(LocalDensity provides Density(1f)) {
-        Column(modifier) {
-            reports.forEachIndexed { idx, entry ->
+        val vScrollS = rememberScrollState()
+        Column(modifier.verticalScroll(UScrollerType.UBASIC, vScrollS)) {
+            for (idx in reports.size - 1 downTo 0) {
+                val entry = reports[idx]
                 Row(
                     Modifier
-                        .background(Color.White.darken(.1f * (idx % 3)))
+                        .background(Color.White.darken(.06f * (idx % 4)))
                         .padding(2.dp)) {
-                    Box(Modifier.width(80.dp)) { Text(entry.timeMS.ustr) }
-                    Box(Modifier.width(400.dp)) { Text(entry.key) }
+                    Box(Modifier.width(60.dp)) { Text(entry.timeUStr) }
+                    Box(Modifier.width(200.dp)) { Text(entry.key) }
                     Box(Modifier.weight(1f)) { Text(entry.data.ustr) }
                 }
             }
         }
     }
 }
+
+private val UReports.Entry.timeUStr get() = (timeMS / 1000.0).ustr.substring(startIndex = 7)
 
 // TODO NOW!!! Drawing constraints etc. on top of actual nodes - with new canvas text support
 
