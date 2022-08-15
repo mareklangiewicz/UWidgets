@@ -16,7 +16,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     URow {
         MyExaminedLayout()
         UColumn(size, withHorizontalScroll = withHorizontalScroll, withVerticalScroll = withVerticalScroll) {
-            UBasicContainerJvm(UCOLUMN, Modifier.reportMeasuringAndPlacement("demo3", reportsModel::invoke)) {
+            UBasicContainerJvm(UCOLUMN, Modifier.reportMeasuringAndPlacement(reportsModel::invoke, "demo3 ")) {
                 UDemoTexts(growFactor = 4)
             }
         }

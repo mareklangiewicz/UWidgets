@@ -49,8 +49,10 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
     CompositionLocalProvider(LocalUOnContainerClick provides onContainerClick, content = content)
 
 // TODO NOW: use it, demo it!!, test it
-@Composable fun UOnContainerReport(onUReport: OnUReport, content: @Composable () -> Unit) =
-    CompositionLocalProvider(LocalUOnContainerReport provides onUReport, content = content)
+@Composable fun UOnContainerReport(onUReport: OnUReport, keyPrefix: String = "", content: @Composable () -> Unit) {
+    val on: OnUReport = if (keyPrefix.isEmpty()) onUReport else { r -> onUReport(keyPrefix + r.first to r.second) }
+    CompositionLocalProvider(LocalUOnContainerReport provides on, content = content)
+}
 
 private val LocalUOnContainerClick = staticCompositionLocalOf<(() -> Unit)?> { null }
 private val LocalUOnContainerReport = staticCompositionLocalOf<OnUReport?> { null }

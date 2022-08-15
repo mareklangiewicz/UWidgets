@@ -35,19 +35,19 @@ private val UReports.Entry.timeUStr get() = (timeMS / 1000.0).ustr.substring(sta
 
 // TODO NOW!!! Drawing constraints etc. on top of actual nodes - with new canvas text support
 
-fun Modifier.reportMeasuring(tag: String, onUReport: OnUReport): Modifier = layout { measurable, constraints ->
-    onUReport("$tag measure with" to constraints)
+fun Modifier.reportMeasuring(onUReport: OnUReport, keyPrefix: String = ""): Modifier = layout { measurable, constraints ->
+    onUReport(keyPrefix + "measure with" to constraints)
     val placeable = measurable.measure(constraints)
-    onUReport("$tag measured" to placeable.udata)
+    onUReport(keyPrefix + "measured" to placeable.udata)
     layout(placeable.width, placeable.height) { placeable.place(0, 0) }
 }
 
-fun Modifier.reportPlacement(tag: String, onUReport: OnUReport): Modifier = onPlaced {
-    onUReport("$tag placed" to it.udata)
+fun Modifier.reportPlacement(onUReport: OnUReport, keyPrefix: String = ""): Modifier = onPlaced {
+    onUReport(keyPrefix + "placed" to it.udata)
 }
 
-fun Modifier.reportMeasuringAndPlacement(tag: String, onUReport: OnUReport): Modifier =
-    reportMeasuring(tag, onUReport).reportPlacement(tag, onUReport)
+fun Modifier.reportMeasuringAndPlacement(onUReport: OnUReport, keyPrefix: String = ""): Modifier =
+    reportMeasuring(onUReport, keyPrefix).reportPlacement(onUReport, keyPrefix)
 
 fun UReports.Entry.hasPlacement(tag: String, checkData: ULayoutCoordinatesData.() -> Boolean = { true }) =
     has("$tag placed", checkData)

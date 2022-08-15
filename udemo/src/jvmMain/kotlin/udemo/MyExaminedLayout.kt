@@ -66,7 +66,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         .border(4.dp, Color.Blue)
         .padding(4.dp)
         .requiredSize(size)
-        .reportMeasuringAndPlacement("rigid father", onUReport)
+        .reportMeasuringAndPlacement(onUReport, "rigid father ")
     UBasicContainerJvm(type, m, onUReport, content)
 }
 
@@ -78,10 +78,10 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     onUReport: OnUReport = {},
 ) {
     val m = Modifier
-        .reportMeasuringAndPlacement("$tag outer", onUReport)
+        .reportMeasuringAndPlacement(onUReport, "$tag outer ")
         .background(color.copy(alpha = color.alpha * .8f), RoundedCornerShape(4.dp))
         .run { if (sizeRequired) requiredSize(size) else size(size) }
-        .reportMeasuringAndPlacement("$tag inner", onUReport)
+        .reportMeasuringAndPlacement(onUReport, "$tag inner ")
     UBasicContainerJvm(UBOX, m, onUReport)
 }
 
