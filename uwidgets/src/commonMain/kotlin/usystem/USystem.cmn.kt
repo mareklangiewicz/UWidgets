@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package pl.mareklangiewicz.umath
+package pl.mareklangiewicz.usystem
 
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.layout.*

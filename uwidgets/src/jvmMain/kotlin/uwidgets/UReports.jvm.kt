@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
-import pl.mareklangiewicz.umath.*
+import pl.mareklangiewicz.usystem.*
 
 @Composable fun UReportsUi(model: UReports, modifier: Modifier = Modifier) = UReportsUi(model.history, modifier)
 @Composable fun UReportsUi(reports: List<UReport>, modifier: Modifier = Modifier) {

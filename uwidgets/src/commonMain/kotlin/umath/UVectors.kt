@@ -1,5 +1,7 @@
 package pl.mareklangiewicz.umath
 
+import pl.mareklangiewicz.usystem.*
+
 
 fun lerp(start: Int, stop: Int, fraction: Float = 0.5f) = lerp(start.toFloat(), stop.toFloat(), fraction).toInt()
 fun lerp(start: Float, stop: Float, fraction: Float = 0.5f) = (start * (1 - fraction) + stop * fraction)

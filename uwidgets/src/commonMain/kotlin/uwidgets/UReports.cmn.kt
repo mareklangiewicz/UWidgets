@@ -2,7 +2,7 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import pl.mareklangiewicz.ulog.*
-import pl.mareklangiewicz.umath.*
+import pl.mareklangiewicz.usystem.*
 
 /**
  * Micro reporting tools. Mostly for USpek tests of composables, but also to debug stuff manually/visually.
