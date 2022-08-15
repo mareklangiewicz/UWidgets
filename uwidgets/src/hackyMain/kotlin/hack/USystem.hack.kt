@@ -2,8 +2,8 @@
 
 package pl.mareklangiewicz.usystem
 
-fun Float.ustr(precision: Int = 2): String = ustrImpl(precision)
-fun Double.ustr(precision: Int = 2): String = ustrImpl(precision)
+fun Float.toUStr(precision: Int = 2): String = toUStrImpl(precision)
+fun Double.toUStr(precision: Int = 2): String = toUStrImpl(precision)
 
 fun nowTimeMS(): Long = nowTimeMsImpl()
 
