@@ -25,7 +25,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     borderWidth: Dp,
     padding: Dp,
     onClick: (() -> Unit)?,
-    onUReport: OnUReport?, // TODO NOW: use
+    onUReport: OnUReport?,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
@@ -42,9 +42,12 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         overflowY(if (withVerticalScroll) "auto" else "clip")
     },
     onClick = onClick,
+    onUReport = onUReport,
     content = content
 )
 
+// TODO_later: rethink. it can be useful, but holds dom elements in memory (when used with UReportsUi or sth)
+var leakyDomReportsEnabled: Boolean = false
 
 /** @param inline false -> div; true -> span (and if type != null: css display: inline-grid instead of grid) */
 @Composable fun UBasicContainerJs(
@@ -52,8 +55,10 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     inline: Boolean = false,
     addStyle: (StyleScope.() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
+    onUReport: OnUReport? = null,
     content: @Composable () -> Unit,
 ) {
+    onUReport?.invoke("ucontainer" to type)
     val parentType = LocalUContainerType.current
     val horizontal = UTheme.alignments.horizontal
     val vertical = UTheme.alignments.vertical
@@ -64,6 +69,10 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
             addStyle?.let { it() }
         }
         onClick?.let { onClick { it() } }
+        if (leakyDomReportsEnabled && onUReport != null) { ref {
+            onUReport("dom enter" to it)
+            onDispose { onUReport("dom exit" to it) }
+        } }
     }
     CompositionLocalProvider(LocalUContainerType provides type) {
         if (inline) Span(attrs) { content() } else Div(attrs) { content() }

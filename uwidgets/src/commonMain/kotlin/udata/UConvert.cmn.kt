@@ -26,4 +26,6 @@ fun String.limit(limit: Int = 64, limitIndicator: String = "..") =
     if (length > limit) substring(0, limit-limitIndicator.length) + limitIndicator else this
 
 
+fun String.containsOneOf(vararg substrings: String) = substrings.any { it in this }
+
 

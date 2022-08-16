@@ -12,15 +12,18 @@ import pl.mareklangiewicz.uwidgets.UReports.*
  */
 
 /** First is some key, second is reported data. */
-typealias UReport = Pair<String, Any>
+typealias UReport = Pair<String, Any?>
     // No actual new type here because I want easier composability with any random code with callbacks.
     // Stringly-typed style is justified in UReports. Reflection/when/is<type> constructs are encouraged here.
 
 typealias OnUReport = (UReport) -> Unit
 
-@Composable fun rememberUReports(log: OnUReport = { ulogd(it.ustr) }) = remember { UReports(log) }
+@Suppress("NOTHING_TO_INLINE")
+inline fun OnUReport.withKeyPrefix(keyPrefix: String): OnUReport = { this(keyPrefix + it.first to it.second) }
 
-class UReports(val log: OnUReport = { ulogd(it.ustr) }): Iterable<Entry> {
+@Composable fun rememberUReports(log: (Any?) -> Unit = ::ulogd) = remember { UReports(log) }
+
+class UReports(val log: (Any?) -> Unit = ::ulogd): Iterable<Entry> {
 
     private val entries = mutableStateListOf<Entry>()
 
@@ -28,34 +31,41 @@ class UReports(val log: OnUReport = { ulogd(it.ustr) }): Iterable<Entry> {
 
     val size: Int get() = entries.size
 
+    // separate so it's not tracked by snapshot system; FIXME_later: why using size is causing MyExaminedLayoutUSpek to loop infinitely??
+    private var sizeShadow: Int = 0
+
     override operator fun iterator() = entries.iterator()
 
-    fun clear() = entries.clear()
+    fun clear() = entries.clear().also { sizeShadow = 0 }
 
     operator fun invoke(r: UReport) {
-        log(r)
+        log(sizeShadow++ to r)
         entries.add(Entry(r))
     }
 
     data class Entry(private val report: UReport, val timeMS: Long = nowTimeMS()) {
         val key: String get() = report.first
-        val data: Any get() = report.second
+        val data: Any? get() = report.second
     }
 }
 
-fun Entry.hasTimeIn(erange: LongRange) = check(timeMS in erange) { "Unexpected time: $timeMS not in $erange" }
+fun Long.asTimeUStr() = (this / 1000.0).ustr.substring(startIndex = 7)
+
+val Entry.timeUStr get() = timeMS.asTimeUStr()
+
+fun Entry.hasTimeIn(erange: LongRange) = check(timeMS in erange) { "Unexpected time: $timeUStr not in ${erange.first.asTimeUStr()}..${erange.last.asTimeUStr()}" }
 
 fun Entry.hasKey(ekey: String) = check(key == ekey) { "Unexpected key: $key != $ekey" }
 
-fun <T: Any> Entry.hasData(edata: T) =
-    check(data == edata) { "Unexpected data reported at time: $timeMS, key: $key" }
+@Suppress("UNCHECKED_CAST")
+fun <T> Entry.hasData(edata: T) = check(data as T == edata) { "Unexpected data reported at time: $timeUStr, key: $key" }
 
-fun <T: Any> Entry.hasKeyAndData(ekey: String, edata: T) { hasKey(ekey); hasData(edata) }
+fun <T> Entry.hasKeyAndData(ekey: String, edata: T) { hasKey(ekey); hasData(edata) }
 
 @Suppress("UNCHECKED_CAST")
 fun <T: Any> Entry.has(ekey: String? = null, checkData: T.() -> Boolean) {
     if (ekey != null) hasKey(ekey)
-    check((data as T).checkData()) { "Unexpected data reported at time: $timeMS, key: $key" }
+    check((data as T).checkData()) { "Unexpected data reported at time: $timeUStr, key: $key" }
 }
 
 fun UReports.eqAt(vararg indices: Int) {

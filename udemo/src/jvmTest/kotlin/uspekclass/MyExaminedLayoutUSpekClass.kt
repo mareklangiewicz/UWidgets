@@ -15,5 +15,5 @@ class MyExaminedLayoutUSpek {
 
     @get:Rule val rule = createComposeRule()
 
-    @USpekTestTree(23) fun melusf() = rule.MyExaminedLayoutUSpekFun()
+    @USpekTestTree(33) fun melusf() = rule.MyExaminedLayoutUSpekFun()
 }

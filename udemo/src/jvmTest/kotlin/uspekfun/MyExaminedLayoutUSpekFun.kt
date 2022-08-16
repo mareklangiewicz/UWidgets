@@ -42,14 +42,19 @@ fun ComposeContentTestRule.MyExaminedLayoutUSpekFun() = with(density) {
 
             "With no children" o {
 
-                "only root rigid father is measured and placed" o { ureports.size eq 3 }
+                "only root rigid father is composed measured and placed" o {
+                    true eq ureports.all {
+                        it.key.startsWith("rigid father") && it.key.containsOneOf("compose", "measure", "place")
+                    }
+                }
 
                 "rigid father gets measured with fixed constraints" o {
-                    ureports[0].hasKeyAndData("rigid father measure with", rigidSizePx.copyToAllConstraints())
-                    ureports[1].hasKeyAndData("rigid father measured", rigidSizePx.copyToUPlaceableData())
+                    ureports[1].hasKeyAndData("rigid father measure in", rigidSizePx.copyToAllConstraints())
+                    ureports[2].hasKeyAndData("rigid father measured", rigidSizePx)
                 }
-                "rigid father is placed and attached" o {
-                    ureports[2].hasPlacement("rigid father") { size == rigidSizePx && isAttached }
+                "rigid father gets placed without children" o {
+                    ureports[3].hasKeyAndData("rigid father place in", rigidSizePx)
+                    ureports[4].hasKeyAndData("rigid father placed count", 0)
                 }
             }
 
@@ -57,91 +62,99 @@ fun ComposeContentTestRule.MyExaminedLayoutUSpekFun() = with(density) {
                 withSon1Cyan = true
                 waitForIdle()
 
-                "rigid father starts measure again with the same constraints" o { ureports.eqAt(3, 0) }
+                "cyan son is composed" o { ureports[5].hasKeyAndData("cyan son inner compose", UBOX) }
 
-                val cyanSonSizePx = 160.dp.square.toSize().copyRoundToIntSize()
+                "rigid father starts measure 2nd time with the same constraints" o { ureports.eqAt(6, 1) }
+
+                val cyanSonSizePx = 150.dp.square.toSize().copyRoundToIntSize()
                 "cyan son gets measured" o {
-                    ureports[4].hasKeyAndData("cyan son outer measure with", rigidSizePx.copyToMaxConstraints())
-                    ureports[5].hasKeyAndData("cyan son inner measure with", cyanSonSizePx.copyToAllConstraints())
-                    ureports[6].hasKeyAndData("cyan son inner measured", cyanSonSizePx.copyToUPlaceableData())
-                    ureports[7].hasKeyAndData("cyan son outer measured", cyanSonSizePx.copyToUPlaceableData())
+                    ureports[7].hasKeyAndData("cyan son outer measure in", rigidSizePx.copyToMaxConstraints())
+                    ureports[8].hasKeyAndData("cyan son inner measure in", cyanSonSizePx.copyToAllConstraints())
+                    ureports[9].hasKeyAndData("cyan son inner measured", cyanSonSizePx)
+                    ureports[10].hasKeyAndData("cyan son outer measured", cyanSonSizePx.copyToUPlaceableData())
                 }
 
-                "rigid father gets remeasured and placed the same way as before" o {
-                    ureports.eqAt(8, 1)
-                    ureports.eqAt(9, 2)
+                "rigid father gets remeasured and place in the same way as before" o {
+                    ureports.eqAt(11, 2)
+                    ureports.eqAt(12, 3)
                 }
 
                 "cyan son gets placed on bottom left side" o {
-                    ureports[10].hasPlacement("cyan son outer") {
+                    ureports[13].hasPlacedCoordinates("cyan son outer") {
                         size == cyanSonSizePx && boundsInParent.left == 0f && boundsInParent.bottom.roundToInt() == rigidSizePx.height
                     }
-                    ureports[11].hasPlacement("cyan son inner") {
-                        size == cyanSonSizePx && boundsInParent.left == 0f && boundsInParent.bottom.roundToInt() == rigidSizePx.height
-                    }
+                    ureports[14].hasKeyAndData("cyan son inner place in", cyanSonSizePx)
+                    ureports[15].hasKeyAndData("cyan son inner placed count", 0)
                 }
 
-                "rigid father starts measure again with the same constraints" o { ureports[12] eq ureports[0] }
+                "rigid father is placed with one child" o { ureports[16].hasKeyAndData("rigid father placed count", 1) }
 
                 "When blue son stretched both ways gets enabled" o {
                     withSon4Blue = true
                     waitForIdle()
 
+                    "blue son is composed" o { ureports[17].hasKeyAndData("blue son inner compose", UBOX) }
+
+                    "rigid father starts remeasure" o { ureports.eqAt(18, 1) }
+
                     "blue son gets measured" o {
-                        ureports[13].hasKeyAndData("blue son outer measure with", rigidSizePx.copyToAllConstraints())
-                        ureports[14].hasKeyAndData("blue son inner measure with", rigidSizePx.copyToAllConstraints())
-                        ureports[15].hasKeyAndData("blue son inner measured", rigidSizePx.copyToUPlaceableData())
-                        ureports[16].hasKeyAndData("blue son outer measured", rigidSizePx.copyToUPlaceableData())
+                        ureports[19].hasKeyAndData("blue son outer measure in", rigidSizePx.copyToAllConstraints())
+                        ureports[20].hasKeyAndData("blue son inner measure in", rigidSizePx.copyToAllConstraints())
+                        ureports[21].hasKeyAndData("blue son inner measured", rigidSizePx)
+                        ureports[22].hasKeyAndData("blue son outer measured", rigidSizePx.copyToUPlaceableData())
                     }
-                    "rigid father gets remeasured and placed the same way" o {
-                        ureports.eqAt(17, 1)
-                        ureports.eqAt(18, 2)
+                    "rigid father is measured and place in the same way" o {
+                        ureports.eqAt(23, 2)
+                        ureports.eqAt(24, 3)
                     }
-                    "cyan son gets placed again the same way" o {
-                        ureports.eqAt(19, 10)
-                        ureports.eqAt(20, 11)
-                    }
+                    "cyan son outer gets placed again the same way" o { ureports.eqAt(25, 13) }
+                    "cyan son inner placing is skipped" o { false eq ureports[26].key.startsWith("cyan") }
+                    // probably because compose notice there was nothing inside to actually place
+
                     "blue son gets placed with fixed rigid father size" o {
-                        ureports[21].hasPlacement("blue son outer") { size == rigidSizePx && positionInParent == Offset.Zero }
-                        ureports[22].hasPlacement("blue son inner") { size == rigidSizePx && positionInParent == Offset.Zero }
+                        ureports[26].hasPlacedCoordinates("blue son outer") { size == rigidSizePx && positionInParent == Offset.Zero }
+                        ureports[27].hasKeyAndData("blue son inner place in", rigidSizePx)
+                        ureports[28].hasKeyAndData("blue son inner placed count", 0)
                     }
-                    "no other reports" o { ureports.size eq 23 }
+                    "rigid father is placed with two children" o { ureports[29].hasKeyAndData("rigid father placed count", 2) }
+                    "no other reports" o { ureports.size eq 30 }
                 }
 
                 "When green son stretched horizontally gets enabled" o {
                     withSon3Green = true
                     waitForIdle()
 
+                    "green son is composed" o { ureports[17].hasKeyAndData("green son inner compose", UBOX) }
+
+                    "rigid father starts remeasure" o { ureports.eqAt(18, 1) }
+
                     val greenSonSizePx = 60.dp.square.toSize().copyRoundToIntSize()
+                    val greenSonActualSizePx = IntSize(rigidSizePx.width, greenSonSizePx.height)
                     "green son gets measured" o {
-                        ureports[13].hasKeyAndData("green son outer measure with", rigidSizePx.copyToAllConstraints(minH = 0))
-                        ureports[14].hasKeyAndData("green son inner measure with", rigidSizePx.copyToAllConstraints(minH = greenSonSizePx.height, maxH = greenSonSizePx.height))
-                        ureports[15].hasKeyAndData("green son inner measured", rigidSizePx.copyToUPlaceableData(h = greenSonSizePx.height))
-                        ureports[16].hasKeyAndData("green son outer measured", rigidSizePx.copyToUPlaceableData(h = greenSonSizePx.height))
+                        ureports[19].hasKeyAndData("green son outer measure in", rigidSizePx.copyToAllConstraints(minH = 0))
+                        ureports[20].hasKeyAndData("green son inner measure in", greenSonActualSizePx.copyToAllConstraints())
+                        ureports[21].hasKeyAndData("green son inner measured", greenSonActualSizePx)
+                        ureports[22].hasKeyAndData("green son outer measured", greenSonActualSizePx.copyToUPlaceableData())
                     }
-                    "rigid father gets remeasured and placed the same way" o {
-                        ureports.eqAt(17, 1)
-                        ureports.eqAt(18, 2)
+                    "rigid father is measured and place in the same way" o {
+                        ureports.eqAt(23, 2)
+                        ureports.eqAt(24, 3)
                     }
-                    "cyan son gets placed again the same way" o {
-                        ureports.eqAt(19, 10)
-                        ureports.eqAt(20, 11)
-                    }
+                    "cyan son outer gets placed again the same way" o { ureports.eqAt(25, 13) }
+                    "cyan son inner placing is skipped" o { false eq ureports[26].key.startsWith("cyan") }
+                    // probably because compose notice there was nothing inside to actually place
+
                     "green son gets placed stretched horizontally" o {
-                        ureports[21].hasPlacement("green son outer") {
-                            size.width == rigidSizePx.width
-                                && size.height == greenSonSizePx.height
+                        ureports[26].hasPlacedCoordinates("green son outer") {
+                            size == greenSonActualSizePx
                                 && boundsInParent.left == 0f
                                 && boundsInParent.bottom.roundToInt() == rigidSizePx.height
                         }
-                        ureports[22].hasPlacement("green son inner") {
-                            size.width == rigidSizePx.width
-                                && size.height == greenSonSizePx.height
-                                && boundsInParent.left == 0f
-                                && boundsInParent.bottom.roundToInt() == rigidSizePx.height
-                        }
+                        ureports[27].hasKeyAndData("green son inner place in", greenSonActualSizePx)
+                        ureports[28].hasKeyAndData("green son inner placed count", 0)
                     }
-                    "no other reports" o { ureports.size eq 23 }
+                    "rigid father is placed with two children" o { ureports[29].hasKeyAndData("rigid father placed count", 2) }
+                    "no other reports" o { ureports.size eq 30 }
                 }
                 // TODO: other types UROW UCOLUMN
             }

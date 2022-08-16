@@ -31,23 +31,19 @@ import pl.mareklangiewicz.udata.*
     }
 }
 
-private val UReports.Entry.timeUStr get() = (timeMS / 1000.0).ustr.substring(startIndex = 7)
-
 // TODO NOW!!! Drawing constraints etc. on top of actual nodes - with new canvas text support
 
-fun Modifier.reportMeasuring(onUReport: OnUReport, keyPrefix: String = ""): Modifier = layout { measurable, constraints ->
-    onUReport(keyPrefix + "measure with" to constraints)
+fun Modifier.reportMeasuring(onUReport: OnUReport): Modifier = layout { measurable, constraints ->
+    onUReport("measure in" to constraints)
     val placeable = measurable.measure(constraints)
-    onUReport(keyPrefix + "measured" to placeable.udata)
+    onUReport("measured" to placeable.udata)
     layout(placeable.width, placeable.height) { placeable.place(0, 0) }
 }
 
-fun Modifier.reportPlacement(onUReport: OnUReport, keyPrefix: String = ""): Modifier = onPlaced {
-    onUReport(keyPrefix + "placed" to it.udata)
+fun Modifier.reportPlacement(onUReport: OnUReport): Modifier = onPlaced {
+    onUReport("placed" to it.udata)
 }
 
-fun Modifier.reportMeasuringAndPlacement(onUReport: OnUReport, keyPrefix: String = ""): Modifier =
-    reportMeasuring(onUReport, keyPrefix).reportPlacement(onUReport, keyPrefix)
+fun Modifier.reportMeasuringAndPlacement(onUReport: OnUReport): Modifier = reportMeasuring(onUReport).reportPlacement(onUReport)
 
-fun UReports.Entry.hasPlacement(tag: String, checkData: ULayoutCoordinatesData.() -> Boolean = { true }) =
-    has("$tag placed", checkData)
+fun UReports.Entry.hasPlacedCoordinates(tag: String, checkData: ULayoutCoordinatesData.() -> Boolean) = has("$tag placed", checkData)
