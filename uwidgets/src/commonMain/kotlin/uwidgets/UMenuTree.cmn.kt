@@ -33,7 +33,7 @@ fun UMenuTree(tree: UCallbackTree, dispatcher: CoroutineDispatcher) {
     }
 }
 
-// TODO NOW: UButton that appears clickable on JVM AND JS; use it in all places where it makes sense
+// TODO_later: UButton that appears clickable on JVM AND JS; use it in all places where it makes sense
 
 @Composable
 fun UMenuTreeWithFilter(tree: UCallbackTree, dispatcher: CoroutineDispatcher) {

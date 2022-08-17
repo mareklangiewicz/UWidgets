@@ -40,7 +40,6 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
 ) {
     val hScrollS = if (withHorizontalScroll) rememberScrollState() else null
     val vScrollS = if (withVerticalScroll) rememberScrollState() else null
-    // TODO NOW: check how it works for either or both enabled
     UBasicContainerJvm(
         type = type,
         modifier = Modifier
