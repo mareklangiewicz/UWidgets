@@ -43,7 +43,7 @@ class UReports(val log: (Any?) -> Unit = ::ulogd): Iterable<Entry> {
         entries.add(Entry(r))
     }
 
-    data class Entry(private val report: UReport, val timeMS: Long = nowTimeMS()) {
+    data class Entry(private val report: UReport, val timeMS: Long = nowTimeMs()) {
         val key: String get() = report.first
         val data: Any? get() = report.second
     }
