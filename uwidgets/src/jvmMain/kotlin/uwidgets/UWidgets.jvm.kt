@@ -144,7 +144,7 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
                 }
                 val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical, parentConstraints)
                 layout(parentWidth, parentHeight) {
-                    onUReport?.invoke("place with" to IntSize(parentWidth, parentHeight))
+                    onUReport?.invoke("place in" to IntSize(parentWidth, parentHeight))
                     // I do filterNotNull, because some stretched items can be skipped totally when no place left after measuring fixed items
                     val p = if (itemStretchedCount > 0) placeables.filterNotNull() else placeables.map { it ?: error("placeable not measured") }
                     if (itemStretchedCount > 0) placeAllAsHorizontalStartToEnd(p, phorizontal, pvertical, parentHeight)
@@ -180,7 +180,7 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
                 }
                 val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
                 layout(parentWidth, parentHeight) {
-                    onUReport?.invoke("place with" to IntSize(parentWidth, parentHeight))
+                    onUReport?.invoke("place in" to IntSize(parentWidth, parentHeight))
                     // I do filterNotNull, because some stretched items can be skipped totally when no place left after measuring fixed items
                     val p = if (itemStretchedCount > 0) placeables.filterNotNull() else placeables.map { it ?: error("placeable not measured") }
                     if (itemStretchedCount > 0) placeAllAsVerticalTopToDown(p, phorizontal, pvertical, parentWidth)
