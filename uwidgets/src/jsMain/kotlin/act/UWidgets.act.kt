@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.*
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
-) = UCoreContainerImpl(
+) = UCoreContainerImplDom(
     type = type,
     size = size,
     margin = margin,
@@ -36,8 +36,12 @@ import androidx.compose.ui.unit.*
     content = content
 )
 
-@Composable internal actual fun UBasicContainerAct(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerImpl(type, content)
+@Composable internal actual fun UBasicContainerAct(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerImplDom(type, content)
 
-@Composable internal actual fun UTextAct(text: String, bold: Boolean, mono: Boolean, maxLines: Int) = UTextImpl(text, bold, mono, maxLines)
+@Composable internal actual fun UTextAct(text: String, bold: Boolean, mono: Boolean, maxLines: Int) = UTextImplDom(text, bold, mono, maxLines)
 
-@Composable internal actual fun UTabsAct(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) = UTabsImpl(*tabs, onSelected = onSelected)
+// TODO: remove this, but use same condition generally to select any uwidget implementation on JS.
+// @Composable private fun FText(text: String) = if (currentComposer.applier is DomApplier) org.jetbrains.compose.web.dom.Text(text) else androidx.compose.foundation.text.BasicText(text)
+
+
+@Composable internal actual fun UTabsAct(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) = UTabsImplDom(*tabs, onSelected = onSelected)

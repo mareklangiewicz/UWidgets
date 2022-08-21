@@ -13,9 +13,9 @@ import org.w3c.dom.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
-@Composable internal fun UBasicContainerImpl(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerJs(type) { content() }
+@Composable internal fun UBasicContainerImplDom(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerDom(type) { content() }
 
-@Composable internal fun UCoreContainerImpl(
+@Composable internal fun UCoreContainerImplDom(
     type: UContainerType,
     size: DpSize?,
     margin: Dp,
@@ -29,7 +29,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
-) = UBasicContainerJs(
+) = UBasicContainerDom(
     type = type,
     addStyle = {
         size?.let { width(it.width.value.px); height(it.height.value.px) }
@@ -50,7 +50,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 var leakyDomReportsEnabled: Boolean = false
 
 /** @param inline false -> div; true -> span (and if type != null: css display: inline-grid instead of grid) */
-@Composable fun UBasicContainerJs(
+@Composable fun UBasicContainerDom(
     type: UContainerType? = null,
     inline: Boolean = false,
     addStyle: (StyleScope.() -> Unit)? = null,
@@ -84,14 +84,14 @@ private val LocalUContainerType = staticCompositionLocalOf<UContainerType?> { nu
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
 // all U*Text has to be wrapped in some of U*Container to make sure all out public text flavors respect UAlign etc.
-@Composable internal fun UTextImpl(text: String, bold: Boolean, mono: Boolean, maxLines: Int) =
-    UBasicContainerJs(inline = true, addStyle = {
+@Composable internal fun UTextImplDom(text: String, bold: Boolean, mono: Boolean, maxLines: Int) =
+    UBasicContainerDom(inline = true, addStyle = {
         if (maxLines == 1) property("text-overflow", "clip") // TODO: better support for maxLines > 1 on JS
         if (bold) fontWeight("bold")
         if (mono) fontFamily("monospace")
     }) { Text(text) }
 
-@Composable internal fun UTabsImpl(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
+@Composable internal fun UTabsImplDom(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     UTabsCmn(*tabs, onSelected = onSelected)
 
 private fun StyleScope.ugridChildFor(parentType: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
