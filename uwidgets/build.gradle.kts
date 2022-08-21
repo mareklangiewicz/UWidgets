@@ -304,6 +304,7 @@ fun Project.defaultBuildTemplateForComposeMppLib(
                     if (withComposeFoundation) implementation(compose.foundation)
                     if (withComposeFullAnimation) implementation(compose.animation)
                     if (withComposeMaterial2) implementation(compose.material)
+                    if (withComposeMaterial3) implementation(compose.material3)
                 }
             }
             val jvmMain by getting {
@@ -313,7 +314,6 @@ fun Project.defaultBuildTemplateForComposeMppLib(
                         implementation(compose.preview)
                     }
                     if (withComposeFullAnimation) implementation(compose.animationGraphics)
-                    if (withComposeMaterial3) implementation(compose.material3)
                     if (withComposeMaterialIconsExtended) implementation(compose.materialIconsExtended)
                     if (withComposeDesktop) {
                         implementation(compose.desktop.common)

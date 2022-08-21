@@ -22,6 +22,11 @@ defaultBuildTemplateForComposeMppApp(
     implementation(project(":uwidgets"))
 }
 
+// TODO_later: should I already start using experimental DSL in default scripts?
+// like: web.experimental.application {} ?? analyze it. Usage example:
+// https://github.com/mipastgt/JavaForumStuttgartTalk2022/blob/1bdec6884c89def8ca461c084f6cb08553cffaa5/PolySpiralMpp/build.gradle.kts#L169
+compose.experimental.web.application {} // needed for onWasmReady etc.
+
 // Fixes webpack-cli incompatibility by pinning the newest version.
 // https://youtrack.jetbrains.com/issue/KT-52776/KJS-Gradle-Webpack-version-update-despite-yarnlock-breaks-KotlinJS-build
 rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
