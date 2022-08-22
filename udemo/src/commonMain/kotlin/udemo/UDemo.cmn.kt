@@ -40,9 +40,8 @@ fun UDemo0() = URow {
         UAlign(horizontal = switch1, vertical = switch2) {
             UBox { UBox { URow { UDemoTexts(3) } } }
             UBox { UBox { URow { UDemoTexts(15) } } }
-            UTheme(lightBluishUColors()) {
-                UBox { UBox { UBox { UDemoTexts() } } }
-            }
+            UTheme(lightBluishUColors()) { UBox { UBox { UBox { UDemoTexts() } } } }
+            UTheme(m3UColors()) { UBox { UBox { UBox { UDemoTexts() } } } }
             UAlign(horizontal = switch3, vertical = switch4) {
                 UBox { UBox { UColumn { UDemoTexts(10, growFactor = 3) } } }
             }
