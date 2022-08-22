@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.*
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UCoreContainerImpl(
+) = UCoreContainerImplSki(
     type = type,
     requiredSize = size,
     margin = margin,
@@ -36,10 +36,10 @@ import androidx.compose.ui.unit.*
     content = content
 )
 
-@Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerImpl(type, content)
+@Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerImplSki(type, content)
 
-@Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) = UTextImpl(text, bold, mono, maxLines)
+@Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) = UTextImplSki(text, bold, mono, maxLines)
 
 @Composable fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
-    UTabsImpl(*tabs, onSelected = onSelected)
+    UTabsImplSki(*tabs, onSelected = onSelected)
 

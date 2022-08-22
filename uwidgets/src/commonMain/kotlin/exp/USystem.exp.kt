@@ -18,3 +18,4 @@ expect fun nowTimeMsAct(): Long
 
 expect inline fun <R> syncMaybeAct(lock: Any, block: () -> R): R
 
+expect val currentCompositionIsDom: Boolean
