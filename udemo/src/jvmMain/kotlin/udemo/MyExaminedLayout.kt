@@ -66,7 +66,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         .border(4.dp, Color.Blue)
         .padding(4.dp)
         .requiredSize(size)
-    UBasicContainerJvm(type, m, onUReport?.withKeyPrefix("rigid father "), content)
+    UBasicContainerSki(type, m, onUReport?.withKeyPrefix("rigid father "), content)
 }
 
 @Composable fun ColoredSon(
@@ -80,7 +80,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         .andIfNotNull(onUReport) { reportMeasuringAndPlacement(it.withKeyPrefix("$tag outer ")) }
         .background(color.copy(alpha = color.alpha * .8f), RoundedCornerShape(4.dp))
         .run { if (sizeRequired) requiredSize(size) else size(size) }
-    UBasicContainerJvm(UBOX, m, onUReport?.withKeyPrefix("$tag inner "))
+    UBasicContainerSki(UBOX, m, onUReport?.withKeyPrefix("$tag inner "))
 }
 
 

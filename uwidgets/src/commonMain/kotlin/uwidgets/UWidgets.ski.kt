@@ -10,8 +10,6 @@ import androidx.compose.ui.*
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
-import androidx.compose.ui.platform.*
-import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.utheme.*
@@ -21,9 +19,9 @@ import pl.mareklangiewicz.uwidgets.UScrollerType.*
 
 enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
 
-@Composable internal fun UBasicContainerImpl(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerJvm(type, content = content)
+@Composable internal fun UBasicContainerImplSki(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerSki(type, content = content)
 
-@Composable internal fun UCoreContainerImpl(
+@Composable internal fun UCoreContainerImplSki(
     type: UContainerType,
     requiredSize: DpSize?,
     margin: Dp,
@@ -40,7 +38,7 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
 ) {
     val hScrollS = if (withHorizontalScroll) rememberScrollState() else null
     val vScrollS = if (withVerticalScroll) rememberScrollState() else null
-    UBasicContainerJvm(
+    UBasicContainerSki(
         type = type,
         modifier = Modifier
             .padding(margin)
@@ -84,7 +82,7 @@ inline fun Modifier.andIf(condition: Boolean, add: Modifier.() -> Modifier): Mod
 inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modifier): Modifier =
     if (value != null) add(value) else this
 
-@Composable fun UBasicContainerJvm(
+@Composable fun UBasicContainerSki(
     type: UContainerType,
     modifier: Modifier = Modifier,
     onUReport: OnUReport? = null,
@@ -324,20 +322,20 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
 }
 
 // all U*Text has to be wrapped in some of U*Container to make sure all out public text flavors respect UAlign etc.
-@Composable internal fun UTextImpl(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) {
+@Composable internal fun UTextImplSki(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) {
     val style = LocalTextStyle.current.copy(
         fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
         fontFamily = if (mono) FontFamily.Monospace else FontFamily.Default
     )
-    UBasicContainerJvm(UBOX) { Text(text, maxLines = maxLines, style = style) }
+    UBasicContainerSki(UBOX) { Text(text, maxLines = maxLines, style = style) }
 }
 
-@Composable internal fun UTabsImpl(vararg tabs: String, useJvmTabRow: Boolean = false, onSelected: (index: Int, tab: String) -> Unit) {
-    if (useJvmTabRow) UTabsImplTabRow(tabs = tabs, onSelected = onSelected)
+@Composable internal fun UTabsImplSki(vararg tabs: String, useM3TabRow: Boolean = false, onSelected: (index: Int, tab: String) -> Unit) {
+    if (useM3TabRow) UTabsImplM3TabRow(tabs = tabs, onSelected = onSelected)
     else UTabsCmn(tabs = tabs, onSelected = onSelected)
 }
 
-@Composable private fun UTabsImplTabRow(vararg tabs: String, onSelected: (index: Int, tab: String) -> Unit) =
+@Composable private fun UTabsImplM3TabRow(vararg tabs: String, onSelected: (index: Int, tab: String) -> Unit) =
     UAlign(USTART, USTART) { UBox {
         var selectedTabIndex by remember { mutableStateOf(0) }
         TabRow(selectedTabIndex = selectedTabIndex) {
