@@ -1,12 +1,10 @@
 @file:Suppress("FunctionName")
-@file:OptIn(ComposeWebInternalApi::class)
 
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.*
-import org.jetbrains.compose.web.internal.runtime.*
 import pl.mareklangiewicz.usystem.*
 
 @Composable internal actual fun UCoreContainerAct(
@@ -54,10 +52,13 @@ import pl.mareklangiewicz.usystem.*
 )
 
 @Composable internal actual fun UBasicContainerAct(type: UContainerType, content: @Composable () -> Unit) =
-    if (currentCompositionIsDom) UBasicContainerImplDom(type, content) else UBasicContainerImplSki(type, content)
+    if (currentCompositionIsDom) UBasicContainerImplDom(type, content)
+    else UBasicContainerImplSki(type, content)
 
 @Composable internal actual fun UTextAct(text: String, bold: Boolean, mono: Boolean, maxLines: Int) =
-    if (currentCompositionIsDom) UTextImplDom(text, bold, mono, maxLines) else UTextImplSki(text, bold, mono, maxLines)
+    if (currentCompositionIsDom) UTextImplDom(text, bold, mono, maxLines)
+    else UTextImplSki(text, bold, mono, maxLines)
 
 @Composable internal actual fun UTabsAct(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
-    if (currentCompositionIsDom) UTabsImplDom(*tabs, onSelected = onSelected) else UTabsImplSki(*tabs, onSelected = onSelected)
+    if (currentCompositionIsDom) UTabsImplDom(*tabs, onSelected = onSelected)
+    else UTabsImplSki(*tabs, onSelected = onSelected)

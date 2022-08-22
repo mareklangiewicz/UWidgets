@@ -7,5 +7,6 @@ fun Double.toUStr(precision: Int = 2): String = toUStrImpl(precision)
 
 fun nowTimeMs(): Long = nowTimeMsImpl()
 
-inline fun <R> syncMaybe(lock: Any, block: () -> R): R = syncMaybeImpl(lock, block)
+fun <R> syncMaybe(lock: Any, block: () -> R): R = syncMaybeImpl(lock, block)
 
+val currentCompositionIsDom: Boolean get() = currentCompositionIsDomImpl
