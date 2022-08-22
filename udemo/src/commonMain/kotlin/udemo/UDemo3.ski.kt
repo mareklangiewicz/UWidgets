@@ -7,7 +7,7 @@ import pl.mareklangiewicz.playgrounds.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
-@Composable internal fun UDemo3Impl(
+@Composable internal fun UDemo3ImplSki(
     size: DpSize,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
