@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
 
-// TODO: move it to common code using other uwidgets
+// TODO_later: move it to "more common" code using other uwidgets, so it can be used with DOM "backend" too
 @Composable fun UReportsUi(reports: UReports, modifier: Modifier = Modifier) {
     CompositionLocalProvider(LocalDensity provides Density(1f)) {
         val vScrollS = rememberScrollState()
@@ -31,7 +31,7 @@ import pl.mareklangiewicz.udata.*
     }
 }
 
-// TODO NOW!!! Drawing constraints etc. on top of actual nodes - with new canvas text support
+// TODO NOW: Drawing constraints etc. on top of actual nodes - with new canvas text support
 
 fun Modifier.reportMeasuring(onUReport: OnUReport): Modifier = layout { measurable, constraints ->
     onUReport("measure in" to constraints)

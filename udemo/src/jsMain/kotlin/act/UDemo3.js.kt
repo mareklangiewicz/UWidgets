@@ -30,7 +30,7 @@ import pl.mareklangiewicz.usystem.*
         // Some crazy moving layouts to stress test layout/snapshot system inside browser canvas environment
         Column(Modifier.padding(horizontal = (countf * 5).dp)) {
             Text("Canvas DEMO DOM")
-            UDemo2(DpSize((100 + countf*3).dp, (300 - countf*2).dp))
+            UDemo2(DpSize((100 + countf*3).dp, (300 - countf*4).dp))
             for (i in 1..6) Text("x".repeat(i), fontSize = (countf*2 + 16 - i).sp)
         }
     }
