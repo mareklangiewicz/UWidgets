@@ -21,9 +21,9 @@ typealias OnUReport = (UReport) -> Unit
 @Suppress("NOTHING_TO_INLINE")
 inline fun OnUReport.withKeyPrefix(keyPrefix: String): OnUReport = { this(keyPrefix + it.first to it.second) }
 
-@Composable fun rememberUReports(log: (Any?) -> Unit = ::ulogd) = remember { UReports(log) }
+@Composable fun rememberUReports(log: (Any?) -> Unit = { ulogd(it.ustr) }) = remember { UReports(log) }
 
-class UReports(val log: (Any?) -> Unit = ::ulogd): Iterable<Entry> {
+class UReports(val log: (Any?) -> Unit = { ulogd(it.ustr) }): Iterable<Entry> {
 
     private val entries = mutableStateListOf<Entry>()
 
