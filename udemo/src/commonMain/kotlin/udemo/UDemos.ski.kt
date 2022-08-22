@@ -11,7 +11,14 @@ import pl.mareklangiewicz.playgrounds.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
-@Composable internal fun UDemo3ImplSki(
+
+
+@Composable fun UDemo3TabsSki(size: DpSize, withHorizontalScroll: Boolean, withVerticalScroll: Boolean) = UTabs(
+    "Examined layout ski" to { UDemoExaminedLayoutSki(size, withHorizontalScroll, withVerticalScroll) },
+    "Move stuff ski" to { UDemoMoveStuffSki() },
+)
+
+@Composable fun UDemoExaminedLayoutSki(
     size: DpSize,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
@@ -43,3 +50,4 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         for (i in 1..6) Text("x".repeat(i), fontSize = (countf * 2 + 16 - i).sp)
     }
 }
+

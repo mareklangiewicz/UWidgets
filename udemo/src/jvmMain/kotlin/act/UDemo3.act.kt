@@ -4,4 +4,4 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
 
 @Composable actual fun UDemo3Act(size: DpSize, withHorizontalScroll: Boolean, withVerticalScroll: Boolean) =
-    UDemo3ImplSki(size, withHorizontalScroll, withVerticalScroll)
+    UDemo3TabsSki(size, withHorizontalScroll, withVerticalScroll)

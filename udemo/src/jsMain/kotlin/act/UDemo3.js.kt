@@ -14,7 +14,6 @@ import pl.mareklangiewicz.usystem.*
         width(size.width.value.toInt() * 3)
         height(size.height.value.toInt() * 2)
     }) {
-        // UDemo3ImplSki(size, true, true)
-        UDemoMoveStuffSki()
+        UDemo3TabsSki(size, withHorizontalScroll, withVerticalScroll)
     }
 }
