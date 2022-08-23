@@ -15,7 +15,7 @@ fun UDemo(udemo2size: Int = 400, withHorizontalScrollsEnabed: Boolean = true, wi
         "UDemo 0" to { UDemo0() },
         "UDemo 1" to { UDemo1(withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
         "UDemo 2" to { UDemo2(udemo2size.dp.square, withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
-        "UDemo 3 (platf specific)" to { UDemo3(udemo2size.dp.square, withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
+        "UDemo 3 USkikoBox" to { UDemo3(udemo2size.dp.square, withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
     )
 }
 
@@ -95,4 +95,10 @@ fun UDemo0() = URow {
         ),
         Dispatchers.Default
     )
+}
+
+@Composable fun UDemo3(size: DpSize, withHorizontalScroll: Boolean, withVerticalScroll: Boolean) {
+    USkikoBox(DpSize(1600.dp, 1000.dp)) {
+        UDemo3TabsSki(size, withHorizontalScroll, withVerticalScroll)
+    }
 }
