@@ -36,10 +36,14 @@ import androidx.compose.ui.unit.*
     content = content
 )
 
-@Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerImplSki(type, content)
+@Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) =
+    UBasicContainerImplSki(type, content)
 
-@Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) = UTextImplSki(text, bold, mono, maxLines)
+@Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) =
+    UTextImplSki(text, bold, mono, maxLines)
 
 @Composable fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     UTabsImplSki(*tabs, onSelected = onSelected)
 
+@Composable fun USkikoBox(size: DpSize, content: @Composable () -> Unit) =
+    UFakeSkikoBoxImplSki(size, content)
