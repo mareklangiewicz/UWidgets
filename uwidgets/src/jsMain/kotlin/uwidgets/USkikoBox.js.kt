@@ -57,4 +57,5 @@ private class USkikoComposeWindow(canvas: HTMLCanvasElement) {
     // FIXME_later fix bug: (when leaving UDemo3 tab):
     //    Preconditions.kt?8576:98 Uncaught IllegalStateException {message: 'ComposeScene is closed'...
     // (maybe we somehow try to close the scene twice?)
+    // see also! https://github.com/JetBrains/compose-jb/issues/1639
 }
