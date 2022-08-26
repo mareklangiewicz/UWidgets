@@ -49,7 +49,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
             if (withSon1Cyan) UAlign(USTART, UEND) { ColoredSon("cyan son", Color.Cyan, 150.dp.square, onUReport = onUReport) }
             if (withSon2Red) UAlign(UCENTER, UCENTER) { ColoredSon("red son", Color.Red, 70.dp.square, sizeRequired = true, onUReport = onUReport) }
             if (withSon3Green) UAlign(USTRETCH, UEND) { ColoredSon("green son", Color.Green, 60.dp.square, onUReport = onUReport) }
-            if (withSon4Blue) UAlign(USTRETCH, USTRETCH) { ColoredSon("blue son", Color.Blue, 30.dp.square, onUReport = onUReport) }
+            if (withSon4Blue) UStretch { ColoredSon("blue son", Color.Blue, 30.dp.square, onUReport = onUReport) }
         }
     }
 }

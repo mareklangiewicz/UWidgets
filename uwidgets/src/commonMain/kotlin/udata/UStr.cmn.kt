@@ -23,6 +23,8 @@ val Any?.ustr: String
         is Double -> toUStr(2)
         is Float -> toUStr(2)
         is Offset -> "(${x.ustr},${y.ustr})"
+        is IntSize -> "size: ${width.ustr} x ${height.ustr}"
+        is DpSize -> "size: ${width.ustr} x ${height.ustr}"
         is Pair<*, *> -> "${first.ustr} to ${second.ustr}"
         is Triple<*, *, *> -> "${first.ustr} to ${second.ustr} tre ${third.ustr}"
         is Rect -> "rect: ${topLeft.ustr} - ${bottomRight.ustr}"

@@ -54,6 +54,7 @@ var leakyDomReportsEnabled: Boolean = false
     type: UContainerType? = null,
     inline: Boolean = false,
     addStyle: (StyleScope.() -> Unit)? = null,
+    addAttrs: (AttrsScope<out HTMLElement>.() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
     onUReport: OnUReport? = null,
     content: @Composable () -> Unit,
@@ -68,6 +69,7 @@ var leakyDomReportsEnabled: Boolean = false
             parentType?.let { ugridChildFor(it, horizontal, vertical) }
             addStyle?.let { it() }
         }
+        addAttrs?.let { it() }
         onClick?.let { onClick { it() } }
         if (leakyDomReportsEnabled && onUReport != null) { ref {
             onUReport("dom enter" to it)

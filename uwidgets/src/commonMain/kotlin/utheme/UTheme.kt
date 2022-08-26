@@ -45,6 +45,9 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
     content: @Composable () -> Unit
 ) = UTheme(alignments = UAlignments(horizontal, vertical), content = content)
 
+// I do it really often so let's have this convenient fun even if it makes code less "micro"
+@Composable fun UStretch(content: @Composable () -> Unit) = UAlign(USTRETCH, USTRETCH, content)
+
 object UTheme {
 
     val colors: UColors

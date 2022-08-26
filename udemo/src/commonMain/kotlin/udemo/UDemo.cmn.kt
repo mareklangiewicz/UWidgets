@@ -10,7 +10,7 @@ import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
 @Composable
-fun UDemo(udemo2size: Int = 400, withHorizontalScrollsEnabed: Boolean = true, withVerticalScrollsEnabled: Boolean = true) = UAlign(USTRETCH, USTRETCH) {
+fun UDemo(udemo2size: Int = 400, withHorizontalScrollsEnabed: Boolean = true, withVerticalScrollsEnabled: Boolean = true) = UStretch {
     UTabs(
         "UDemo 0" to { UDemo0() },
         "UDemo 1" to { UDemo1(withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
@@ -98,7 +98,12 @@ fun UDemo0() = URow {
 }
 
 @Composable fun UDemo3(size: DpSize, withHorizontalScroll: Boolean, withVerticalScroll: Boolean) {
-    USkikoBox(DpSize(1600.dp, 1000.dp)) {
-        UDemo3TabsSki(size, withHorizontalScroll, withVerticalScroll)
-    }
+        URow {
+            UColumn(DpSize(30.dp, 800.dp)) { UDemoTexts(5, growFactor = 0) }
+            USkikoBox {
+                UStretch {
+                    UDemo3TabsSki(size, withHorizontalScroll, withVerticalScroll)
+                }
+            }
+        }
 }

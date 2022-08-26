@@ -13,6 +13,8 @@ val Number.dbl get() = toDouble()
 val Dp.square get() = DpSize(this, this)
 val Int.square get() = IntSize(this, this)
 
+val DpSize.area get() = Dp(width.value * height.value)
+
 
 fun Size.copyToIntSize(w: Int = width.toInt(), h: Int = height.toInt()) = IntSize(w, h)
 fun Size.copyRoundToIntSize(w: Int = width.roundToInt(), h: Int = height.roundToInt()) = IntSize(w, h)

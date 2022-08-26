@@ -45,5 +45,5 @@ import androidx.compose.ui.unit.*
 @Composable internal actual fun UTabsAct(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     UTabsImplSki(*tabs, onSelected = onSelected)
 
-@Composable internal actual fun USkikoBoxAct(size: DpSize, content: @Composable () -> Unit) =
+@Composable internal actual fun USkikoBoxAct(size: DpSize?, content: @Composable () -> Unit) =
     UFakeSkikoBoxImplSki(size, content)

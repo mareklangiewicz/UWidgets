@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.*
 
 @Composable internal expect fun UTabsAct(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit)
 
-@Composable internal expect fun USkikoBoxAct(size: DpSize, content: @Composable () -> Unit)
+@Composable internal expect fun USkikoBoxAct(size: DpSize? = null, content: @Composable () -> Unit)
 
 
 @Composable fun UCoreContainer(
@@ -70,5 +70,5 @@ import androidx.compose.ui.unit.*
 @Composable fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     UTabsAct(*tabs, onSelected = onSelected)
 
-@Composable fun USkikoBox(size: DpSize, content: @Composable () -> Unit) =
+@Composable fun USkikoBox(size: DpSize? = null, content: @Composable () -> Unit) =
     USkikoBoxAct(size, content)

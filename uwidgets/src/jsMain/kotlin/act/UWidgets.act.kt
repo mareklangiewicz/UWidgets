@@ -63,6 +63,6 @@ import pl.mareklangiewicz.usystem.*
     if (currentCompositionIsDom) UTabsImplDom(*tabs, onSelected = onSelected)
     else UTabsImplSki(*tabs, onSelected = onSelected)
 
-@Composable internal actual fun USkikoBoxAct(size: DpSize, content: @Composable () -> Unit) =
+@Composable internal actual fun USkikoBoxAct(size: DpSize?, content: @Composable () -> Unit) =
     if (currentCompositionIsDom) USkikoBoxDom(size, content = content)
     else UFakeSkikoBoxImplSki(size, content)
