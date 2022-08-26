@@ -3,24 +3,49 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.createSkiaLayer
+import androidx.compose.ui.*
 import androidx.compose.ui.geometry.*
-import org.w3c.dom.*
-import androidx.compose.ui.native.ComposeLayer
+import androidx.compose.ui.native.*
 import androidx.compose.ui.unit.*
 import org.jetbrains.compose.web.attributes.*
+import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.skiko.wasm.*
+import org.w3c.dom.*
+import pl.mareklangiewicz.udata.*
+import pl.mareklangiewicz.uwidgets.UContainerType.*
 
-@Composable fun USkikoBoxDom(
-    size: DpSize? = null,
+// TODO_maybe: copy UAlign composition locals, and other settings to embedded skiko composition
+// (maybe all locals? - see global prop: currentCompositionLocalContext)
+@Composable fun USkikoBoxDom(size: DpSize? = null, content: @Composable () -> Unit) {
+    var currentSize by remember { mutableStateOf(DpSize.Zero) }
+    UBasicContainerDom(UBOX,
+        addStyle = {
+            size?.let {
+                width(it.width.value.px)
+                height(it.width.value.px)
+            }
+        },
+        addAttrs = {
+            ref {
+                currentSize = DpSize(it.clientWidth.dp, it.clientHeight.dp)
+                onDispose { currentSize = DpSize.Zero }
+            }
+        }) {
+        key(currentSize) { // make sure we have totally new canvas for different sizes
+            if (currentSize.area != 0.dp) USkikoCanvasDom(currentSize, content = content)
+        }
+    }
+}
+
+/** Use UStretch { USkikoBoxDom(size=null) {..} } to get automatic size adjustments. */
+@Composable fun USkikoCanvasDom(
+    size: DpSize,
     attrs: AttrBuilderContext<HTMLCanvasElement>? = null,
     content: @Composable () -> Unit,
 ) = Canvas(attrs = {
-    size?.let {
-        width(it.width.value.toInt())
-        height(it.height.value.toInt())
-    }
+    width(size.width.value.toInt())
+    height(size.height.value.toInt())
     attrs?.invoke(this)
     ref {
         var disposed = false

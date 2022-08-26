@@ -21,7 +21,6 @@ fun UDemo(udemo2size: Int = 400, withHorizontalScrollsEnabed: Boolean = true, wi
 
 @Composable
 fun UDemo0() = URow {
-    UColumn(DpSize(30.dp, 800.dp)) { UDemoTexts(5, growFactor = 0) }
     UColumn {
         var switch1 by remember { mutableStateOf(USTART) }
         var switch2 by remember { mutableStateOf(USTART) }
@@ -98,12 +97,9 @@ fun UDemo0() = URow {
 }
 
 @Composable fun UDemo3(size: DpSize, withHorizontalScroll: Boolean, withVerticalScroll: Boolean) {
-        URow {
-            UColumn(DpSize(30.dp, 800.dp)) { UDemoTexts(5, growFactor = 0) }
-            USkikoBox {
-                UStretch {
-                    UDemo3TabsSki(size, withHorizontalScroll, withVerticalScroll)
-                }
-            }
+    USkikoBox {
+        UStretch {
+            UDemo3TabsSki(size, withHorizontalScroll, withVerticalScroll)
         }
+    }
 }
