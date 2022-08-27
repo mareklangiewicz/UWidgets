@@ -19,30 +19,45 @@ fun UDemo(udemo2size: Int = 400, withHorizontalScrollsEnabed: Boolean = true, wi
     )
 }
 
-@Composable
-fun UDemo0() = UStretch {
+@Composable fun UDemo0() = UStretch {
     UColumn {
         var switch1 by remember { mutableStateOf(USTART) }
         var switch2 by remember { mutableStateOf(USTART) }
         var switch3 by remember { mutableStateOf(USTART) }
         var switch4 by remember { mutableStateOf(USTART) }
+        var rendering by remember { mutableStateOf("DOM") }
         UAlign(USTART, USTART) {
             UColumn {
-                UText("Align switchers:")
+                UText("Align switches:")
                 val options = UAlignmentType.values().map { it.css }.toTypedArray()
                 UTabs(*options) { idx, tab -> switch1 = UAlignmentType.css(tab) }
                 UTabs(*options) { idx, tab -> switch2 = UAlignmentType.css(tab) }
                 UTabs(*options) { idx, tab -> switch3 = UAlignmentType.css(tab) }
                 UTabs(*options) { idx, tab -> switch4 = UAlignmentType.css(tab) }
+                UText("Rendering switch:")
+                UTabs("DOM", "Canvas", "DOM and Canvas") { idx, tab -> rendering = tab }
             }
         }
-        UAlign(horizontal = switch1, vertical = switch2) {
-            UBox { UBox { URow { UDemoTexts(3) } } }
-            UBox { UBox { URow { UDemoTexts(15) } } }
-            UTheme(lightBluishUColors()) { UBox { UBox { UBox { UDemoTexts() } } } }
-            UTheme(m3UColors()) { UBox { UBox { UBox { UDemoTexts() } } } }
-            UAlign(horizontal = switch3, vertical = switch4) {
-                UBox { UBox { UColumn { UDemoTexts(10, growFactor = 3) } } }
+        URow {
+            if ("DOM" in rendering) UBox { UDemo0Content(switch1, switch2, switch3, switch4) }
+            if ("Canvas" in rendering) USkikoBox { UDemo0Content(switch1, switch2, switch3, switch4) }
+        }
+    }
+}
+
+@Composable private fun UDemo0Content(switch1: UAlignmentType, switch2: UAlignmentType, switch3: UAlignmentType, switch4: UAlignmentType) {
+    UStretch {
+        UBox {
+            UAlign(horizontal = switch1, vertical = switch2) {
+                UColumn {
+                    UBox { UBox { URow { UDemoTexts(3) } } }
+                    UBox { UBox { URow { UDemoTexts(10) } } }
+                    UTheme(lightBluishUColors()) { UBox { UBox { UBox { UDemoTexts() } } } }
+                    UTheme(m3UColors()) { UBox { UBox { UBox { UDemoTexts() } } } }
+                    UAlign(horizontal = switch3, vertical = switch4) {
+                        UBox { UBox { UColumn { UDemoTexts(10, growFactor = 3) } } }
+                    }
+                }
             }
         }
     }
