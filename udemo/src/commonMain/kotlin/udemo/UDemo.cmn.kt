@@ -20,7 +20,7 @@ fun UDemo(udemo2size: Int = 400, withHorizontalScrollsEnabed: Boolean = true, wi
 }
 
 @Composable
-fun UDemo0() = URow {
+fun UDemo0() = UStretch {
     UColumn {
         var switch1 by remember { mutableStateOf(USTART) }
         var switch2 by remember { mutableStateOf(USTART) }

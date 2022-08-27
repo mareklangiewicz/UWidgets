@@ -11,6 +11,7 @@ import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.*
 import pl.mareklangiewicz.utheme.*
+import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 @Composable internal fun UBasicContainerImplDom(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerDom(type) { content() }
@@ -65,8 +66,8 @@ var leakyDomReportsEnabled: Boolean = false
     val vertical = UTheme.alignments.vertical
     val attrs: AttrsScope<out HTMLElement>.() -> Unit = {
         style {
-            type?.let { ugrid(it, horizontal, vertical, inline) }
-            parentType?.let { ugridChildFor(it, horizontal, vertical) }
+            type?.let { ustyleFor(it, horizontal, vertical, inline) }
+            parentType?.let { ustyleChildFor(it, horizontal, vertical) }
             addStyle?.let { it() }
         }
         addAttrs?.let { it() }
@@ -96,6 +97,16 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 @Composable internal fun UTabsImplDom(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     UTabsCmn(*tabs, onSelected = onSelected)
 
+private fun StyleScope.ustyleChildFor(parentType: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
+    if (parentType == UBOX) ugridChildFor(parentType, horizontal, vertical)
+    else uflexChildFor(parentType, horizontal, vertical)
+}
+
+private fun StyleScope.ustyleFor(type: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType, inline: Boolean = false) {
+    if (type == UBOX) ugridFor(type, horizontal, vertical, inline)
+    else uflexFor(type, horizontal, vertical, inline)
+}
+
 private fun StyleScope.ugridChildFor(parentType: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
     if (parentType == UBOX || parentType == UROW) gridRow("UROW")
     if (parentType == UBOX || parentType == UCOLUMN) gridColumn("UCOLUMN")
@@ -105,7 +116,7 @@ private fun StyleScope.ugridChildFor(parentType: UContainerType, horizontal: UAl
     // We can then just additionally wrap these children in UAlign(..) { .. }
 }
 
-private fun StyleScope.ugrid(type: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType, inline: Boolean = false) {
+private fun StyleScope.ugridFor(type: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType, inline: Boolean = false) {
     display(if (inline) DisplayStyle.LegacyInlineGrid else DisplayStyle.Grid)
     horizontal.css.let {
         justifyContent(JustifyContent(it))
@@ -117,4 +128,42 @@ private fun StyleScope.ugrid(type: UContainerType, horizontal: UAlignmentType, v
     }
     if (type == UBOX || type == UROW) gridTemplateRows("[UROW] auto")
     if (type == UBOX || type == UCOLUMN) gridTemplateColumns("[UCOLUMN] auto")
+}
+
+private fun StyleScope.uflexChildFor(parentType: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
+    when (parentType) {
+        UBOX -> error("flex uboxes are not supported")
+        UCOLUMN -> {
+            alignSelf(horizontal.css)
+            if (vertical == USTRETCH) flexGrow(1)
+        }
+        UROW -> {
+            alignSelf(vertical.css)
+            if (horizontal == USTRETCH) flexGrow(1)
+        }
+    }
+
+}
+
+private fun StyleScope.uflexFor(type: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType, inline: Boolean = false) {
+    display(if (inline) DisplayStyle.LegacyInlineFlex else DisplayStyle.Flex)
+    if (type == UCOLUMN) flexDirection(FlexDirection.Column)
+    flexWrap(FlexWrap.Nowrap)
+    when (type) {
+        UBOX -> error("flex uboxes are not supported")
+        UCOLUMN -> {
+            horizontal.css.let {
+                alignContent(AlignContent(it))
+                alignItems(it)
+            }
+            justifyContent(JustifyContent(vertical.css))
+        }
+        UROW -> {
+            vertical.css.let {
+                alignContent(AlignContent(it))
+                alignItems(it)
+            }
+            justifyContent(JustifyContent(horizontal.css))
+        }
+    }
 }
