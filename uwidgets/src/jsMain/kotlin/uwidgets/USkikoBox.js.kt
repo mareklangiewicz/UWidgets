@@ -28,7 +28,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         },
         addAttrs = {
             ref {
-                currentSize = DpSize(it.clientWidth.dp, it.clientHeight.dp)
+                currentSize = it.clientSizeDp
                 onDispose { currentSize = DpSize.Zero }
             }
         }) {
@@ -37,6 +37,8 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         }
     }
 }
+
+private val Element.clientSizeDp get() = DpSize(clientWidth.dp, clientHeight.dp)
 
 /** Use UStretch { USkikoBoxDom(size=null) {..} } to get automatic size adjustments. */
 @Composable fun USkikoCanvasDom(
