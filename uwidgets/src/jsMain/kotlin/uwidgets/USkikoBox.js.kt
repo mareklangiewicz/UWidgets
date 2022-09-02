@@ -72,7 +72,6 @@ private class USkikoComposeWindow(canvas: HTMLCanvasElement) {
 
     init {
         layer.layer.attachTo(canvas)
-        canvas.setAttribute("tabindex", "0")
         layer.layer.needRedraw()
         val scale = layer.layer.contentScale
         layer.setSize((canvas.width / scale).toInt(), (canvas.height / scale).toInt())
