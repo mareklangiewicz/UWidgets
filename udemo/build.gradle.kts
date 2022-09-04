@@ -19,6 +19,7 @@ defaultBuildTemplateForComposeMppApp(
     details = libs.UWidgets,
     withComposeCompilerFix = true,
 ) {
+    implementation(deps.uspekx)
     implementation(project(":uwidgets"))
 }
 

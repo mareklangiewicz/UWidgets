@@ -2,16 +2,17 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.*
-import androidx.compose.ui.test.junit4.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.playgrounds.*
 import pl.mareklangiewicz.udata.*
+import pl.mareklangiewicz.udemo.*
 import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.uspek.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 import kotlin.math.*
 
-fun ComposeContentTestRule.MyExaminedLayoutUSpekFun() = with(density) {
+// TODO_later: use context receiver for UComposeController
+fun UComposeController.MyExaminedLayoutUSpekFun() = with(density) {
 
     val ureports = UReports { ulogw("rspek ${it.ustr}") } // rspek so I can filter logs with uspek/rspek/spek
 
