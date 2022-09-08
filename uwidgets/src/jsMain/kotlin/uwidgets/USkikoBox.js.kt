@@ -46,8 +46,8 @@ private val Element.clientSizeDp get() = DpSize(clientWidth.dp, clientHeight.dp)
     attrs: AttrBuilderContext<HTMLCanvasElement>? = null,
     content: @Composable () -> Unit,
 ) = Canvas(attrs = {
-    width(size.width.value.toInt())
-    height(size.height.value.toInt())
+    width(size.width.value.int)
+    height(size.height.value.int)
     attrs?.invoke(this)
     ref {
         var disposed = false
@@ -74,7 +74,7 @@ private class USkikoComposeWindow(canvas: HTMLCanvasElement) {
         layer.layer.attachTo(canvas)
         layer.layer.needRedraw()
         val scale = layer.layer.contentScale
-        layer.setSize((canvas.width / scale).toInt(), (canvas.height / scale).toInt())
+        layer.setSize((canvas.width / scale).int, (canvas.height / scale).int)
     }
 
     fun setContent(content: @Composable () -> Unit) = layer.setContent(content = content)

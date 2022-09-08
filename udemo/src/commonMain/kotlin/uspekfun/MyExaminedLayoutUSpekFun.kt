@@ -11,8 +11,8 @@ import pl.mareklangiewicz.uspek.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 import kotlin.math.*
 
-// TODO_later: use context receiver for UComposeController
-fun UComposeController.MyExaminedLayoutUSpekFun() = with(density) {
+// TODO_later: use context receiver for UComposeScope
+fun UComposeScope.MyExaminedLayoutUSpekFun(density: Density) = with(density) {
 
     val ureports = UReports { ulogw("rspek ${it.ustr}") } // rspek so I can filter logs with uspek/rspek/spek
 

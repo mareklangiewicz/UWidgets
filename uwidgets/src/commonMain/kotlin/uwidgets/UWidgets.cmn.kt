@@ -114,7 +114,7 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
 ) {
     val fraction = (pos - min) / (max - min)
     val gapwidth = 100
-    val w1 = (gapwidth * fraction).toInt()
+    val w1 = (gapwidth * fraction).int
     val w2 = gapwidth - w1
     UAlign(UCENTER, UCENTER) {
         URow {

@@ -1,10 +1,10 @@
 package pl.mareklangiewicz.udemo
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.unit.*
 
-interface UComposeController {
-    val density: Density
+interface UComposeScope {
     fun setContent(composable: @Composable () -> Unit)
+    suspend fun awaitIdle()
+    @Deprecated("Impossible in JS")
     fun waitForIdle()
 }

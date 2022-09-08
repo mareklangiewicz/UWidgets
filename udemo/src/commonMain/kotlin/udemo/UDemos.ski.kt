@@ -8,6 +8,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
 import pl.mareklangiewicz.playgrounds.*
+import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
@@ -18,6 +19,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     "Move stuff ski" to { UDemoMoveStuffSki() },
 )
 
+// TODO NOW: connect to uspek fun (start with button)
 @Composable fun UDemoExaminedLayoutSki(
     size: DpSize,
     withHorizontalScroll: Boolean,
@@ -43,7 +45,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
             count++
         }
     }
-    val countf by animateFloatAsState(count.toFloat())
+    val countf by animateFloatAsState(count.flt)
     // Some crazy moving layouts to stress test layout/snapshot system inside browser canvas environment
     Column(Modifier.padding(horizontal = (countf * 5).dp)) {
         UDemo2(DpSize((100 + countf * 3).dp, (300 - countf * 4).dp))

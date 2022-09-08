@@ -3,7 +3,7 @@ package pl.mareklangiewicz.umath
 import pl.mareklangiewicz.udata.*
 
 
-fun lerp(start: Int, stop: Int, fraction: Float = 0.5f) = lerp(start.toFloat(), stop.toFloat(), fraction).toInt()
+fun lerp(start: Int, stop: Int, fraction: Float = 0.5f) = lerp(start.flt, stop.flt, fraction).int
 fun lerp(start: Float, stop: Float, fraction: Float = 0.5f) = (start * (1 - fraction) + stop * fraction)
 fun lerp(start: Double, stop: Double, fraction: Double = 0.5) = (start * (1 - fraction) + stop * fraction)
 
