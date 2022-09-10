@@ -1,9 +1,8 @@
-package pl.mareklangiewicz.uspekstuff
+package pl.mareklangiewicz.udemo
 
 import androidx.compose.ui.unit.*
 import org.jetbrains.compose.web.testutils.*
 import pl.mareklangiewicz.uspek.*
-import pl.mareklangiewicz.uwidgets.*
 import kotlin.test.*
 
 

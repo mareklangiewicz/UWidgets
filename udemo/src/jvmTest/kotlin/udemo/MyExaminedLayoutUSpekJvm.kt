@@ -1,4 +1,4 @@
-package pl.mareklangiewicz.uwidgets
+package pl.mareklangiewicz.udemo
 
 import androidx.compose.ui.test.junit4.*
 import kotlinx.coroutines.test.*

@@ -1,4 +1,4 @@
-package pl.mareklangiewicz.playgrounds
+package pl.mareklangiewicz.udemo
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
