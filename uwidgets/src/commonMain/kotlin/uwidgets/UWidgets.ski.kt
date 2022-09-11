@@ -336,7 +336,7 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
 }
 
 @Composable private fun UTabsImplM3TabRow(vararg tabs: String, onSelected: (index: Int, tab: String) -> Unit) =
-    UAlign(USTART, USTART) { UBox {
+    UAllStart { UBox {
         var selectedTabIndex by remember { mutableStateOf(0) }
         TabRow(selectedTabIndex = selectedTabIndex) {
             tabs.forEachIndexed { index, title ->

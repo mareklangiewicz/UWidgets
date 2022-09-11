@@ -10,23 +10,32 @@ import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
 @Composable
-fun UDemo(udemo2size: Int = 400, withHorizontalScrollsEnabed: Boolean = true, withVerticalScrollsEnabled: Boolean = true) = UStretch {
-    UTabs(
-        "UDemo 0" to { UDemo0() },
-        "UDemo 1" to { UDemo1(withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
-        "UDemo 2" to { UDemo2(udemo2size.dp.square, withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
-        "UDemo 3 USkikoBox" to { UDemo3(udemo2size.dp.square, withHorizontalScrollsEnabed, withVerticalScrollsEnabled) },
-    )
+fun UDemo() = UAllStretch {
+    UColumn {
+        val udemo2size = ustate(100)
+        val (hscroll, vscroll) = ustates(true, true)
+        UAllStart { URow {
+            USwitch(udemo2size, "100" to 100, "200" to 200, "400" to 400, "800" to 800)
+            USwitch(hscroll, "hscroll on", "hscroll off")
+            USwitch(vscroll, "vscroll on", "vscroll off")
+        } }
+        UTabs(
+            "UDemo 0" to { UDemo0() },
+            "UDemo 1" to { UDemo1(hscroll.value, vscroll.value) },
+            "UDemo 2" to { UDemo2(udemo2size.value.dp.square, hscroll.value, vscroll.value) },
+            "UDemo 3 USkikoBox" to { UDemo3(udemo2size.value.dp.square, hscroll.value, vscroll.value) },
+        )
+    }
 }
 
-@Composable fun UDemo0() = UStretch {
+@Composable fun UDemo0() = UAllStretch {
     UColumn {
         var switch1 by remember { mutableStateOf(USTART) }
         var switch2 by remember { mutableStateOf(USTART) }
         var switch3 by remember { mutableStateOf(USTART) }
         var switch4 by remember { mutableStateOf(USTART) }
         var rendering by remember { mutableStateOf("DOM") }
-        UAlign(USTART, USTART) {
+        UAllStart {
             UColumn {
                 UText("Align switches:")
                 val options = UAlignmentType.values().map { it.css }.toTypedArray()
@@ -46,7 +55,7 @@ fun UDemo(udemo2size: Int = 400, withHorizontalScrollsEnabed: Boolean = true, wi
 }
 
 @Composable private fun UDemo0Content(switch1: UAlignmentType, switch2: UAlignmentType, switch3: UAlignmentType, switch4: UAlignmentType) {
-    UStretch {
+    UAllStretch {
         UBox {
             UAlign(horizontal = switch1, vertical = switch2) {
                 UColumn {
@@ -113,7 +122,7 @@ fun UDemo(udemo2size: Int = 400, withHorizontalScrollsEnabed: Boolean = true, wi
 
 @Composable fun UDemo3(size: DpSize, withHorizontalScroll: Boolean, withVerticalScroll: Boolean) {
     USkikoBox {
-        UStretch {
+        UAllStretch {
             UDemo3TabsSki(size, withHorizontalScroll, withVerticalScroll)
         }
     }

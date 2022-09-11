@@ -95,7 +95,7 @@ private val LocalUOnContainerReport = staticCompositionLocalOf<OnUReport?> { nul
 }
 
 @Composable
-internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) = UAlign(USTART, USTART) {
+internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) = UAllStart {
     var selectedTabIndex by remember { mutableStateOf(0) }
     URow {
         tabs.forEachIndexed { index, title ->
@@ -105,6 +105,29 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
         }
     }
 }
+
+@Composable fun <T> ustate(init: T): MutableState<T> = remember { mutableStateOf(init) }
+@Composable fun <T> ustates(vararg inits: T): List<MutableState<T>> = inits.map { ustate(it) }
+
+@Composable fun USwitch(state: MutableState<Boolean>, labelOn: String = "on", labelOff: String = "off") {
+    UOnContainerClick({ state.value = !state.value }) {
+        UBoxedText(if (state.value) labelOn else labelOff, true, state.value, true)
+    }
+}
+
+@Composable fun USwitches(
+    vararg states: MutableState<Boolean>,
+    labelOn: String = "on",
+    labelOff: String = "off",
+) = UAllStart { URow { for (s in states) USwitch(s, labelOn, labelOff) } }
+
+@Composable fun <T> USwitch(state: MutableState<T>, vararg options: Pair<String, T>) =
+    UAllStart { URow {
+        for ((label, value) in options)
+            UOnContainerClick({ state.value = value }) {
+                UBoxedText(label, true, state.value == value, true)
+            }
+    } }
 
 @Composable fun UProgress(
     pos: Double,

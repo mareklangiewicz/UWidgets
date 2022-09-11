@@ -45,8 +45,12 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
     content: @Composable () -> Unit
 ) = UTheme(alignments = UAlignments(horizontal, vertical), content = content)
 
-// I do it really often so let's have this convenient fun even if it makes code less "micro"
-@Composable fun UStretch(content: @Composable () -> Unit) = UAlign(USTRETCH, USTRETCH, content)
+// I do it often so let's have this convenient fun even if it makes code less "micro"
+// "UAll" prefix is also intentional to be similar to "UAlign" to play nicely with IDE completion
+@Composable fun UAllStart(content: @Composable () -> Unit) = UAlign(USTART, USTART, content)
+@Composable fun UAllEnd(content: @Composable () -> Unit) = UAlign(UEND, UEND, content)
+@Composable fun UAllCenter(content: @Composable () -> Unit) = UAlign(UCENTER, UCENTER, content)
+@Composable fun UAllStretch(content: @Composable () -> Unit) = UAlign(USTRETCH, USTRETCH, content)
 
 object UTheme {
 

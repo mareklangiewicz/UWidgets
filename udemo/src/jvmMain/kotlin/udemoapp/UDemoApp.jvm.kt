@@ -15,6 +15,6 @@ fun main() = application {
 private fun UDemoAppJvm() {
     Column {
         Text("Hello JVM Desktop!", style = MaterialTheme.typography.headlineLarge)
-        UDemo(100)
+        UDemo()
     }
 }

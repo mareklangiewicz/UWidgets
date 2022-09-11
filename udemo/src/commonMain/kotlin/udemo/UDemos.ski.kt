@@ -12,23 +12,31 @@ import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 
-
 @Composable fun UDemo3TabsSki(size: DpSize, withHorizontalScroll: Boolean, withVerticalScroll: Boolean) = UTabs(
     "Examined layout ski" to { UDemoExaminedLayoutSki(size, withHorizontalScroll, withVerticalScroll) },
+    // TODO NOW: connect to uspek fun
+    // "Examined layout uspek ski" to { UDemoExaminedLayoutUSpekSki(size, withHorizontalScroll, withVerticalScroll) },
     "Move stuff ski" to { UDemoMoveStuffSki() },
 )
 
-// TODO NOW: connect to uspek fun (start with button)
 @Composable fun UDemoExaminedLayoutSki(
     size: DpSize,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
-) {
+) = UColumn {
     val reportsModel = rememberUReports()
+    val (s1, s2, s3, s4) = ustates(false, false, false, false)
+    USwitches(s1, s2, s3, s4)
     URow {
-        MyExaminedLayout()
+        MyExaminedLayout(
+            withSon1Cyan = s1.value,
+            withSon2Red = s2.value,
+            withSon3Green = s3.value,
+            withSon4Blue = s4.value,
+            onUReport = reportsModel::invoke,
+        )
         UColumn(size, withHorizontalScroll = withHorizontalScroll, withVerticalScroll = withVerticalScroll) {
-            UBasicContainerSki(UCOLUMN, Modifier.reportMeasuringAndPlacement(reportsModel::invoke.withKeyPrefix("demo3 "))) {
+            UBasicContainerSki(UCOLUMN, Modifier.reportMeasuringAndPlacement(reportsModel::invoke.withKeyPrefix("d3t "))) {
                 UDemoTexts(growFactor = 4)
             }
         }
