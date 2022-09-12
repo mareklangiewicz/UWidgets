@@ -20,28 +20,31 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     "Move stuff ski" to { UDemoMoveStuffSki() },
 )
 
-private class NomadicComposeScope: UComposeScope {
+private class NomadicComposition: UComposeScope {
     private var acontent by mutableStateOf<(@Composable () -> Unit)?>(null)
-    override fun setContent(composable: @Composable () -> Unit) { acontent = composable }
-    override suspend fun awaitIdle() { /* TODO("Not yet implemented") */ delay(500) }
-    @Composable fun emit() { acontent?.invoke() }
+    private var isIdle by mutableStateOf(true)
+    override fun setContent(composable: @Composable () -> Unit) { isIdle = false; acontent = composable }
+    override suspend fun awaitIdle() { while (!isIdle) delay(20) } // FIXME_later: correct implementation of awaitIdle
+    @Composable fun emit() {
+        isIdle = false
+        acontent?.invoke()
+        SideEffect {
+            isIdle = true
+        }
+    }
 }
 
 @Composable fun UDemoExaminedLayoutUSpekSki() {
     val ureports = rememberUReports()
-    val scope = remember { NomadicComposeScope() }
+    val composition = remember { NomadicComposition() }
     LaunchedEffect(Unit) {
         uspekLog = { ureports("rspek" to it.status) }
         suspek { // FIXME: cancellation when leave composition
-            delay(100)
-            scope.MyExaminedLayoutUSpekFun(Density(1f))
+            composition.MyExaminedLayoutUSpekFun(Density(1f))
         }
     }
-    SideEffect {
-        // TODO NOW: trigger awaitIdle (maybe first some small delay anyway)
-    }
     UAllStretch { URow {
-        UBox { scope.emit() }
+        UBox { composition.emit() }
         UBox { UReportsUi(ureports, reversed = false) }
     } }
 }
