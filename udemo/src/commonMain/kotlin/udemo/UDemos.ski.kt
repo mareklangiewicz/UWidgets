@@ -21,13 +21,13 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 )
 
 private class NomadicComposition: UComposeScope {
-    private var composition by mutableStateOf<(@Composable () -> Unit)?>(null)
+    private var composition by mutableStateOf<@Composable () -> Unit>({})
     private var isComposing by mutableStateOf(false)
     override fun setContent(composable: @Composable () -> Unit) { isComposing = true; composition = composable }
     override suspend fun awaitIdle() { do delay(200) while (isComposing) } // FIXME_later: correct implementation of awaitIdle
-    @Composable fun emit() {
+    @Composable operator fun invoke() {
         isComposing = true
-        composition?.invoke()
+        composition()
         SideEffect { isComposing = false }
     }
 }
@@ -37,41 +37,37 @@ private class NomadicComposition: UComposeScope {
     val composition = remember { NomadicComposition() }
     LaunchedEffect(Unit) {
         uspekLog = { ureports("rspek" to it.status) }
-        suspek { // FIXME: cancellation when leave composition
+        withContext(USpekContext()) { suspek {
             composition.MyExaminedLayoutUSpekFun(Density(1f))
-        }
+        } }
     }
     UAllStretch { URow {
-        UBox { composition.emit() }
+        UBox { composition() }
         UBox { UReportsUi(ureports, reversed = false) }
     } }
 }
 
-@Composable fun UDemoExaminedLayoutSki(
-    size: DpSize,
-    hscroll: Boolean,
-    vscroll: Boolean,
-) = UColumn {
+@Composable fun UDemoExaminedLayoutSki(size: DpSize, hScroll: Boolean, vScroll: Boolean) = UColumn {
     val ureports = rememberUReports()
-    var typeState = ustate(UBOX)
-    val (s1, s2, s3, s4) = ustates(false, false, false, false)
-    val textsBoxEnabledState = ustate(false)
+    val typeS = ustate(UBOX)
+    val (son1S, son2S, son3S, son4S) = ustates(false, false, false, false)
+    val textsS = ustate(false)
     UAllStart { URow {
-        USwitchEnum(typeState)
-        USwitches(s1, s2, s3, s4)
-        USwitch(textsBoxEnabledState, "texts on", "texts off")
+        USwitchEnum(typeS)
+        USwitches(son1S, son2S, son3S, son4S)
+        USwitch(textsS, "texts on", "texts off")
     } }
     URow {
         MyExaminedLayout(
-            type = typeState.value,
+            type = typeS.value,
             size = size,
-            withSon1Cyan = s1.value,
-            withSon2Red = s2.value,
-            withSon3Green = s3.value,
-            withSon4Blue = s4.value,
+            withSon1Cyan = son1S.value,
+            withSon2Red = son2S.value,
+            withSon3Green = son3S.value,
+            withSon4Blue = son4S.value,
             onUReport = ureports::invoke,
         )
-        if (textsBoxEnabledState.value) UColumn(size, hscroll, vscroll) {
+        if (textsS.value) UColumn(size, hScroll, vScroll) {
             UBasicContainerSki(UCOLUMN, Modifier.reportMeasuringAndPlacement(ureports::invoke.withKeyPrefix("d3t "))) {
                 UDemoTexts(growFactor = 4)
             }
