@@ -24,7 +24,7 @@ private class NomadicComposition: UComposeScope {
     private var composition by mutableStateOf<(@Composable () -> Unit)?>(null)
     private var isComposing by mutableStateOf(false)
     override fun setContent(composable: @Composable () -> Unit) { isComposing = true; composition = composable }
-    override suspend fun awaitIdle() { while (isComposing) delay(20) } // FIXME_later: correct implementation of awaitIdle
+    override suspend fun awaitIdle() { do delay(200) while (isComposing) } // FIXME_later: correct implementation of awaitIdle
     @Composable fun emit() {
         isComposing = true
         composition?.invoke()
