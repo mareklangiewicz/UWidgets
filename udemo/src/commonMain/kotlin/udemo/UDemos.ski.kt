@@ -49,26 +49,34 @@ private class NomadicComposition: UComposeScope {
 
 @Composable fun UDemoExaminedLayoutSki(
     size: DpSize,
-    withHorizontalScroll: Boolean,
-    withVerticalScroll: Boolean,
+    hscroll: Boolean,
+    vscroll: Boolean,
 ) = UColumn {
-    val reportsModel = rememberUReports()
+    val ureports = rememberUReports()
+    var typeState = ustate(UBOX)
     val (s1, s2, s3, s4) = ustates(false, false, false, false)
-    USwitches(s1, s2, s3, s4)
+    val textsBoxEnabledState = ustate(false)
+    UAllStart { URow {
+        USwitchEnum(typeState)
+        USwitches(s1, s2, s3, s4)
+        USwitch(textsBoxEnabledState, "texts on", "texts off")
+    } }
     URow {
         MyExaminedLayout(
+            type = typeState.value,
+            size = size,
             withSon1Cyan = s1.value,
             withSon2Red = s2.value,
             withSon3Green = s3.value,
             withSon4Blue = s4.value,
-            onUReport = reportsModel::invoke,
+            onUReport = ureports::invoke,
         )
-        UColumn(size, withHorizontalScroll = withHorizontalScroll, withVerticalScroll = withVerticalScroll) {
-            UBasicContainerSki(UCOLUMN, Modifier.reportMeasuringAndPlacement(reportsModel::invoke.withKeyPrefix("d3t "))) {
+        if (textsBoxEnabledState.value) UColumn(size, hscroll, vscroll) {
+            UBasicContainerSki(UCOLUMN, Modifier.reportMeasuringAndPlacement(ureports::invoke.withKeyPrefix("d3t "))) {
                 UDemoTexts(growFactor = 4)
             }
         }
-        UReportsUi(reportsModel, reversed = false)
+        UReportsUi(ureports, reversed = false)
     }
 }
 

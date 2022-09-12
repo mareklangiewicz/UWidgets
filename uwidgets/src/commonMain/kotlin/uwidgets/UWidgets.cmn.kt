@@ -129,6 +129,9 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
             }
     } }
 
+@Composable inline fun <reified E: Enum<E>> USwitchEnum(state: MutableState<E>) =
+    USwitch(state, *(enumValues<E>().map { it.name to it }.toTypedArray()))
+
 @Composable fun UProgress(
     pos: Double,
     min: Double = 0.0,
