@@ -21,16 +21,14 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 )
 
 private class NomadicComposition: UComposeScope {
-    private var acontent by mutableStateOf<(@Composable () -> Unit)?>(null)
-    private var isIdle by mutableStateOf(true)
-    override fun setContent(composable: @Composable () -> Unit) { isIdle = false; acontent = composable }
-    override suspend fun awaitIdle() { while (!isIdle) delay(20) } // FIXME_later: correct implementation of awaitIdle
+    private var composition by mutableStateOf<(@Composable () -> Unit)?>(null)
+    private var isComposing by mutableStateOf(false)
+    override fun setContent(composable: @Composable () -> Unit) { isComposing = true; composition = composable }
+    override suspend fun awaitIdle() { while (isComposing) delay(20) } // FIXME_later: correct implementation of awaitIdle
     @Composable fun emit() {
-        isIdle = false
-        acontent?.invoke()
-        SideEffect {
-            isIdle = true
-        }
+        isComposing = true
+        composition?.invoke()
+        SideEffect { isComposing = false }
     }
 }
 
