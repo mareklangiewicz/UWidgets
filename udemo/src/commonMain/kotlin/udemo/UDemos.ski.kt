@@ -32,15 +32,14 @@ private class NomadicComposition: UComposeScope {
     }
 }
 
-@Composable fun UDemoExaminedLayoutUSpekSki() {
+@Composable fun UDemoExaminedLayoutUSpekSki() = USpekUi { MyExaminedLayoutUSpekFun(Density(1f)) }
+
+@Composable fun USpekUi(suspekContent: suspend UComposeScope.() -> Unit) {
     val ureports = rememberUReports()
     val composition = remember { NomadicComposition() }
     LaunchedEffect(Unit) {
         uspekLog = { ureports("rspek" to it.status) }
-        withContext(USpekContext()) { suspek {
-            composition.MyExaminedLayoutUSpekFun(Density(1f))
-        } }
-    }
+        withContext(USpekContext()) { suspek { composition.suspekContent() } } }
     UAllStretch { URow {
         UBox { composition() }
         UBox { UReportsUi(ureports, reversed = false) }
