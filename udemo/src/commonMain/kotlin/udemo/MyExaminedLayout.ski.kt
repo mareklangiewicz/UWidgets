@@ -31,7 +31,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
             withSon4Blue = false,
             onUReport = ureports::invoke,
         )
-        UReportsUi(ureports, Modifier.height(400.dp))
+        UReportsUi(ureports, Modifier.height(400.dp), reversed = true)
     }
 }
 

@@ -8,16 +8,40 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
 import pl.mareklangiewicz.udata.*
+import pl.mareklangiewicz.uspek.*
+import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 
 @Composable fun UDemo3TabsSki(size: DpSize, withHorizontalScroll: Boolean, withVerticalScroll: Boolean) = UTabs(
     "Examined layout ski" to { UDemoExaminedLayoutSki(size, withHorizontalScroll, withVerticalScroll) },
-    // TODO NOW: connect to uspek fun
-    // "Examined layout uspek ski" to { UDemoExaminedLayoutUSpekSki(size, withHorizontalScroll, withVerticalScroll) },
+    "Examined layout uspek ski" to { UDemoExaminedLayoutUSpekSki() },
     "Move stuff ski" to { UDemoMoveStuffSki() },
 )
+
+@Composable fun UDemoExaminedLayoutUSpekSki() {
+    var content by ustate<(@Composable () -> Unit)?>(null)
+    val ureports = rememberUReports()
+    val scope = remember { object : UComposeScope {
+        override fun setContent(composable: @Composable () -> Unit) { content = composable }
+        override suspend fun awaitIdle() { /*TODO("Not yet implemented")*/ delay(500) }
+    } }
+    LaunchedEffect(Unit) {
+        uspekLog = { ureports("rspek" to it.status) }
+        suspek { // FIXME: cancellation when leave composition
+            delay(100)
+            scope.MyExaminedLayoutUSpekFun(Density(1f))
+        }
+    }
+    SideEffect {
+        // TODO NOW: trigger awaitIdle (maybe first some small delay anyway)
+    }
+    UAllStretch { URow {
+        UBox { content?.invoke() }
+        UBox { UReportsUi(ureports, reversed = false) }
+    } }
+}
 
 @Composable fun UDemoExaminedLayoutSki(
     size: DpSize,
@@ -40,7 +64,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
                 UDemoTexts(growFactor = 4)
             }
         }
-        UReportsUi(reportsModel)
+        UReportsUi(reportsModel, reversed = false)
     }
 }
 
