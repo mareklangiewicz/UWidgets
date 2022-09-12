@@ -20,13 +20,16 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     "Move stuff ski" to { UDemoMoveStuffSki() },
 )
 
+private class NomadicComposeScope: UComposeScope {
+    private var acontent by mutableStateOf<(@Composable () -> Unit)?>(null)
+    override fun setContent(composable: @Composable () -> Unit) { acontent = composable }
+    override suspend fun awaitIdle() { /* TODO("Not yet implemented") */ delay(500) }
+    @Composable fun emit() { acontent?.invoke() }
+}
+
 @Composable fun UDemoExaminedLayoutUSpekSki() {
-    var content by ustate<(@Composable () -> Unit)?>(null)
     val ureports = rememberUReports()
-    val scope = remember { object : UComposeScope {
-        override fun setContent(composable: @Composable () -> Unit) { content = composable }
-        override suspend fun awaitIdle() { /*TODO("Not yet implemented")*/ delay(500) }
-    } }
+    val scope = remember { NomadicComposeScope() }
     LaunchedEffect(Unit) {
         uspekLog = { ureports("rspek" to it.status) }
         suspek { // FIXME: cancellation when leave composition
@@ -38,7 +41,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         // TODO NOW: trigger awaitIdle (maybe first some small delay anyway)
     }
     UAllStretch { URow {
-        UBox { content?.invoke() }
+        UBox { scope.emit() }
         UBox { UReportsUi(ureports, reversed = false) }
     } }
 }
