@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
 import pl.mareklangiewicz.udata.*
+import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.uspek.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
@@ -20,7 +22,10 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     "Move stuff ski" to { UDemoMoveStuffSki() },
 )
 
-private class NomadicComposition: UComposeScope {
+private class NomadicComposition(
+    override val density: Density,
+    log: (Any?) -> Unit = { ulogd(it.ustr) },
+): UComposeScope {
     private var composition by mutableStateOf<@Composable () -> Unit>({})
     private var isComposing by mutableStateOf(false)
     override fun setContent(composable: @Composable () -> Unit) { isComposing = true; composition = composable }
@@ -30,19 +35,24 @@ private class NomadicComposition: UComposeScope {
         composition()
         SideEffect { isComposing = false }
     }
+    override val ureports = UReports(log)
 }
 
-@Composable fun UDemoExaminedLayoutUSpekSki() = USpekUi { MyExaminedLayoutUSpekFun(Density(1f)) }
+@Composable fun UDemoExaminedLayoutUSpekSki() = USpekUi { MyExaminedLayoutUSpekFun() }
 
 @Composable fun USpekUi(suspekContent: suspend UComposeScope.() -> Unit) {
-    val ureports = rememberUReports()
-    val composition = remember { NomadicComposition() }
+    val density = LocalDensity.current
+    val composition = remember { NomadicComposition(density) }
+    val uspekLogReports = rememberUReports()
     LaunchedEffect(Unit) {
-        uspekLog = { ureports("rspek" to it.status) }
+        uspekLog = { uspekLogReports("rspek" to it.status) }
         withContext(USpekContext()) { suspek { composition.suspekContent() } } }
     UAllStretch { URow {
         UBox { composition() }
-        UBox { UReportsUi(ureports, reversed = false) }
+        UColumn {
+            UBox { UReportsUi(composition.ureports, reversed = false) }
+            UBox { UReportsUi(uspekLogReports, reversed = false) }
+        }
     } }
 }
 

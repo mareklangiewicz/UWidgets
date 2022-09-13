@@ -4,16 +4,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
-import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.uspek.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 import kotlin.math.*
 
 // TODO_later: use context receiver for UComposeScope
-suspend fun UComposeScope.MyExaminedLayoutUSpekFun(density: Density) = with(density) {
-
-    val ureports = UReports { ulogw("rspek ${it.ustr}") } // rspek so I can filter logs with uspek/rspek/spek
+suspend fun UComposeScope.MyExaminedLayoutUSpekFun() = with(density) {
 
     ureports.clear()
 
