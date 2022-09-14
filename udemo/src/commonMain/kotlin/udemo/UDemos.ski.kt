@@ -40,7 +40,9 @@ class UNomadicComposition(
     override val ureports = UReports(log)
 }
 
-@Composable fun UDemoExaminedLayoutUSpekSki() {
+@Composable fun UDemoExaminedLayoutUSpekSki() = UDemoUSpekUi { MyExaminedLayoutUSpekFun() }
+
+@Composable fun UDemoUSpekUi(suspekContent: suspend UComposeScope.() -> Unit) {
     UAllStretch {
         UColumn {
             val uspekDelayMsS = ustate(1600L)
@@ -50,7 +52,7 @@ class UNomadicComposition(
                 USwitch(uspekDelayMsS, *options)
             }
             key(uspekDelayMsS.value) {
-                USpekUi { delay(uspekDelayMsS.value); MyExaminedLayoutUSpekFun() }
+                USpekUi { delay(uspekDelayMsS.value); suspekContent() }
             }
         }
     }
