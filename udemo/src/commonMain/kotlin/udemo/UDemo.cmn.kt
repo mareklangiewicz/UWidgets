@@ -14,12 +14,10 @@ fun UDemo() = UAllStretch {
     UColumn {
         val udemo2size = ustate(100)
         val (hscroll, vscroll) = ustates(true, true)
-        UAllStart {
-            URow {
-                USwitch(udemo2size, "100" to 100, "200" to 200, "400" to 400, "800" to 800)
-                USwitch(hscroll, "hscroll on", "hscroll off")
-                USwitch(vscroll, "vscroll on", "vscroll off")
-            }
+        UAllStartRow {
+            USwitch(udemo2size, "100" to 100, "200" to 200, "400" to 400, "800" to 800)
+            USwitch(hscroll, "hscroll on", "hscroll off")
+            USwitch(vscroll, "vscroll on", "vscroll off")
         }
         UTabs(
             "UDemo 0" to { UDemo0() },
@@ -37,17 +35,15 @@ fun UDemo() = UAllStretch {
         var switch3 by remember { mutableStateOf(USTART) }
         var switch4 by remember { mutableStateOf(USTART) }
         var rendering by remember { mutableStateOf("DOM") }
-        UAllStart {
-            UColumn {
-                UText("Align switches:")
-                val options = UAlignmentType.values().map { it.css }.toTypedArray()
-                UTabs(*options) { idx, tab -> switch1 = UAlignmentType.css(tab) }
-                UTabs(*options) { idx, tab -> switch2 = UAlignmentType.css(tab) }
-                UTabs(*options) { idx, tab -> switch3 = UAlignmentType.css(tab) }
-                UTabs(*options) { idx, tab -> switch4 = UAlignmentType.css(tab) }
-                UText("Rendering switch:")
-                UTabs("DOM", "Canvas", "DOM and Canvas") { idx, tab -> rendering = tab }
-            }
+        UAllStartColumn {
+            UText("Align switches:")
+            val options = UAlignmentType.values().map { it.css }.toTypedArray()
+            UTabs(*options) { idx, tab -> switch1 = UAlignmentType.css(tab) }
+            UTabs(*options) { idx, tab -> switch2 = UAlignmentType.css(tab) }
+            UTabs(*options) { idx, tab -> switch3 = UAlignmentType.css(tab) }
+            UTabs(*options) { idx, tab -> switch4 = UAlignmentType.css(tab) }
+            UText("Rendering switch:")
+            UTabs("DOM", "Canvas", "DOM and Canvas") { idx, tab -> rendering = tab }
         }
         URow {
             if ("DOM" in rendering) UBox { UDemo0Content(switch1, switch2, switch3, switch4) }

@@ -98,13 +98,11 @@ private val LocalUOnContainerReport = staticCompositionLocalOf<OnUReport?> { nul
 }
 
 @Composable
-internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) = UAllStart {
+internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) = UAllStartRow {
     var selectedTabIndex by remember { mutableStateOf(0) }
-    URow {
-        tabs.forEachIndexed { index, title ->
-            UOnContainerClick({ selectedTabIndex = index; onSelected(index, title) }) {
-                UBoxedText(title, center = true, bold = index == selectedTabIndex, mono = true)
-            }
+    tabs.forEachIndexed { index, title ->
+        UOnContainerClick({ selectedTabIndex = index; onSelected(index, title) }) {
+            UBoxedText(title, center = true, bold = index == selectedTabIndex, mono = true)
         }
     }
 }
@@ -122,17 +120,14 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     vararg states: MutableState<Boolean>,
     labelOn: String = "on",
     labelOff: String = "off",
-) = UAllStart { URow { for (s in states) USwitch(s, labelOn, labelOff) } }
+) = UAllStartRow { for (s in states) USwitch(s, labelOn, labelOff) }
 
-@Composable fun <T> USwitch(state: MutableState<T>, vararg options: Pair<String, T>) =
-    UAllStart {
-        URow {
-            for ((label, value) in options)
-                UOnContainerClick({ state.value = value }) {
-                    UBoxedText(label, true, state.value == value, true)
-                }
+@Composable fun <T> USwitch(state: MutableState<T>, vararg options: Pair<String, T>) = UAllStartRow {
+    for ((label, value) in options)
+        UOnContainerClick({ state.value = value }) {
+            UBoxedText(label, true, state.value == value, true)
         }
-    }
+}
 
 @Composable inline fun <reified E : Enum<E>> USwitchEnum(state: MutableState<E>) =
     USwitch(state, *(enumValues<E>().map { it.name to it }.toTypedArray()))

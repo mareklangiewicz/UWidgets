@@ -52,6 +52,20 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 @Composable fun UAllCenter(content: @Composable () -> Unit) = UAlign(UCENTER, UCENTER, content)
 @Composable fun UAllStretch(content: @Composable () -> Unit) = UAlign(USTRETCH, USTRETCH, content)
 
+@Composable fun UAllStartRow(
+    size: DpSize? = null,
+    withHorizontalScroll: Boolean = false,
+    withVerticalScroll: Boolean = false,
+    content: @Composable () -> Unit,
+) = UAllStart { URow(size, withHorizontalScroll, withVerticalScroll, content) }
+
+@Composable fun UAllStartColumn(
+    size: DpSize? = null,
+    withHorizontalScroll: Boolean = false,
+    withVerticalScroll: Boolean = false,
+    content: @Composable () -> Unit,
+) = UAllStart { UColumn(size, withHorizontalScroll, withVerticalScroll, content) }
+
 object UTheme {
 
     val colors: UColors
