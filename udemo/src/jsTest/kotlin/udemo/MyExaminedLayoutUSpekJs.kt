@@ -1,6 +1,5 @@
 package pl.mareklangiewicz.udemo
 
-import androidx.compose.ui.unit.*
 import org.jetbrains.compose.web.testutils.*
 import pl.mareklangiewicz.uspek.*
 import kotlin.test.*

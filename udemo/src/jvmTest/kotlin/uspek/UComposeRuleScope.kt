@@ -11,7 +11,7 @@ import pl.mareklangiewicz.uwidgets.*
 class UComposeRuleScope(
     private val rule: ComposeContentTestRule,
     log: (Any?) -> Unit = { ulogd(it.ustr) },
-): UComposeScope {
+) : UComposeScope {
     override fun setContent(composable: @Composable () -> Unit) = rule.setContent(composable)
     override suspend fun awaitIdle() = rule.awaitIdle()
     override val density: Density get() = rule.density

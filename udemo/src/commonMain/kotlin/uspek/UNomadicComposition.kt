@@ -13,7 +13,7 @@ import pl.mareklangiewicz.uwidgets.*
 class UNomadicComposition(
     override val density: Density,
     log: (Any?) -> Unit = { ulogd(it.ustr) },
-): UComposeScope {
+) : UComposeScope {
     private var composition by mutableStateOf<@Composable () -> Unit>({})
     private var isComposing by mutableStateOf(false)
     override fun setContent(composable: @Composable () -> Unit) { isComposing = true; composition = composable }

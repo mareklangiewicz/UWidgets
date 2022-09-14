@@ -11,7 +11,8 @@ import pl.mareklangiewicz.uwidgets.*
     val uspekLogReports = rememberUReports()
     LaunchedEffect(Unit) {
         uspekLog = { uspekLogReports("rspek" to it.status) }
-        withContext(USpekContext()) { suspek { composition.suspekContent() } } }
+        withContext(USpekContext()) { suspek { composition.suspekContent() } }
+    }
     UAllStretch { URow {
         UColumn {
             UBox { composition() }
