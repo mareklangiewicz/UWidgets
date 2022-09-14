@@ -62,7 +62,7 @@ fun RepositoryHandler.defaultRepos(
 
 fun TaskCollection<Task>.defaultKotlinCompileOptions(
     jvmTargetVer: String = vers.defaultJvm,
-    requiresOptIn: Boolean = true
+    requiresOptIn: Boolean = true,
 ) = withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = jvmTargetVer
@@ -156,7 +156,7 @@ fun Project.defaultBuildTemplateForMppLib(
     withTestJUnit4: Boolean = false,
     withTestJUnit5: Boolean = true,
     withTestUSpekX: Boolean = true,
-    addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {}
+    addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {},
 ) {
     repositories {
         defaultRepos(
@@ -192,8 +192,7 @@ fun Project.defaultBuildTemplateForMppLib(
         defaultPublishing(details)
         if (plugins.hasPlugin("signing")) defaultSigning()
         else println("MPP Module ${name}: signing disabled")
-    }
-    else println("MPP Module ${name}: publishing (and signing) disabled")
+    } else println("MPP Module ${name}: publishing (and signing) disabled")
 }
 
 /** Only for very standard small libs. In most cases it's better to not use this function. */
@@ -206,7 +205,7 @@ fun KotlinMultiplatformExtension.allDefault(
     withTestJUnit4: Boolean = false,
     withTestJUnit5: Boolean = true,
     withTestUSpekX: Boolean = true,
-    addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {}
+    addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {},
 ) {
     if (withJvm) jvm()
     if (withJs) jsDefault()
@@ -282,7 +281,7 @@ fun Project.defaultBuildTemplateForMppApp(
     withTestJUnit4: Boolean = false,
     withTestJUnit5: Boolean = true,
     withTestUSpekX: Boolean = true,
-    addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {}
+    addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {},
 ) {
     defaultBuildTemplateForMppLib(
         details = details,
@@ -300,7 +299,7 @@ fun Project.defaultBuildTemplateForMppApp(
         if (withJvm) jvm {
             println("MPP App ${project.name}: Generating general jvm executables with kotlin multiplatform plugin is not supported (without compose).")
             // TODO_someday: Will they support multiplatform way of declaring jvm app?
-            //binaries.executable()
+            // binaries.executable()
         }
         if (withJs) js(IR) {
             binaries.executable()
@@ -342,7 +341,7 @@ fun Project.defaultBuildTemplateForComposeMppLib(
     withComposeWebSvg: Boolean = withJs,
     withComposeTestUiJUnit4: Boolean = withJvm,
     withComposeTestWebUtils: Boolean = withJs,
-    addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {}
+    addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {},
 ) {
     defaultBuildTemplateForMppLib(
         details = details,
@@ -440,7 +439,7 @@ fun Project.defaultBuildTemplateForComposeMppApp(
     withComposeWebSvg: Boolean = withJs,
     withComposeTestUiJUnit4: Boolean = withJvm,
     withComposeTestWebUtils: Boolean = withJs,
-    addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {}
+    addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {},
 ) {
     defaultBuildTemplateForComposeMppLib(
         details = details,
