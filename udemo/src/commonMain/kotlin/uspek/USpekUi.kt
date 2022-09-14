@@ -13,13 +13,15 @@ import pl.mareklangiewicz.uwidgets.*
         uspekLog = { uspekLogReports("rspek" to it.status) }
         withContext(USpekContext()) { suspek { composition.suspekContent() } }
     }
-    UAllStretch { URow {
-        UColumn {
-            UBox { composition() }
-            UBox { UReportsUi(composition.ureports, reversed = false) }
+    UAllStretch {
+        URow {
+            UColumn {
+                UBox { composition() }
+                UBox { UReportsUi(composition.ureports, reversed = false) }
+            }
+            UBox { UReportsUi(uspekLogReports, reversed = false) }
         }
-        UBox { UReportsUi(uspekLogReports, reversed = false) }
-    } }
+    }
 }
 
 @Composable fun UFancyUSpekUi(suspekContent: suspend UComposeScope.() -> Unit) {

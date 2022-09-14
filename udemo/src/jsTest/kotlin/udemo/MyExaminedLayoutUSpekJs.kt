@@ -7,14 +7,14 @@ import kotlin.test.*
 
 class MyExaminedLayoutUSpekJs {
 
-    init { uspekLog = { console.warn("uspek ${it.status}\n") } }
+    init {
+        uspekLog = { console.warn("uspek ${it.status}\n") }
+    }
 
     @OptIn(ComposeWebExperimentalTestsApi::class)
     @Test
     fun melusf() = runTest {
         val scope = UComposeWebTestScope(this)
-        suspek {
-            scope.MyExaminedLayoutUSpekFun()
-        }
+        suspek { scope.MyExaminedLayoutUSpekFun() }
     }
 }

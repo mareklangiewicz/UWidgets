@@ -27,11 +27,13 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     val typeS = ustate(UBOX)
     val (son1S, son2S, son3S, son4S) = ustates(false, false, false, false)
     val textsS = ustate(false)
-    UAllStart { URow {
-        USwitchEnum(typeS)
-        USwitches(son1S, son2S, son3S, son4S)
-        USwitch(textsS, "texts on", "texts off")
-    } }
+    UAllStart {
+        URow {
+            USwitchEnum(typeS)
+            USwitches(son1S, son2S, son3S, son4S)
+            USwitch(textsS, "texts on", "texts off")
+        }
+    }
     URow {
         MyExaminedLayout(
             type = typeS.value,
