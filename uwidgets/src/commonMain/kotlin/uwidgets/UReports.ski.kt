@@ -22,7 +22,8 @@ import pl.mareklangiewicz.udata.*
                 Row(
                     Modifier
                         .background(Color.White.darken(.06f * (idx % 4)))
-                        .padding(2.dp)) {
+                        .padding(2.dp)
+                ) {
                     Box(Modifier.width(60.dp)) { Text(entry.timeUStr) }
                     Box(Modifier.width(200.dp)) { Text(entry.key) }
                     Box(Modifier.weight(1f)) { Text(entry.data.ustr) }

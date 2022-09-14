@@ -14,11 +14,13 @@ fun UDemo() = UAllStretch {
     UColumn {
         val udemo2size = ustate(100)
         val (hscroll, vscroll) = ustates(true, true)
-        UAllStart { URow {
-            USwitch(udemo2size, "100" to 100, "200" to 200, "400" to 400, "800" to 800)
-            USwitch(hscroll, "hscroll on", "hscroll off")
-            USwitch(vscroll, "vscroll on", "vscroll off")
-        } }
+        UAllStart {
+            URow {
+                USwitch(udemo2size, "100" to 100, "200" to 200, "400" to 400, "800" to 800)
+                USwitch(hscroll, "hscroll on", "hscroll off")
+                USwitch(vscroll, "vscroll on", "vscroll off")
+            }
+        }
         UTabs(
             "UDemo 0" to { UDemo0() },
             "UDemo 1" to { UDemo1(hscroll.value, vscroll.value) },

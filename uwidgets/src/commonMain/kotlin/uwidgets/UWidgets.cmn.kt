@@ -14,6 +14,7 @@ enum class UContainerType { UBOX, UROW, UCOLUMN }
 
 enum class UAlignmentType(val css: String) {
     USTART("start"), UEND("end"), UCENTER("center"), USTRETCH("stretch");
+
     companion object {
         fun css(css: String) = UAlignmentType.values().first { it.css == css }
     }
@@ -89,7 +90,9 @@ private val LocalUOnContainerReport = staticCompositionLocalOf<OnUReport?> { nul
 @Composable fun UTabs(vararg contents: Pair<String, @Composable () -> Unit>) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     UColumn {
-        UTabs(*contents.map { it.first }.toTypedArray()) { idx, tab -> selectedTabIndex = idx } // Renaming tab -> _ breaks layout inspector in AS!!
+        UTabs(*contents.map { it.first }.toTypedArray()) { idx, tab ->
+            selectedTabIndex = idx
+        } // Renaming tab -> _ breaks layout inspector in AS!!
         contents[selectedTabIndex].second()
     }
 }
@@ -122,14 +125,16 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
 ) = UAllStart { URow { for (s in states) USwitch(s, labelOn, labelOff) } }
 
 @Composable fun <T> USwitch(state: MutableState<T>, vararg options: Pair<String, T>) =
-    UAllStart { URow {
-        for ((label, value) in options)
-            UOnContainerClick({ state.value = value }) {
-                UBoxedText(label, true, state.value == value, true)
-            }
-    } }
+    UAllStart {
+        URow {
+            for ((label, value) in options)
+                UOnContainerClick({ state.value = value }) {
+                    UBoxedText(label, true, state.value == value, true)
+                }
+        }
+    }
 
-@Composable inline fun <reified E: Enum<E>> USwitchEnum(state: MutableState<E>) =
+@Composable inline fun <reified E : Enum<E>> USwitchEnum(state: MutableState<E>) =
     USwitch(state, *(enumValues<E>().map { it.name to it }.toTypedArray()))
 
 @Composable fun UProgress(

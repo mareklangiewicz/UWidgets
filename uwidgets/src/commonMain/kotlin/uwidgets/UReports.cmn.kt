@@ -13,8 +13,8 @@ import pl.mareklangiewicz.uwidgets.UReports.*
 
 /** First is some key, second is reported data. */
 typealias UReport = Pair<String, Any?>
-    // No actual new type here because I want easier composability with any random code with callbacks.
-    // Stringly-typed style is justified in UReports. Reflection/when/is<type> constructs are encouraged here.
+// No actual new type here because I want easier composability with any random code with callbacks.
+// Stringly-typed style is justified in UReports. Reflection/when/is<type> constructs are encouraged here.
 
 typealias OnUReport = (UReport) -> Unit
 
@@ -23,7 +23,7 @@ inline fun OnUReport.withKeyPrefix(keyPrefix: String): OnUReport = { this(keyPre
 
 @Composable fun rememberUReports(log: (Any?) -> Unit = { ulogd(it.ustr) }) = remember { UReports(log) }
 
-class UReports(val log: (Any?) -> Unit = { ulogd(it.ustr) }): Iterable<Entry> {
+class UReports(val log: (Any?) -> Unit = { ulogd(it.ustr) }) : Iterable<Entry> {
 
     private val entries = mutableStateListOf<Entry>()
 
@@ -53,17 +53,21 @@ fun Long.asTimeUStr() = (this / 1000.0).ustr.substring(startIndex = 7)
 
 val Entry.timeUStr get() = timeMS.asTimeUStr()
 
-fun Entry.hasTimeIn(erange: LongRange) = check(timeMS in erange) { "Unexpected time: $timeUStr not in ${erange.first.asTimeUStr()}..${erange.last.asTimeUStr()}" }
+fun Entry.hasTimeIn(erange: LongRange) =
+    check(timeMS in erange) { "Unexpected time: $timeUStr not in ${erange.first.asTimeUStr()}..${erange.last.asTimeUStr()}" }
 
 fun Entry.hasKey(ekey: String) = check(key == ekey) { "Unexpected key: $key != $ekey" }
 
 @Suppress("UNCHECKED_CAST")
 fun <T> Entry.hasData(edata: T) = check(data as T == edata) { "Unexpected data reported at time: $timeUStr, key: $key" }
 
-fun <T> Entry.hasKeyAndData(ekey: String, edata: T) { hasKey(ekey); hasData(edata) }
+fun <T> Entry.hasKeyAndData(ekey: String, edata: T) {
+    hasKey(ekey)
+    hasData(edata)
+}
 
 @Suppress("UNCHECKED_CAST")
-fun <T: Any> Entry.has(ekey: String? = null, checkData: T.() -> Boolean) {
+fun <T : Any> Entry.has(ekey: String? = null, checkData: T.() -> Boolean) {
     if (ekey != null) hasKey(ekey)
     check((data as T).checkData()) { "Unexpected data reported at time: $timeUStr, key: $key" }
 }

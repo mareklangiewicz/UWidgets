@@ -22,7 +22,11 @@ object UDepth {
 
 }
 
-@Composable fun UDepth(depth: Int = UDepth.depth + UDepth.settings.step, settings: UDepthSettings? = null, content: @Composable () -> Unit) =
+@Composable fun UDepth(
+    depth: Int = UDepth.depth + UDepth.settings.step,
+    settings: UDepthSettings? = null,
+    content: @Composable () -> Unit,
+) =
     if (settings == null) CompositionLocalProvider(LocalUDepth provides depth, content = content)
     else CompositionLocalProvider(LocalUDepth provides depth, LocalUDepthSettings provides settings, content = content)
 

@@ -11,6 +11,7 @@ fun lerp(start: Double, stop: Double, fraction: Double = 0.5) = (start * (1 - fr
 data class XY(val x: Double = 0.0, val y: Double = 0.0) {
     override fun toString() = "(${x.ustr},${y.ustr})"
 }
+
 data class XYZ(val x: Double = 0.0, val y: Double = 0.0, val z: Double = 0.0) {
     override fun toString() = "(${x.ustr},${y.ustr},${z.ustr})"
     val xy get() = x xy y

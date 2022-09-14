@@ -19,7 +19,8 @@ import pl.mareklangiewicz.uwidgets.UScrollerType.*
 
 enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
 
-@Composable internal fun UBasicContainerImplSki(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerSki(type, content = content)
+@Composable internal fun UBasicContainerImplSki(type: UContainerType, content: @Composable () -> Unit) =
+    UBasicContainerSki(type, content = content)
 
 @Composable internal fun UCoreContainerImplSki(
     type: UContainerType,
@@ -98,10 +99,12 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
             UBOX -> {
                 val placeables = measurables.map { measurable ->
                     val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
-                    measurable.measure(parentConstraints.copy(
-                        minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
-                        minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
-                    ))
+                    measurable.measure(
+                        parentConstraints.copy(
+                            minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
+                            minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
+                        )
+                    )
                 }
                 val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
                 val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical, parentConstraints)
@@ -109,24 +112,32 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
                     onUReport?.invoke("place in" to IntSize(parentWidth, parentHeight))
                     for (p in placeables) {
                         val (uhorizontal, uvertical) = p.uChildData(phorizontal, pvertical)
-                        p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), uvertical.startPositionFor(p.height, parentHeight))
+                        p.placeRelative(
+                            uhorizontal.startPositionFor(p.width, parentWidth),
+                            uvertical.startPositionFor(p.height, parentHeight)
+                        )
                     }
                     onUReport?.invoke("placed count" to placeables.size)
                 }
             }
+
             UROW -> {
                 val placeables: MutableList<Placeable?> = measurables.map { measurable ->
                     val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                     // skip measuring stretched items (when normal bounded row width) (will measure it later)
                     uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth && return@map null
-                    measurable.measure(parentConstraints.copy(
-                        minWidth = 0,
-                        minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
-                    ))
+                    measurable.measure(
+                        parentConstraints.copy(
+                            minWidth = 0,
+                            minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
+                        )
+                    )
                 }.toMutableList()
                 val fixedWidthTaken = placeables.sumOf { it?.width ?: 0 }
                 val itemStretchedCount = placeables.count { it == null }
-                val parentWidth = if ((phorizontal == USTRETCH || itemStretchedCount > 0) && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else parentConstraints.constrainWidth(fixedWidthTaken)
+                val parentWidth =
+                    if ((phorizontal == USTRETCH || itemStretchedCount > 0) && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth
+                    else parentConstraints.constrainWidth(fixedWidthTaken)
                 val parentWidthLeft = parentWidth - fixedWidthTaken
                 if (parentWidthLeft > 0 && itemStretchedCount > 0) {
                     val itemWidth = parentWidthLeft / itemStretchedCount
@@ -134,35 +145,44 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
                         placeables[idx] == null || return@forEachIndexed
                         val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                         check(uhorizontal == USTRETCH)
-                        placeables[idx] = measurable.measure(parentConstraints.copy(
-                            minWidth = itemWidth, maxWidth = itemWidth,
-                            minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
-                        ))
+                        placeables[idx] = measurable.measure(
+                            parentConstraints.copy(
+                                minWidth = itemWidth, maxWidth = itemWidth,
+                                minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
+                            )
+                        )
                     }
                 }
                 val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical, parentConstraints)
                 layout(parentWidth, parentHeight) {
                     onUReport?.invoke("place in" to IntSize(parentWidth, parentHeight))
                     // I do filterNotNull, because some stretched items can be skipped totally when no place left after measuring fixed items
-                    val p = if (itemStretchedCount > 0) placeables.filterNotNull() else placeables.map { it ?: error("placeable not measured") }
+                    val p =
+                        if (itemStretchedCount > 0) placeables.filterNotNull()
+                        else placeables.map { it ?: error("placeable not measured") }
                     if (itemStretchedCount > 0) placeAllAsHorizontalStartToEnd(p, phorizontal, pvertical, parentHeight)
                     else placeAllAsHorizontalGroupsStartCenterEnd(p, phorizontal, pvertical, parentWidth, parentHeight, fixedWidthTaken)
                     onUReport?.invoke("placed count" to p.size)
                 }
             }
+
             UCOLUMN -> {
                 val placeables: MutableList<Placeable?> = measurables.map { measurable ->
                     val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                     // skip measuring stretched items (when normal bounded column height) (will measure it later)
                     uvertical == USTRETCH && parentConstraints.hasBoundedHeight && return@map null
-                    measurable.measure(parentConstraints.copy(
-                        minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
-                        minHeight = 0,
-                    ))
+                    measurable.measure(
+                        parentConstraints.copy(
+                            minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
+                            minHeight = 0,
+                        )
+                    )
                 }.toMutableList()
                 val fixedHeightTaken = placeables.sumOf { it?.height ?: 0 }
                 val itemStretchedCount = placeables.count { it == null }
-                val parentHeight = if ((pvertical == USTRETCH || itemStretchedCount > 0) && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else parentConstraints.constrainHeight(fixedHeightTaken)
+                val parentHeight =
+                    if ((pvertical == USTRETCH || itemStretchedCount > 0) && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight
+                    else parentConstraints.constrainHeight(fixedHeightTaken)
                 val parentHeightLeft = parentHeight - fixedHeightTaken
                 if (parentHeightLeft > 0 && itemStretchedCount > 0) {
                     val itemHeight = parentHeightLeft / itemStretchedCount
@@ -170,17 +190,21 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
                         placeables[idx] == null || return@forEachIndexed
                         val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                         check(uvertical == USTRETCH)
-                        placeables[idx] = measurable.measure(parentConstraints.copy(
-                            minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
-                            minHeight = itemHeight, maxHeight = itemHeight,
-                        ))
+                        placeables[idx] = measurable.measure(
+                            parentConstraints.copy(
+                                minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
+                                minHeight = itemHeight, maxHeight = itemHeight,
+                            )
+                        )
                     }
                 }
                 val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
                 layout(parentWidth, parentHeight) {
                     onUReport?.invoke("place in" to IntSize(parentWidth, parentHeight))
                     // I do filterNotNull, because some stretched items can be skipped totally when no place left after measuring fixed items
-                    val p = if (itemStretchedCount > 0) placeables.filterNotNull() else placeables.map { it ?: error("placeable not measured") }
+                    val p =
+                        if (itemStretchedCount > 0) placeables.filterNotNull()
+                        else placeables.map { it ?: error("placeable not measured") }
                     if (itemStretchedCount > 0) placeAllAsVerticalTopToDown(p, phorizontal, pvertical, parentWidth)
                     else placeAllAsVerticalGroupsTopCenterBottom(p, phorizontal, pvertical, parentWidth, parentHeight, fixedHeightTaken)
                     onUReport?.invoke("placed count" to p.size)
@@ -295,7 +319,8 @@ private fun Placeable.PlacementScope.placeAllAsVerticalGroupsTopCenterBottom(
 }
 
 private fun Iterable<Placeable?>.maxWidthWithin(constraints: Constraints) = constraints.constrainWidth(maxOfOrNull { it?.width ?: 0 } ?: 0)
-private fun Iterable<Placeable?>.maxHeightWithin(constraints: Constraints) = constraints.constrainHeight(maxOfOrNull { it?.height ?: 0 } ?: 0)
+private fun Iterable<Placeable?>.maxHeightWithin(constraints: Constraints) =
+    constraints.constrainHeight(maxOfOrNull { it?.height ?: 0 } ?: 0)
 
 private fun Iterable<Placeable?>.stretchOrMaxWidthWithin(uhorizontal: UAlignmentType, constraints: Constraints) =
     if (uhorizontal == USTRETCH && constraints.hasBoundedWidth) constraints.maxWidth else maxWidthWithin(constraints)
@@ -336,18 +361,20 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
 }
 
 @Composable private fun UTabsImplM3TabRow(vararg tabs: String, onSelected: (index: Int, tab: String) -> Unit) =
-    UAllStart { UBox {
-        var selectedTabIndex by remember { mutableStateOf(0) }
-        TabRow(selectedTabIndex = selectedTabIndex) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    text = { Text(title, style = MaterialTheme.typography.titleSmall) },
-                    selected = selectedTabIndex == index,
-                    onClick = { selectedTabIndex = index; onSelected(index, title) }
-                )
+    UAllStart {
+        UBox {
+            var selectedTabIndex by remember { mutableStateOf(0) }
+            TabRow(selectedTabIndex = selectedTabIndex) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(
+                        text = { Text(title, style = MaterialTheme.typography.titleSmall) },
+                        selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index; onSelected(index, title) }
+                    )
+                }
             }
         }
-    } }
+    }
 
 /** No need to start new compose window - we are already in skiko based composition */
 @Composable internal fun UFakeSkikoBoxImplSki(size: DpSize? = null, content: @Composable () -> Unit) =

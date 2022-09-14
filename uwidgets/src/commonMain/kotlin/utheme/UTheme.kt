@@ -42,7 +42,7 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 @Composable fun UAlign(
     horizontal: UAlignmentType = UTheme.alignments.horizontal,
     vertical: UAlignmentType = UTheme.alignments.vertical,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) = UTheme(alignments = UAlignments(horizontal, vertical), content = content)
 
 // I do it often so let's have this convenient fun even if it makes code less "micro"

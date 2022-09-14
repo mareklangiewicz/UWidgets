@@ -176,16 +176,18 @@ fun Project.defaultBuildTemplateForMppLib(
         }
     }
     defaultGroupAndVerAndDescription(details)
-    kotlin { allDefault(
-        withJvm,
-        withJs,
-        withNativeLinux64,
-        withKotlinxHtml,
-        withTestJUnit4,
-        withTestJUnit5,
-        withTestUSpekX,
-        addCommonMainDependencies
-    ) }
+    kotlin {
+        allDefault(
+            withJvm,
+            withJs,
+            withNativeLinux64,
+            withKotlinxHtml,
+            withTestJUnit4,
+            withTestJUnit5,
+            withTestUSpekX,
+            addCommonMainDependencies
+        )
+    }
     tasks.defaultKotlinCompileOptions()
     tasks.defaultTestsOptions(onJvmUseJUnitPlatform = withTestJUnit5)
     if (plugins.hasPlugin("maven-publish")) {

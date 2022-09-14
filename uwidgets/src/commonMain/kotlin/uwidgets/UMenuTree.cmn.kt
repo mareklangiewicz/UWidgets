@@ -22,10 +22,11 @@ fun UMenuTree(tree: UCallbackTree, dispatcher: CoroutineDispatcher) {
     require(subt.isEmpty() || tree.callback == null) { "Tree with sub trees and callback" }
     when {
         subt.isEmpty() -> {
-            UOnContainerClick({ scope.launch(dispatcher) { tree.callback?.invoke() }}) {
+            UOnContainerClick({ scope.launch(dispatcher) { tree.callback?.invoke() } }) {
                 UBoxedText(tree.label!!, mono = true)
             }
         }
+
         else -> UColumn {
             tree.label?.let { UBox { UBoxedText(it, center = true, bold = true, mono = true) } }
             for (t in subt) UMenuTree(t, dispatcher)
@@ -46,7 +47,7 @@ fun UMenuTreeWithFilter(tree: UCallbackTree, dispatcher: CoroutineDispatcher) {
 }
 
 //@Composable
-//private fun MyFilter() {
+// private fun MyFilter() {
 //    val model = LocalKim.current
 //    val mod = Wide.border(1.dp, if (model.isFocused) Color.Red else Color.Gray).padding(1.dp)
 //    DBox(mod) { DText(model.text) }

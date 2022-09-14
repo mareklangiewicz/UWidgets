@@ -4,7 +4,7 @@ package pl.mareklangiewicz.usystem
 
 import androidx.compose.runtime.*
 import org.jetbrains.compose.web.internal.runtime.*
-import kotlin.js.*
+import kotlin.js.Date
 
 internal fun Float.toUStrImpl(precision: Int): String = asDynamic().toFixed(precision) as String
 internal fun Double.toUStrImpl(precision: Int): String = asDynamic().toFixed(precision) as String

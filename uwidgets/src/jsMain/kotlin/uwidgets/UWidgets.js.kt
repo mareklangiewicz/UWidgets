@@ -14,7 +14,8 @@ import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
 
-@Composable internal fun UBasicContainerImplDom(type: UContainerType, content: @Composable () -> Unit) = UBasicContainerDom(type) { content() }
+@Composable internal fun UBasicContainerImplDom(type: UContainerType, content: @Composable () -> Unit) =
+    UBasicContainerDom(type) { content() }
 
 @Composable internal fun UCoreContainerImplDom(
     type: UContainerType,
@@ -72,10 +73,12 @@ var leakyDomReportsEnabled: Boolean = false
         }
         addAttrs?.let { it() }
         onClick?.let { onClick { it() } }
-        if (leakyDomReportsEnabled && onUReport != null) { ref {
-            onUReport("dom enter" to it)
-            onDispose { onUReport("dom exit" to it) }
-        } }
+        if (leakyDomReportsEnabled && onUReport != null) {
+            ref {
+                onUReport("dom enter" to it)
+                onDispose { onUReport("dom exit" to it) }
+            }
+        }
     }
     CompositionLocalProvider(LocalUContainerType provides type) {
         if (inline) Span(attrs) { content() } else Div(attrs) { content() }
@@ -137,6 +140,7 @@ private fun StyleScope.uflexChildFor(parentType: UContainerType, horizontal: UAl
             alignSelf(horizontal.css)
             if (vertical == USTRETCH) flexGrow(1)
         }
+
         UROW -> {
             alignSelf(vertical.css)
             if (horizontal == USTRETCH) flexGrow(1)
@@ -158,6 +162,7 @@ private fun StyleScope.uflexFor(type: UContainerType, horizontal: UAlignmentType
             }
             justifyContent(JustifyContent(vertical.css))
         }
+
         UROW -> {
             vertical.css.let {
                 alignContent(AlignContent(it))

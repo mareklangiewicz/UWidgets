@@ -32,14 +32,21 @@ val DpSize.area get() = Dp(width.value * height.value)
 
 fun Size.copyToIntSize(w: Int = width.int, h: Int = height.int) = IntSize(w, h)
 fun Size.copyRoundToIntSize(w: Int = width.intr, h: Int = height.intr) = IntSize(w, h)
-fun IntSize.copyToAllConstraints(minW: Int = width, maxW: Int = width, minH: Int = height, maxH: Int = height) = Constraints(minW, maxW, minH, maxH)
+fun IntSize.copyToAllConstraints(minW: Int = width, maxW: Int = width, minH: Int = height, maxH: Int = height) =
+    Constraints(minW, maxW, minH, maxH)
+
 fun IntSize.copyToMaxConstraints(minW: Int = 0, maxW: Int = width, minH: Int = 0, maxH: Int = height) = Constraints(minW, maxW, minH, maxH)
-fun IntSize.copyToMinConstraints(minW: Int = width, maxW: Int = Constraints.Infinity, minH: Int = height, maxH: Int = Constraints.Infinity) = Constraints(minW, maxW, minH, maxH)
+fun IntSize.copyToMinConstraints(
+    minW: Int = width,
+    maxW: Int = Constraints.Infinity,
+    minH: Int = height,
+    maxH: Int = Constraints.Infinity,
+) = Constraints(minW, maxW, minH, maxH)
 
 fun Any?.markIfNull(markNotNull: String = "nn", markNull: String = "n"): String = if (this != null) markNotNull else markNull
 
 fun String.limit(limit: Int = 64, limitIndicator: String = "..") =
-    if (length > limit) substring(0, limit-limitIndicator.length) + limitIndicator else this
+    if (length > limit) substring(0, limit - limitIndicator.length) + limitIndicator else this
 
 
 fun String.containsOneOf(vararg substrings: String) = substrings.any { it in this }
