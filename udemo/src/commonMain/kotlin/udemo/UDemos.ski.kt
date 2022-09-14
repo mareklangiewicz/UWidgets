@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
 import pl.mareklangiewicz.udata.*
-import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.uspek.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
@@ -22,56 +20,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     "Move stuff ski" to { UDemoMoveStuffSki() },
 )
 
-@Composable fun rememberUNomadicComposition(density: Density = LocalDensity.current) = remember { UNomadicComposition(density) }
-
-class UNomadicComposition(
-    override val density: Density,
-    log: (Any?) -> Unit = { ulogd(it.ustr) },
-): UComposeScope {
-    private var composition by mutableStateOf<@Composable () -> Unit>({})
-    private var isComposing by mutableStateOf(false)
-    override fun setContent(composable: @Composable () -> Unit) { isComposing = true; composition = composable }
-    override suspend fun awaitIdle() { do delay(20) while (isComposing) } // FIXME_later: correct implementation of awaitIdle
-    @Composable operator fun invoke() {
-        isComposing = true
-        composition()
-        SideEffect { isComposing = false }
-    }
-    override val ureports = UReports(log)
-}
-
-@Composable fun UDemoExaminedLayoutUSpekSki() = UDemoUSpekUi { MyExaminedLayoutUSpekFun() }
-
-@Composable fun UDemoUSpekUi(suspekContent: suspend UComposeScope.() -> Unit) {
-    UAllStretch {
-        UColumn {
-            val uspekDelayMsS = ustate(1600L)
-            UAllStart {
-                val delays = listOf(0, 10, 20, 80, 160, 400, 800, 1600, 3200)
-                val options = delays.map { it.toString() to it.toLong() }.toTypedArray()
-                USwitch(uspekDelayMsS, *options)
-            }
-            key(uspekDelayMsS.value) {
-                USpekUi { delay(uspekDelayMsS.value); suspekContent() }
-            }
-        }
-    }
-}
-
-@Composable fun USpekUi(suspekContent: suspend UComposeScope.() -> Unit) {
-    val composition = rememberUNomadicComposition()
-    val uspekLogReports = rememberUReports()
-    LaunchedEffect(Unit) {
-        uspekLog = { uspekLogReports("rspek" to it.status) }
-        withContext(USpekContext()) { suspek { composition.suspekContent() } } }
-    UAllStretch { URow {
-        UColumn {
-            UBox { composition() }
-            UBox { UReportsUi(composition.ureports, reversed = false) }
-        }
-        UBox { UReportsUi(uspekLogReports, reversed = false) }
-    } }
-}
+@Composable fun UDemoExaminedLayoutUSpekSki() = UFancyUSpekUi { MyExaminedLayoutUSpekFun() }
 
 @Composable fun UDemoExaminedLayoutSki(size: DpSize, hScroll: Boolean, vScroll: Boolean) = UColumn {
     val ureports = rememberUReports()
