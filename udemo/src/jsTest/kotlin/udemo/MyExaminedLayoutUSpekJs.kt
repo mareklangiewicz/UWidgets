@@ -15,7 +15,7 @@ class MyExaminedLayoutUSpekJs {
     fun melusf() = runTest {
         val scope = UComposeWebTestScope(this)
         suspek {
-            scope.MyExaminedLayoutUSpekFun(Density(1f))
+            scope.MyExaminedLayoutUSpekFun()
         }
     }
 }
