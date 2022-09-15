@@ -10,7 +10,7 @@ fun main() = application {
     Window(onCloseRequest = ::exitApplication, title = "UDemo App JVM") { UDemoAppJvm() }
 }
 
-@Preview // FIXME_later
+@Preview
 @Composable
 private fun UDemoAppJvm() {
     Column {
