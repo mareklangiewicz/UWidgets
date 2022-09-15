@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_VARIABLE")
-
 import org.jetbrains.compose.*
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.plugin.*
