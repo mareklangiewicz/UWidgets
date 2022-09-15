@@ -303,7 +303,10 @@ fun Project.defaultBuildTemplateForComposeMppLib(
                         implementation(compose.ui)
                     }
                     if (withComposeFoundation) implementation(compose.foundation)
-                    if (withComposeFullAnimation) implementation(compose.animation)
+                    if (withComposeFullAnimation) {
+                        implementation(compose.animation)
+                        implementation(compose.animationGraphics)
+                    }
                     if (withComposeMaterial2) implementation(compose.material)
                     if (withComposeMaterial3) implementation(compose.material3)
                 }
@@ -314,7 +317,6 @@ fun Project.defaultBuildTemplateForComposeMppLib(
                         implementation(compose.uiTooling)
                         implementation(compose.preview)
                     }
-                    if (withComposeFullAnimation) implementation(compose.animationGraphics)
                     if (withComposeMaterialIconsExtended) implementation(compose.materialIconsExtended)
                     if (withComposeDesktop) {
                         implementation(compose.desktop.common)

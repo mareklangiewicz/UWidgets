@@ -367,8 +367,12 @@ fun Project.defaultBuildTemplateForComposeMppLib(
                         implementation(compose.ui)
                     }
                     if (withComposeFoundation) implementation(compose.foundation)
-                    if (withComposeFullAnimation) implementation(compose.animation)
+                    if (withComposeFullAnimation) {
+                        implementation(compose.animation)
+                        implementation(compose.animationGraphics)
+                    }
                     if (withComposeMaterial2) implementation(compose.material)
+                    if (withComposeMaterial3) implementation(compose.material3)
                 }
             }
             val jvmMain by getting {
@@ -377,8 +381,6 @@ fun Project.defaultBuildTemplateForComposeMppLib(
                         implementation(compose.uiTooling)
                         implementation(compose.preview)
                     }
-                    if (withComposeFullAnimation) implementation(compose.animationGraphics)
-                    if (withComposeMaterial3) implementation(compose.material3)
                     if (withComposeMaterialIconsExtended) implementation(compose.materialIconsExtended)
                     if (withComposeDesktop) {
                         implementation(compose.desktop.common)
@@ -417,7 +419,6 @@ fun Project.defaultBuildTemplateForComposeMppLib(
 // region [Compose MPP App Build Template]
 
 /** Only for very standard compose mpp apps. In most cases it's better to not use this function. */
-@Suppress("UNUSED_VARIABLE")
 fun Project.defaultBuildTemplateForComposeMppApp(
     appMainPackage: String,
     appMainClass: String = "App_jvmKt", // for compose jvm
