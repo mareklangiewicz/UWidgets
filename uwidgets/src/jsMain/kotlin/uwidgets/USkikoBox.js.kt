@@ -11,6 +11,7 @@ import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.skiko.wasm.*
+import androidx.compose.ui.platform.JSTextInputService
 import org.w3c.dom.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
@@ -63,11 +64,19 @@ private val Element.clientSizeDp get() = DpSize(clientWidth.dp, clientHeight.dp)
 /** @see androidx.compose.ui.window.ComposeWindow */
 private class USkikoComposeWindow(canvas: HTMLCanvasElement) {
 
+    private val textInputService = JSTextInputService(
+        showSoftwareKeyboard = {
+            println("TODO showSoftwareKeyboard in JS")
+        },
+        hideSoftwareKeyboard = {
+            println("TODO hideSoftwareKeyboard in JS")
+        },
+    )
     val layer = ComposeLayer(
         layer = createSkiaLayer(),
-        showSoftwareKeyboard = { println("TODO showSoftwareKeyboard in JS") },
-        hideSoftwareKeyboard = { println("TODO hideSoftwareKeyboard in JS") },
         getTopLeftOffset = { Offset.Zero },
+        inputService = textInputService,
+        input = textInputService.input,
     )
 
     init {
