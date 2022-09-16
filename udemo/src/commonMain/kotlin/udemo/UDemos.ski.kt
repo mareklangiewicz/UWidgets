@@ -42,7 +42,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
             withSon4Blue = son4S.value,
             onUReport = ureports::invoke,
         )
-        if (textsS.value) UColumn(size, hScroll, vScroll) {
+        if (textsS.value) UColumn(size, withHorizontalScroll = hScroll, withVerticalScroll = vScroll) {
             UBasicContainerSki(UCOLUMN, Modifier.reportMeasuringAndPlacement(ureports::invoke.withKeyPrefix("d3t "))) {
                 UDemoTexts(growFactor = 4)
             }

@@ -96,7 +96,7 @@ fun UDemo() = UAllStretch {
         UTheme(lightUColors()) {
             UColumn {
                 val enabled = ustate(false)
-                USwitch(enabled, "enabled", "disabled")
+                USwitch(enabled, "enabled: yes", "enabled: noo")
                 UBoxEnabledIf(enabled.value) { SomeTree() }
                 // FIXME NOW: disabling on JVM (empty overlay doesn't stretch correctly)
             }
@@ -110,7 +110,7 @@ fun UDemo() = UAllStretch {
 
 @Composable private fun SomeTree() = UColumn {
     val selected = ustate(false)
-    USwitch(selected, "selected", "not selected")
+    USwitch(selected, "selected: yes", "selected: noo")
     UBox(selected = selected.value) {
         UMenuTree(
             "XYZ".cbtree(
