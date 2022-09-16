@@ -89,9 +89,18 @@ fun UDemo() = UAllStretch {
 
 @Composable fun UDemo1(withHorizontalScroll: Boolean = true, withVerticalScroll: Boolean = true) =
     URow(withHorizontalScroll = withHorizontalScroll, withVerticalScroll = withVerticalScroll) {
-        UTheme(lightUColors()) { SomeMenuTree() }
-        UTheme(darkUColors()) { SomeMenuTree() }
-        UTheme(lightBluishUColors()) { SomeMenuTree() }
+        // FIXME: adjust default colors etc. so states like selected, clickable, etc are visible
+        UTheme(lightUColors()) { SomeTree() }
+        UTheme(darkUColors()) { SomeTree() }
+        UTheme(lightBluishUColors()) { SomeTree() }
+        UTheme(lightUColors()) {
+            UColumn {
+                val enabled = ustate(false)
+                USwitch(enabled, "enabled", "disabled")
+                UBoxEnabledIf(enabled.value) { SomeTree() }
+                // FIXME NOW: disabling on JVM (empty overlay doesn't stretch correctly)
+            }
+        }
     }
 
 @Composable fun UDemo2(size: DpSize, withHorizontalScroll: Boolean = true, withVerticalScroll: Boolean = true) =
@@ -99,23 +108,27 @@ fun UDemo() = UAllStretch {
         UDemoTexts(growFactor = 4)
     }
 
-@Composable fun SomeMenuTree() {
-    UMenuTree(
-        "XYZ".cbtree(
-            "AAA".cbtree(
-                "aaa1".cbtree { ulogw("aaa1") },
-                "aaa2".cbtree { ulogw("aaa2") },
+@Composable private fun SomeTree() = UColumn {
+    val selected = ustate(false)
+    USwitch(selected, "selected", "not selected")
+    UBox(selected = selected.value) {
+        UMenuTree(
+            "XYZ".cbtree(
+                "AAA".cbtree(
+                    "aaa1".cbtree { ulogw("aaa1") },
+                    "aaa2".cbtree { ulogw("aaa2") },
+                ),
+                "BBB".cbtree(
+                    "bbb1".cbtree { ulogw("bbb1") },
+                    "bbb2".cbtree { ulogw("bbb2") },
+                    "bCCC".cbtree(
+                        "ccc".cbtree { ulogw("ccc") }
+                    )
+                ),
             ),
-            "BBB".cbtree(
-                "bbb1".cbtree { ulogw("bbb1") },
-                "bbb2".cbtree { ulogw("bbb2") },
-                "bCCC".cbtree(
-                    "ccc".cbtree { ulogw("ccc") }
-                )
-            ),
-        ),
-        Dispatchers.Default
-    )
+            Dispatchers.Default
+        )
+    }
 }
 
 @Composable fun UDemo3(size: DpSize, withHorizontalScroll: Boolean, withVerticalScroll: Boolean) {

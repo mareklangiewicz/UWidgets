@@ -26,23 +26,33 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 @Composable fun UContainer(
     type: UContainerType,
     size: DpSize? = null,
-    withHorizontalScroll: Boolean = false,
+    selected: Boolean = false,
+    withHorizontalScroll: Boolean = false, // TODO_someday: tint border differently if scrollable??
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UCoreContainer(
-    type = type,
-    size = size,
-    margin = UTheme.sizes.uboxMargin,
-    contentColor = UTheme.colors.uboxContent,
-    backgroundColor = UTheme.colors.uboxBackground,
-    borderColor = UTheme.colors.uboxBorder,
-    borderWidth = UTheme.sizes.uboxBorder,
-    padding = UTheme.sizes.uboxPadding,
-    onClick = LocalUOnContainerClick.current,
-    onUReport = LocalUOnContainerReport.current,
-    withHorizontalScroll = withHorizontalScroll,
-    withVerticalScroll = withVerticalScroll,
-) { UDepth { CompositionLocalProvider(LocalUOnContainerClick provides null, LocalUOnContainerReport provides null, content = content) } }
+) {
+    val onClick = LocalUOnContainerClick.current
+    UCoreContainer(
+        type = type,
+        size = size,
+        margin = UTheme.sizes.uboxMargin,
+        contentColor = UTheme.colors.uboxContent,
+        backgroundColor = UTheme.colors.uboxBackground,
+        borderColor = UTheme.colors.uboxBorder(selected = selected, clickable = onClick != null),
+        borderWidth = UTheme.sizes.uboxBorder,
+        padding = UTheme.sizes.uboxPadding,
+        onClick = onClick,
+        onUReport = LocalUOnContainerReport.current,
+        withHorizontalScroll = withHorizontalScroll,
+        withVerticalScroll = withVerticalScroll,
+    ) { UDepth {
+        CompositionLocalProvider(
+            LocalUOnContainerClick provides null,
+            LocalUOnContainerReport provides null,
+            content = content
+        )
+    } }
+}
 
 // It's a really hacky solution for multiplatform minimalist onClick support.
 // Mostly to avoid more parameters in functions. Probably will be changed later.
@@ -61,24 +71,35 @@ private val LocalUOnContainerReport = staticCompositionLocalOf<OnUReport?> { nul
 
 @Composable fun UBox(
     size: DpSize? = null,
+    selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UContainer(UBOX, size, withHorizontalScroll, withVerticalScroll, content)
+) = UContainer(UBOX, size, selected, withHorizontalScroll, withVerticalScroll, content)
+
+@Composable fun UBoxEnabledIf(enabled: Boolean, content: @Composable () -> Unit) = UBox {
+    content()
+    if (!enabled) UAllStretch {
+        UCoreContainer(UBOX, backgroundColor = UTheme.colors.uboxBackground.copy(alpha = .4f)) {}
+    }
+}
+// FIXME_later: think more about how to visually disable container (another color in theme for overlay?)
 
 @Composable fun UColumn(
     size: DpSize? = null,
+    selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UContainer(UCOLUMN, size, withHorizontalScroll, withVerticalScroll, content)
+) = UContainer(UCOLUMN, size, selected, withHorizontalScroll, withVerticalScroll, content)
 
 @Composable fun URow(
     size: DpSize? = null,
+    selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UContainer(UROW, size, withHorizontalScroll, withVerticalScroll, content)
+) = UContainer(UROW, size, selected, withHorizontalScroll, withVerticalScroll, content)
 
 @Composable fun UBoxedText(text: String, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) = UBox {
     UAlign(

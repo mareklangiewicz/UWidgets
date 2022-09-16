@@ -54,17 +54,19 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
 @Composable fun UAllStartRow(
     size: DpSize? = null,
+    selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UAllStart { URow(size, withHorizontalScroll, withVerticalScroll, content) }
+) = UAllStart { URow(size, selected, withHorizontalScroll, withVerticalScroll, content) }
 
 @Composable fun UAllStartColumn(
     size: DpSize? = null,
+    selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UAllStart { UColumn(size, withHorizontalScroll, withVerticalScroll, content) }
+) = UAllStart { UColumn(size, selected, withHorizontalScroll, withVerticalScroll, content) }
 
 object UTheme {
 
