@@ -1,4 +1,4 @@
-@file:Suppress("FunctionName")
+@file:Suppress("FunctionName", "unused")
 
 package pl.mareklangiewicz.uwidgets
 
@@ -142,7 +142,7 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     val gapwidth = 100
     val w1 = (gapwidth * fraction).int
     val w2 = gapwidth - w1
-    UAlign(UCENTER, UCENTER) {
+    UAllCenter {
         URow {
             UText(min.ustr, bold = bold, mono = true)
             UCoreContainer(UBOX, DpSize(w1.dp, 4.dp), backgroundColor = Color.Blue, padding = 2.dp) {}
