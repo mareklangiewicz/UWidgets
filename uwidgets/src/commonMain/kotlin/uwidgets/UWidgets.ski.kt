@@ -168,6 +168,9 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
                 }
             }
 
+            // FIXME NOW: fix strategy for measuring stretched elements in cross-axis (for both UROW and UCOLUMN).
+            // so they don't get smaller than max of wrapped children size (especially when container is unbounded)
+            // (see last commit for UBOX)
             UROW -> {
                 val placeables = mutableListOfNulls<Placeable?>(measurables.size)
                 measurables.forEachIndexed { idx, measurable ->
