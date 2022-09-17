@@ -4,6 +4,8 @@ import androidx.compose.ui.geometry.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.unit.*
 
+inline fun <reified E> mutableListOfNulls(size: Int) = MutableList<E?>(size) { null }
+
 fun IntSize.copyToUPlaceableData(w: Int = width, h: Int = height, measuredW: Int = w, measuredH: Int = h) =
     UPlaceableData(w, h, measuredW, measuredH)
 

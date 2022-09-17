@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
+import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UContainerType.*
@@ -95,22 +96,68 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
     val m = modifier.ualign(phorizontal, pvertical)
     Layout(content = content, modifier = m) { measurables, parentConstraints ->
         onUReport?.invoke("measure in" to parentConstraints)
+        var maxChildWidth = 0
+        var maxChildHeight = 0
         when (type) {
             UBOX -> {
-                val placeables = measurables.map { measurable ->
+                val placeables = mutableListOfNulls<Placeable?>(measurables.size)
+
+                measurables.forEachIndexed { idx, measurable ->
                     val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
-                    measurable.measure(
-                        parentConstraints.copy(
-                            minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
-                            minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
-                        )
-                    )
+                    // skip measuring stretched items (when NOT bounded size) (will measure it later)
+                    uhorizontal == USTRETCH && !parentConstraints.hasBoundedWidth && return@forEachIndexed
+                    uvertical == USTRETCH && !parentConstraints.hasBoundedHeight && return@forEachIndexed
+                    placeables[idx] = measurable.measure(parentConstraints.copy(
+                        minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else 0,
+                        minHeight = if (uvertical == USTRETCH) parentConstraints.maxHeight else 0
+                    )).also {
+                        maxChildWidth = maxChildWidth.coerceAtLeast(it.width)
+                        maxChildHeight = maxChildHeight.coerceAtLeast(it.height)
+                    }
                 }
+
+                // measure no matter horizontally, but still not stretched vertically (or stretched but with bounded height)
+                measurables.forEachIndexed { idx, measurable ->
+                    placeables[idx] == null || return@forEachIndexed
+                    val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
+                    uvertical == USTRETCH && !parentConstraints.hasBoundedHeight && return@forEachIndexed
+                    placeables[idx] = measurable.measure(
+                        parentConstraints.copy(
+                            minWidth = if (uhorizontal != USTRETCH) 0 else {
+                                if (parentConstraints.hasBoundedWidth) parentConstraints.maxWidth
+                                else maxChildWidth
+                            },
+                            minHeight = if (uvertical != USTRETCH) 0 else parentConstraints.maxHeight,
+                        )
+                    ).also {
+                        maxChildWidth = maxChildWidth.coerceAtLeast(it.width)
+                        maxChildHeight = maxChildHeight.coerceAtLeast(it.height)
+                    }
+                }
+
+                // measure stretched vertically (and unbounded), all other should be placed already
+                measurables.forEachIndexed { idx, measurable ->
+                    placeables[idx] == null || return@forEachIndexed
+                    val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
+                    check(uvertical == USTRETCH && !parentConstraints.hasBoundedHeight)
+                    placeables[idx] = measurable.measure(parentConstraints.copy(
+                        minWidth = if (uhorizontal != USTRETCH) 0 else {
+                            if (parentConstraints.hasBoundedWidth) parentConstraints.maxWidth
+                            else maxChildWidth
+                        },
+                        minHeight = maxChildHeight
+                    )).also {
+                        maxChildWidth = maxChildWidth.coerceAtLeast(it.width)
+                        maxChildHeight = maxChildHeight.coerceAtLeast(it.height)
+                    }
+                }
+
                 val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
                 val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical, parentConstraints)
                 layout(parentWidth, parentHeight) {
                     onUReport?.invoke("place in" to IntSize(parentWidth, parentHeight))
                     for (p in placeables) {
+                        p ?: error("All children should be measured already.")
                         val (uhorizontal, uvertical) = p.uChildData(phorizontal, pvertical)
                         p.placeRelative(
                             uhorizontal.startPositionFor(p.width, parentWidth),
@@ -122,17 +169,18 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
             }
 
             UROW -> {
-                val placeables: MutableList<Placeable?> = measurables.map { measurable ->
+                val placeables = mutableListOfNulls<Placeable?>(measurables.size)
+                measurables.forEachIndexed { idx, measurable ->
                     val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                     // skip measuring stretched items (when normal bounded row width) (will measure it later)
-                    uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth && return@map null
-                    measurable.measure(
+                    uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth && return@forEachIndexed
+                    placeables[idx] = measurable.measure(
                         parentConstraints.copy(
                             minWidth = 0,
                             minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
                         )
                     )
-                }.toMutableList()
+                }
                 val fixedWidthTaken = placeables.sumOf { it?.width ?: 0 }
                 val itemStretchedCount = placeables.count { it == null }
                 val parentWidth =
@@ -167,17 +215,18 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
             }
 
             UCOLUMN -> {
-                val placeables: MutableList<Placeable?> = measurables.map { measurable ->
+                val placeables = mutableListOfNulls<Placeable?>(measurables.size)
+                measurables.forEachIndexed { idx, measurable ->
                     val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                     // skip measuring stretched items (when normal bounded column height) (will measure it later)
-                    uvertical == USTRETCH && parentConstraints.hasBoundedHeight && return@map null
-                    measurable.measure(
+                    uvertical == USTRETCH && parentConstraints.hasBoundedHeight && return@forEachIndexed
+                    placeables[idx] = measurable.measure(
                         parentConstraints.copy(
                             minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
                             minHeight = 0,
                         )
                     )
-                }.toMutableList()
+                }
                 val fixedHeightTaken = placeables.sumOf { it?.height ?: 0 }
                 val itemStretchedCount = placeables.count { it == null }
                 val parentHeight =
