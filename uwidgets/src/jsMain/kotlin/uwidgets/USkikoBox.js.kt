@@ -64,14 +64,8 @@ private val Element.clientSizeDp get() = DpSize(clientWidth.dp, clientHeight.dp)
 /** @see androidx.compose.ui.window.ComposeWindow */
 private class USkikoComposeWindow(canvas: HTMLCanvasElement) {
 
-    private val textInputService = JSTextInputService(
-        showSoftwareKeyboard = {
-            println("TODO showSoftwareKeyboard in JS")
-        },
-        hideSoftwareKeyboard = {
-            println("TODO hideSoftwareKeyboard in JS")
-        },
-    )
+    private val textInputService = JSTextInputService()
+
     val layer = ComposeLayer(
         layer = createSkiaLayer(),
         getTopLeftOffset = { Offset.Zero },
