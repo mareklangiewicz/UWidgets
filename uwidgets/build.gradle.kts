@@ -19,6 +19,15 @@ defaultBuildTemplateForComposeMppLib(
     withComposeCompilerFix = true,
 )
 
+kotlin {
+    sourceSets {
+        val commonMain by getting {
+            // TODO: remove this whole stuff when drawText api goes multiplatform
+            kotlin.srcDir((projectPath / "uwidgets/src/fakeMain/kotlin/faketext").toFile())
+        }
+    }
+}
+
 // region [Kotlin Module Build Template]
 
 fun RepositoryHandler.defaultRepos(

@@ -31,7 +31,8 @@ val Any?.ustr: String
         is Placeable -> "placeable: $width x $height, measured = $measuredWidth x $measuredHeight"
         is Constraints -> "constraints: min = $minWidth x $minHeight, max = $maxWidth x $maxHeight"
         is UPlaceableData -> "placeable: $width x $height, measured = $measuredWidth x $measuredHeight"
-        is ULayoutCoordinatesData -> "coordinates: size = $size, bounds in parent = ${boundsInParent.ustr}, attached = ${isAttached.ustr}, parent layout = ${parentLayoutCoordinatesData.markIfNull()}, parent = ${parentCoordinatesData.markIfNull()}"
+        // is ULayoutCoordinatesData -> "coordinates: size = $size, bounds in parent = ${boundsInParent.ustr}, attached = ${isAttached.ustr}, parent layout = ${parentLayoutCoordinatesData.markIfNull()}, parent = ${parentCoordinatesData.markIfNull()}"
+        is ULayoutCoordinatesData -> "coordinates: size = $size, bounds in parent = ${boundsInParent.ustr}, attached = ${isAttached.ustr}"
         else -> toString().limit(64, "") // 64 is ok compromise in practice. do not limit more! (or less)
     }
 

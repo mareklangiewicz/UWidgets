@@ -16,8 +16,8 @@ data class UPlaceableData(val width: Int, val height: Int, val measuredWidth: In
 val LayoutCoordinates.udata: ULayoutCoordinatesData
     get() = ULayoutCoordinatesData(
         size = size,
-        parentLayoutCoordinatesData = parentLayoutCoordinates?.udata,
-        parentCoordinatesData = parentCoordinates?.udata,
+        // parentLayoutCoordinatesData = parentLayoutCoordinates?.udata,
+        // parentCoordinatesData = parentCoordinates?.udata,
         isAttached = isAttached,
         positionInWindow = positionInWindow(),
         positionInRoot = positionInRoot(),
@@ -29,8 +29,10 @@ val LayoutCoordinates.udata: ULayoutCoordinatesData
 
 data class ULayoutCoordinatesData(
     val size: IntSize,
-    val parentLayoutCoordinatesData: ULayoutCoordinatesData?,
-    val parentCoordinatesData: ULayoutCoordinatesData?,
+    // val parentLayoutCoordinatesData: ULayoutCoordinatesData?,
+    // val parentCoordinatesData: ULayoutCoordinatesData?,
+        // FIXME_someday: parent walk is disabled because I had OOM issues - investigate more
+        // (OOM on android but also performance issues in uspek tests in UDemo3 on every platform)
     val isAttached: Boolean,
 
     // computed when creating data class

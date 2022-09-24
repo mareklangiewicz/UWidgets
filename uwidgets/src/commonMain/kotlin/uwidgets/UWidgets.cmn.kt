@@ -3,6 +3,7 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
@@ -32,6 +33,7 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
     content: @Composable () -> Unit,
 ) {
     val onClick = LocalUOnContainerClick.current
+    val onUReport = LocalUOnContainerReport.current
     UCoreContainer(
         type = type,
         size = size,
@@ -42,7 +44,7 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
         borderWidth = UTheme.sizes.uboxBorder,
         padding = UTheme.sizes.uboxPadding,
         onClick = onClick,
-        onUReport = LocalUOnContainerReport.current,
+        onUReport = onUReport,
         withHorizontalScroll = withHorizontalScroll,
         withVerticalScroll = withVerticalScroll,
     ) { UDepth {
@@ -59,14 +61,35 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 @Composable fun UOnContainerClick(onContainerClick: () -> Unit, content: @Composable () -> Unit) =
     CompositionLocalProvider(LocalUOnContainerClick provides onContainerClick, content = content)
 
-// TODO NOW: use it, demo it!!, test it
-@Composable fun UOnContainerReport(onUReport: OnUReport, keyPrefix: String = "", content: @Composable () -> Unit) {
-    val on: OnUReport = if (keyPrefix.isEmpty()) onUReport else { r -> onUReport(keyPrefix + r.first to r.second) }
+@Composable fun UOnContainerReport(
+    onUReport: OnUReport,
+    keyPrefix: String = "",
+    alsoCallCurrent: Boolean = false,
+    content: @Composable () -> Unit,
+) {
+    val on = onUReport.withKeyPrefix(keyPrefix).withOptOtherOnUReport(if (alsoCallCurrent) LocalUOnContainerReport.current else null)
     CompositionLocalProvider(LocalUOnContainerReport provides on, content = content)
 }
 
+/**
+ * Warning: It will add these modifiers to ALL children UContainers.
+ * (but not indirect descendants because child clears it for own subtree when using it)
+ * Either make sure these modifiers can be shared (composed {..}?) or make sure UModifiers fun has ONE child UContainer.
+ * Also not consumed UModifiers are chained with another UModifiers below.
+ */
+@Composable fun UModifiers(
+    umodifiers: Modifier.() -> Modifier,
+    content: @Composable () -> Unit,
+) {
+    val current = LocalUModifiers.current
+    val new = if (current == null) umodifiers else { { current().umodifiers() } }
+    CompositionLocalProvider(LocalUModifiers provides new, content = content)
+}
+
+
 private val LocalUOnContainerClick = staticCompositionLocalOf<(() -> Unit)?> { null }
 private val LocalUOnContainerReport = staticCompositionLocalOf<OnUReport?> { null }
+internal val LocalUModifiers = staticCompositionLocalOf<(Modifier.() -> Modifier)?> { null }
 
 
 @Composable fun UBox(

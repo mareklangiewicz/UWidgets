@@ -33,7 +33,7 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
     borderWidth: Dp,
     padding: Dp,
     onClick: (() -> Unit)?,
-    onUReport: OnUReport?, // TODO NOW: use it
+    onUReport: OnUReport?,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
@@ -93,8 +93,11 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
     onUReport?.invoke("compose" to type)
     val phorizontal = UTheme.alignments.horizontal
     val pvertical = UTheme.alignments.vertical
-    val m = modifier.ualign(phorizontal, pvertical)
-    Layout(content = content, modifier = m) { measurables, parentConstraints ->
+    val m = modifier
+        .ualign(phorizontal, pvertical)
+        .andIfNotNull(LocalUModifiers.current) { it() }
+    CompositionLocalProvider(LocalUModifiers provides null) { Layout(content = content, modifier = m) {
+            measurables, parentConstraints ->
         onUReport?.invoke("measure in" to parentConstraints)
         var maxChildWidth = 0
         var maxChildHeight = 0
@@ -263,7 +266,7 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
                 }
             }
         }.also { onUReport?.invoke("measured" to IntSize(it.width, it.height)) }
-    }
+    } }
 }
 
 private fun Placeable.PlacementScope.placeAllAsHorizontalStartToEnd(

@@ -33,8 +33,6 @@ import pl.mareklangiewicz.udata.*
     }
 }
 
-// TODO NOW: Drawing constraints etc. on top of actual nodes - with new canvas text support
-
 fun Modifier.reportMeasuring(onUReport: OnUReport): Modifier = layout { measurable, constraints ->
     onUReport("measure in" to constraints)
     val placeable = measurable.measure(constraints)

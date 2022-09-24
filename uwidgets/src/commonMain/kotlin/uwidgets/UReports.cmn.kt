@@ -19,7 +19,13 @@ typealias UReport = Pair<String, Any?>
 typealias OnUReport = (UReport) -> Unit
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun OnUReport.withKeyPrefix(keyPrefix: String): OnUReport = { this(keyPrefix + it.first to it.second) }
+inline fun OnUReport.withKeyPrefix(keyPrefix: String): OnUReport =
+    if (keyPrefix.isEmpty()) this else { ureport -> this(keyPrefix + ureport.first to ureport.second) }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun OnUReport.withOptOtherOnUReport(noinline other: OnUReport?): OnUReport =
+    if (other == null) this else { ureport -> this(ureport); other(ureport) }
+
 
 @Composable fun rememberUReports(log: (Any?) -> Unit = { ulogd(it.ustr) }) = remember { UReports(log) }
 
