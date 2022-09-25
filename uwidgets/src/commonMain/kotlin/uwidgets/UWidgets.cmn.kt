@@ -131,12 +131,12 @@ internal val LocalUModifiers = staticCompositionLocalOf<(Modifier.() -> Modifier
     ) { UText(text, bold, mono) } // UText uses another UBasicContainer(BOX). It's intentional. (to make sure all U*Text respect UAlign etc)
 }
 
+// Renaming tab -> _ breaks layout inspector in AS!!
+@Suppress("UNUSED_ANONYMOUS_PARAMETER")
 @Composable fun UTabs(vararg contents: Pair<String, @Composable () -> Unit>) {
     var selectedTabIndex by remember { mutableStateOf(0) }
     UColumn {
-        UTabs(*contents.map { it.first }.toTypedArray()) { idx, tab ->
-            selectedTabIndex = idx
-        } // Renaming tab -> _ breaks layout inspector in AS!!
+        UTabs(*contents.map { it.first }.toTypedArray()) { idx, tab -> selectedTabIndex = idx }
         contents[selectedTabIndex].second()
     }
 }
@@ -189,9 +189,9 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     UAllCenter {
         URow {
             UText(min.ustr, bold = bold, mono = true)
-            UCoreContainer(UBOX, DpSize(w1.dp, 4.dp), backgroundColor = Color.Blue, padding = 2.dp) {}
+            UCoreContainer(UBOX, size = DpSize(w1.dp, 4.dp), backgroundColor = Color.Blue, padding = 2.dp) {}
             UText(pos.ustr, bold = bold, mono = true)
-            UCoreContainer(UBOX, DpSize(w2.dp, 4.dp), backgroundColor = Color.White, padding = 2.dp) {}
+            UCoreContainer(UBOX, size = DpSize(w2.dp, 4.dp), backgroundColor = Color.White, padding = 2.dp) {}
             UText(max.ustr, bold = bold, mono = true)
         }
     }
