@@ -25,8 +25,8 @@ fun DrawScope.drawText(
     val r = size.width / text.length / 2
     for ((idx, t) in text.withIndex()) drawCircle(
         color = Color.hsl((t.code % 360).toFloat(), .5f, .7f),
-        radius = r,
-        center = Offset((r + idx * 2*r), r + idx),
-        alpha = .5f,
+        radius = r.coerceAtLeast(5f),
+        center = Offset((r + idx * 2*r), r + idx/2),
+        alpha = .8f,
     )
 }
