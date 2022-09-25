@@ -20,6 +20,7 @@ fun UDebug(
     }
 }
 
+@OptIn(ExperimentalTextApi::class)
 fun Modifier.drawUReports(measurer: TextMeasurer, ureports: UReports): Modifier =
     drawWithContent { drawContent(); drawUReports(measurer, ureports) }
 

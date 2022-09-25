@@ -154,16 +154,16 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
 @Composable fun <T> ustate(init: T): MutableState<T> = remember { mutableStateOf(init) }
 @Composable fun <T> ustates(vararg inits: T): List<MutableState<T>> = inits.map { ustate(it) }
 
-@Composable fun USwitch(state: MutableState<Boolean>, labelOn: String = "on", labelOff: String = "off") = UAllStart {
+@Composable fun USwitch(state: MutableState<Boolean>, labelOn: String = " on  ", labelOff: String = " off ") = UAllStart {
     UOnContainerClick({ state.value = !state.value }) {
-        UBoxedText(if (state.value) labelOn else labelOff, true, state.value, true)
+        UBoxedText(if (state.value) labelOn else labelOff, center = true, bold = state.value, mono = true)
     }
 }
 
 @Composable fun USwitches(
     vararg states: MutableState<Boolean>,
-    labelOn: String = "on",
-    labelOff: String = "off",
+    labelOn: String = " on  ",
+    labelOff: String = " off ",
 ) = UAllStartRow { for (s in states) USwitch(s, labelOn, labelOff) }
 
 @Composable fun <T> USwitch(state: MutableState<T>, vararg options: Pair<String, T>) = UAllStartRow {

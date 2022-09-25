@@ -30,7 +30,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     UAllStartRow {
         USwitchEnum(typeS)
         USwitches(son1S, son2S, son3S, son4S)
-        USwitch(textsS, "texts on", "texts off")
+        USwitch(textsS, " texts on  ", " texts off ")
     }
     URow {
         MyExaminedLayout(
