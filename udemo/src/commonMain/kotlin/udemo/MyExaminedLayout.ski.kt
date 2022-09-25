@@ -61,6 +61,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     content: @Composable () -> Unit,
 ) {
     val m = Modifier
+        .wrapContentSize()
         .background(Color.LightGray)
         .border(4.dp, Color.Blue)
         .padding(4.dp)
