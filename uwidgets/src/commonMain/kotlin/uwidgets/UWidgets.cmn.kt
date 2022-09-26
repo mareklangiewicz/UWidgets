@@ -55,11 +55,11 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
     } }
 }
 
-class OnUClickModifier(val onUClick: ((Unit) -> Unit)?): Element
+class OnUClickModifier(val onUClick: OnUClick?): Element
 class OnUReportModifier(val onUReport: OnUReport?): Element
 
 /** Non-null modifiers are accumulated (all are called in outside in order); null are ignored */
-fun Modifier.onUClick(onUClick: ((Unit) -> Unit)?) = then(OnUClickModifier(onUClick))
+fun Modifier.onUClick(onUClick: OnUClick?) = then(OnUClickModifier(onUClick))
 /** Non-null modifiers are accumulated (all are called in outside in order); null are ignored - TODO NOW: test it! */
 fun Modifier.onUReport(onUReport: OnUReport?, keyPrefix: String = "") =
     then(OnUReportModifier(onUReport?.withKeyPrefix(keyPrefix)))
