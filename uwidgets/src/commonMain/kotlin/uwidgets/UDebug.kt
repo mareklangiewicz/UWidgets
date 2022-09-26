@@ -7,17 +7,16 @@ import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.text.*
 import pl.mareklangiewicz.udata.*
 
-/** Intended to have one child. All children will share and draw same ureports allocated here. */
 @OptIn(ExperimentalTextApi::class)
 @Composable
-fun UDebug(keyPrefix: String = "", content: @Composable () -> Unit) {
-    val measurer = rememberTextMeasurer()
-    val ureports = rememberUReports {}
-    UChildrenModifier(
-        umodifier = { onUReport(ureports::invoke, keyPrefix).drawUReports(measurer, ureports) },
-        content = content
-    )
-}
+fun UDebug(keyPrefix: String = "", content: @Composable () -> Unit) = UChildrenComposedModifier(
+    factory = {
+        val measurer = rememberTextMeasurer()
+        val ureports = rememberUReports {}
+        onUReport(ureports::invoke, keyPrefix).drawUReports(measurer, ureports)
+    },
+    content = content
+)
 
 @OptIn(ExperimentalTextApi::class)
 fun Modifier.drawUReports(measurer: TextMeasurer, ureports: UReports): Modifier =

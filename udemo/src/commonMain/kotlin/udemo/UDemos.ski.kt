@@ -70,11 +70,15 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 @Composable
 fun UDemoSimpleDebugSki() {
-    UDebug {
-        RigidFather {
-            // FIXME NOW: RigidFather private reports don't report private stuff (because onReport=null), but report child UBox instead..
-            // (child UBox consumes LocalUOnContainerReport instead of RigidFather itself)
-            UBox(size = DpSize(200.dp, 100.dp)) {}
+    UColumn {
+        UDebug {
+            RigidFather {
+                // FIXME NOW: RigidFather private reports don't report private stuff (because onReport=null), but report child UBox instead..
+                // (child UBox consumes LocalUOnContainerReport instead of RigidFather itself)
+                UBox(size = DpSize(200.dp, 100.dp)) {}
+            }
+            UBox(size = DpSize(200.dp, 50.dp)) {}
+            UBox(size = DpSize(200.dp, 80.dp)) {}
         }
     }
 }

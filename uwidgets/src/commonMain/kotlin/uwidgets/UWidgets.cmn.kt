@@ -5,6 +5,7 @@ package pl.mareklangiewicz.uwidgets
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Modifier.Element
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
@@ -84,17 +85,22 @@ inline fun <reified T> Modifier.foldInExtractedPushees(
 /**
  * Warning: It will add these modifiers to ALL children UContainers.
  * (but not indirect descendants because each child clears it for own subtree when using it)
- * Either make sure these modifiers can be shared (composed {..}?) or make sure UModifiers fun has ONE child UContainer.
  * Also not consumed UChildrenModifier is chained if another UChildrenModifier is nested inside.
+ * @see UChildrenComposedModifier
  */
 @Composable fun UChildrenModifier(
-    umodifier: Modifier.() -> Modifier,
+    modifier: Modifier.() -> Modifier,
     content: @Composable () -> Unit,
 ) {
     val current = LocalUChildrenModifier.current
-    val new = if (current == null) umodifier else { { current().umodifier() } }
+    val new = if (current == null) modifier else { { current().modifier() } }
     CompositionLocalProvider(LocalUChildrenModifier provides new, content = content)
 }
+
+@Composable fun UChildrenComposedModifier(
+    factory: @Composable Modifier.() -> Modifier,
+    content: @Composable () -> Unit,
+) = UChildrenModifier({ composed { factory() } }, content)
 
 private val LocalUChildrenModifier = staticCompositionLocalOf<(Modifier.() -> Modifier)?> { null }
 
