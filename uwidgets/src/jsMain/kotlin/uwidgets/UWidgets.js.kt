@@ -3,7 +3,9 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.materialize
 import androidx.compose.ui.unit.*
 import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.*
@@ -20,33 +22,39 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 @Composable internal fun UCoreContainerImplDom(
     type: UContainerType,
     size: DpSize?,
+    modifier: Modifier,
     margin: Dp,
     contentColor: Color,
     backgroundColor: Color,
     borderColor: Color,
     borderWidth: Dp,
     padding: Dp,
-    onClick: (() -> Unit)?,
-    onUReport: OnUReport?,
+    onDeprecatedUClick: ((Unit) -> Unit)?,
+    onDeprecatedUReport: OnUReport?,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
-) = UBasicContainerDom(
-    type = type,
-    addStyle = {
-        size?.let { width(it.width.value.px); height(it.height.value.px) }
-        color(contentColor.cssRgba)
-        margin(margin.value.px)
-        backgroundColor(backgroundColor.cssRgba)
-        border(borderWidth.value.px, LineStyle.Solid, borderColor.cssRgba) // in css .px is kinda .dp
-        padding(padding.value.px)
-        overflowX(if (withHorizontalScroll) "auto" else "clip") // TODO NOW: make sure we clip the similarly on both platforms
-        overflowY(if (withVerticalScroll) "auto" else "clip")
-    },
-    onClick = onClick,
-    onUReport = onUReport,
-    content = content
-)
+) {
+    val materialized = currentComposer.materialize(modifier)
+    val onUClick = materialized.foldInExtractedPushees(onDeprecatedUClick) { (it as? OnUClickModifier)?.onUClick }
+    val onUReport = materialized.foldInExtractedPushees(onDeprecatedUReport) { (it as? OnUReportModifier)?.onUReport }
+    UBasicContainerDom(
+        type = type,
+        addStyle = {
+            size?.let { width(it.width.value.px); height(it.height.value.px) }
+            color(contentColor.cssRgba)
+            margin(margin.value.px)
+            backgroundColor(backgroundColor.cssRgba)
+            border(borderWidth.value.px, LineStyle.Solid, borderColor.cssRgba) // in css .px is kinda .dp
+            padding(padding.value.px)
+            overflowX(if (withHorizontalScroll) "auto" else "clip") // TODO later: make sure we clip the similarly on both platforms
+            overflowY(if (withVerticalScroll) "auto" else "clip")
+        },
+        onClick = onUClick,
+        onUReport = onUReport,
+        content = content
+    )
+}
 
 // TODO_later: rethink. it can be useful, but holds dom elements in memory (when used with UReportsUi or sth)
 var leakyDomReportsEnabled: Boolean = false
@@ -57,7 +65,7 @@ var leakyDomReportsEnabled: Boolean = false
     inline: Boolean = false,
     addStyle: (StyleScope.() -> Unit)? = null,
     addAttrs: (AttrsScope<out HTMLElement>.() -> Unit)? = null,
-    onClick: (() -> Unit)? = null,
+    onClick: ((Unit) -> Unit)? = null,
     onUReport: OnUReport? = null,
     content: @Composable () -> Unit,
 ) {
@@ -72,7 +80,13 @@ var leakyDomReportsEnabled: Boolean = false
             addStyle?.let { it() }
         }
         addAttrs?.let { it() }
-        onClick?.let { onClick { it() } }
+        onClick?.run {
+            addEventListener("click") { event ->
+                event.preventDefault()
+                event.stopPropagation()
+                this(Unit)
+            }
+        }
         if (leakyDomReportsEnabled && onUReport != null) {
             ref {
                 onUReport("dom enter" to it)

@@ -4,6 +4,7 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Modifier.Element
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
@@ -26,17 +27,21 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 
 @Composable fun UContainer(
     type: UContainerType,
-    size: DpSize? = null,
-    selected: Boolean = false,
+    size: DpSize? = null, // TODO NOW: use normal modifiers for size in common too
+    modifier: Modifier = Modifier,
+    selected: Boolean = false, // TODO NOW: also modifiers?
+    // TODO NOW: use modifiers for scrolling in common too (custom or map ski modifiers to js?)
     withHorizontalScroll: Boolean = false, // TODO_someday: tint border differently if scrollable??
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val onClick = LocalUOnContainerClick.current
     val onUReport = LocalUOnContainerReport.current
+    val umodifier = LocalUChildrenModifier.current
     UCoreContainer(
         type = type,
         size = size,
+        modifier = if (umodifier == null) modifier else Modifier.umodifier().then(modifier),
         margin = UTheme.sizes.uboxMargin,
         contentColor = UTheme.colors.uboxContent,
         backgroundColor = UTheme.colors.uboxBackground,
@@ -51,54 +56,85 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
         CompositionLocalProvider(
             LocalUOnContainerClick provides null,
             LocalUOnContainerReport provides null,
+            LocalUChildrenModifier provides null,
             content = content
         )
     } }
 }
 
+class OnUClickModifier(val onUClick: ((Unit) -> Unit)?): Element
+class OnUReportModifier(val onUReport: OnUReport?): Element
+
+/** Non-null modifiers are accumulated (all are called in outside in order); null are ignored */
+fun Modifier.onUClick(onUClick: ((Unit) -> Unit)?) = then(OnUClickModifier(onUClick))
+/** Non-null modifiers are accumulated (all are called in outside in order); null are ignored - TODO NOW: test it! */
+fun Modifier.onUReport(onUReport: OnUReport?) = then(OnUReportModifier(onUReport))
+
+
+inline fun <reified R: Any> Modifier.foldInExtracted(
+    initial: R? = null,
+    noinline tryExtract: (Element) -> R?,
+    noinline operation: (R, R) -> R
+) = foldIn(initial) { outer, element ->
+    val inner = tryExtract(element)
+    outer ?: return@foldIn inner
+    inner ?: return@foldIn outer
+    operation(outer, inner)
+}
+
+inline fun <reified T> Modifier.foldInExtractedPushees(
+    noinline initial: ((T) -> Unit)? = null,
+    noinline tryExtract: (Element) -> ((T) -> Unit)?,
+) = foldInExtracted(initial, tryExtract) { outer, inner -> { outer(it); inner(it) } }
+
 // It's a really hacky solution for multiplatform minimalist onClick support.
 // Mostly to avoid more parameters in functions. Probably will be changed later.
-@Composable fun UOnContainerClick(onContainerClick: () -> Unit, content: @Composable () -> Unit) =
+@Deprecated("Modifier.onUClick")
+@Composable fun UOnContainerClick(onContainerClick: (Unit) -> Unit, content: @Composable () -> Unit) =
     CompositionLocalProvider(LocalUOnContainerClick provides onContainerClick, content = content)
 
+@Deprecated("Modifier.onUReport")
 @Composable fun UOnContainerReport(
-    onUReport: OnUReport,
+    onUReport: OnUReport?,
     keyPrefix: String = "",
     alsoCallCurrent: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    val on = onUReport.withKeyPrefix(keyPrefix).withOptOtherOnUReport(if (alsoCallCurrent) LocalUOnContainerReport.current else null)
+    val on = onUReport
+        ?.withKeyPrefix(keyPrefix)
+        ?.withOptOtherOnUReport(if (alsoCallCurrent) LocalUOnContainerReport.current else null)
     CompositionLocalProvider(LocalUOnContainerReport provides on, content = content)
 }
 
 /**
  * Warning: It will add these modifiers to ALL children UContainers.
- * (but not indirect descendants because child clears it for own subtree when using it)
+ * (but not indirect descendants because each child clears it for own subtree when using it)
  * Either make sure these modifiers can be shared (composed {..}?) or make sure UModifiers fun has ONE child UContainer.
- * Also not consumed UModifiers are chained with another UModifiers below.
+ * Also not consumed UChildrenModifier is chained if another UChildrenModifier is nested inside.
  */
-@Composable fun UModifiers(
-    umodifiers: Modifier.() -> Modifier,
+@Composable fun UChildrenModifier(
+    umodifier: Modifier.() -> Modifier,
     content: @Composable () -> Unit,
 ) {
-    val current = LocalUModifiers.current
-    val new = if (current == null) umodifiers else { { current().umodifiers() } }
-    CompositionLocalProvider(LocalUModifiers provides new, content = content)
+    val current = LocalUChildrenModifier.current
+    val new = if (current == null) umodifier else { { current().umodifier() } }
+    CompositionLocalProvider(LocalUChildrenModifier provides new, content = content)
 }
 
 
-private val LocalUOnContainerClick = staticCompositionLocalOf<(() -> Unit)?> { null }
+private val LocalUOnContainerClick = staticCompositionLocalOf<((Unit) -> Unit)?> { null }
 private val LocalUOnContainerReport = staticCompositionLocalOf<OnUReport?> { null }
-internal val LocalUModifiers = staticCompositionLocalOf<(Modifier.() -> Modifier)?> { null }
+private val LocalUChildrenModifier = staticCompositionLocalOf<(Modifier.() -> Modifier)?> { null }
 
 
 @Composable fun UBox(
     size: DpSize? = null,
+    modifier: Modifier = Modifier,
     selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UContainer(UBOX, size, selected, withHorizontalScroll, withVerticalScroll, content)
+) = UContainer(UBOX, size, modifier, selected, withHorizontalScroll, withVerticalScroll, content)
 
 @Composable fun UBoxEnabledIf(enabled: Boolean, content: @Composable () -> Unit) = UBox {
     content()
@@ -110,19 +146,21 @@ internal val LocalUModifiers = staticCompositionLocalOf<(Modifier.() -> Modifier
 
 @Composable fun UColumn(
     size: DpSize? = null,
+    modifier: Modifier = Modifier,
     selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UContainer(UCOLUMN, size, selected, withHorizontalScroll, withVerticalScroll, content)
+) = UContainer(UCOLUMN, size, modifier, selected, withHorizontalScroll, withVerticalScroll, content)
 
 @Composable fun URow(
     size: DpSize? = null,
+    modifier: Modifier = Modifier,
     selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UContainer(UROW, size, selected, withHorizontalScroll, withVerticalScroll, content)
+) = UContainer(UROW, size, modifier, selected, withHorizontalScroll, withVerticalScroll, content)
 
 @Composable fun UBoxedText(text: String, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) = UBox {
     UAlign(

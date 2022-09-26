@@ -16,7 +16,7 @@ fun UDebug(
     val measurer = rememberTextMeasurer()
     val ureports = rememberUReports {}
     UOnContainerReport(ureports::invoke, keyPrefix, alsoCallCurrent = true) {
-        UModifiers({ drawUReports(measurer, ureports) }, content = content)
+        UChildrenModifier({ drawUReports(measurer, ureports) }, content = content)
     }
 }
 

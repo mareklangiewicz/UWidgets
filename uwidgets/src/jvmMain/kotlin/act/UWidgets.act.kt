@@ -3,19 +3,21 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 
 @Composable internal actual fun UCoreContainerAct(
     type: UContainerType,
     size: DpSize?,
+    modifier: Modifier,
     margin: Dp,
     contentColor: Color,
     backgroundColor: Color,
     borderColor: Color,
     borderWidth: Dp,
     padding: Dp,
-    onClick: (() -> Unit)?,
+    onClick: ((Unit) -> Unit)?,
     onUReport: OnUReport?,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
@@ -23,14 +25,15 @@ import androidx.compose.ui.unit.*
 ) = UCoreContainerImplSki(
     type = type,
     requiredSize = size,
+    modifier = modifier,
     margin = margin,
     contentColor = contentColor,
     backgroundColor = backgroundColor,
     borderColor = borderColor,
     borderWidth = borderWidth,
     padding = padding,
-    onClick = onClick,
-    onUReport = onUReport,
+    onDeprecatedUClick = onClick,
+    onDeprecatedUReport = onUReport,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,
     content = content

@@ -26,25 +26,30 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
 @Composable internal fun UCoreContainerImplSki(
     type: UContainerType,
     requiredSize: DpSize?,
+    modifier: Modifier,
     margin: Dp,
     contentColor: Color,
     backgroundColor: Color,
     borderColor: Color,
     borderWidth: Dp,
     padding: Dp,
-    onClick: (() -> Unit)?,
-    onUReport: OnUReport?,
+    onDeprecatedUClick: ((Unit) -> Unit)?,
+    onDeprecatedUReport: OnUReport?,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
 ) {
+    // TODO_later: make sure .materialize here is ok (Layout does it internally again later)
+    val materialized = currentComposer.materialize(modifier)
+    val onUClick = materialized.foldInExtractedPushees(onDeprecatedUClick) { (it as? OnUClickModifier)?.onUClick }
+    val onUReport = materialized.foldInExtractedPushees(onDeprecatedUReport) { (it as? OnUReportModifier)?.onUReport }
     val hScrollS = if (withHorizontalScroll) rememberScrollState() else null
     val vScrollS = if (withVerticalScroll) rememberScrollState() else null
     UBasicContainerSki(
         type = type,
-        modifier = Modifier
+        modifier = materialized
             .padding(margin)
-            .andIfNotNull(onClick) { clickable { it() } }
+            .andIfNotNull(onUClick) { clickable { it(Unit) } }
             .andIfNotNull(requiredSize) { requiredSize(it) }
             .background(backgroundColor)
             .border(borderWidth, borderColor)
@@ -93,11 +98,8 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
     onUReport?.invoke("compose" to type)
     val phorizontal = UTheme.alignments.horizontal
     val pvertical = UTheme.alignments.vertical
-    val m = modifier
-        .ualign(phorizontal, pvertical)
-        .andIfNotNull(LocalUModifiers.current) { it() }
-    CompositionLocalProvider(LocalUModifiers provides null) { Layout(content = content, modifier = m) {
-            measurables, parentConstraints ->
+    val m = modifier.ualign(phorizontal, pvertical)
+    Layout(content = content, modifier = m) { measurables, parentConstraints ->
         onUReport?.invoke("measure in" to parentConstraints)
         var maxChildWidth = 0
         var maxChildHeight = 0
@@ -266,7 +268,7 @@ inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modif
                 }
             }
         }.also { onUReport?.invoke("measured" to IntSize(it.width, it.height)) }
-    } }
+    }
 }
 
 private fun Placeable.PlacementScope.placeAllAsHorizontalStartToEnd(

@@ -1,6 +1,7 @@
 package pl.mareklangiewicz.udemo
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
 import pl.mareklangiewicz.udata.*
@@ -28,8 +29,34 @@ fun UDemo() = UAllStretch {
     }
 }
 
+// FIXME NOW: remove this temporary code
+@Composable fun UDemoTemp() {
+    UBox(400.dp.square, Modifier
+        .onUClick { println("out box onuclick1") }
+        .onUClick { println("out box onuclick2") }
+    ) {
+        UColumn {
+            UChildrenModifier({ onUClick { println("children") }}) {
+                UBox(200.dp.square) {
+                    UChildrenModifier({ onUClick { println("nb 1 children") }}) {
+                        UBox(100.dp.square, Modifier.onUClick { println("newborn 1") }) {
+                            UText("jklfjdkal")
+                        }
+                    }
+                }
+                UBox(200.dp.square) {
+                    UBox(100.dp.square, Modifier.onUClick { println("newborn 2") }) {
+                        UText("jklfjdkal")
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Composable fun UDemo0() = UAllStretch {
     UColumn {
+        UDemoTemp()
         var switch1 by remember { mutableStateOf(USTART) }
         var switch2 by remember { mutableStateOf(USTART) }
         var switch3 by remember { mutableStateOf(USTART) }
@@ -98,7 +125,7 @@ fun UDemo() = UAllStretch {
                 val enabled = ustate(false)
                 USwitch(enabled, "enabled: yes", "enabled: noo")
                 UBoxEnabledIf(enabled.value) { SomeTree() }
-                // FIXME NOW: disabling on JVM (empty overlay doesn't stretch correctly)
+                // FIXME later: disabling on JVM
             }
         }
     }

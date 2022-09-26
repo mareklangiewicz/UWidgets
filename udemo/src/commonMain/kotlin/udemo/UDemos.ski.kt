@@ -15,6 +15,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 
 @Composable fun UDemo3TabsSki(size: DpSize, withHorizontalScroll: Boolean, withVerticalScroll: Boolean) = UTabs(
+    "Simple debug ski" to { UDemoSimpleDebugSki() },
     "Examined layout ski" to { UDemoExaminedLayoutSki(size, withHorizontalScroll, withVerticalScroll) },
     "Examined layout uspek ski" to { UDemoExaminedLayoutUSpekSki() },
     "Move stuff ski" to { UDemoMoveStuffSki() },
@@ -64,6 +65,17 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     Column(Modifier.padding(horizontal = (countf * 5).dp)) {
         UDemo2(DpSize((100 + countf * 3).dp, (300 - countf * 4).dp))
         for (i in 1..6) Text("x".repeat(i), fontSize = (countf * 2 + 16 - i).sp)
+    }
+}
+
+@Composable
+fun UDemoSimpleDebugSki() {
+    UDebug {
+        RigidFather {
+            // FIXME NOW: RigidFather private reports don't report private stuff (because onReport=null), but report child UBox instead..
+            // (child UBox consumes LocalUOnContainerReport instead of RigidFather itself)
+            UBox(size = DpSize(200.dp, 100.dp)) {}
+        }
     }
 }
 
