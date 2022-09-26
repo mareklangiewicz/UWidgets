@@ -35,7 +35,6 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    val onClick = LocalUOnContainerClick.current
     val onUReport = LocalUOnContainerReport.current
     val umodifier = LocalUChildrenModifier.current
     UCoreContainer(
@@ -45,16 +44,14 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
         margin = UTheme.sizes.uboxMargin,
         contentColor = UTheme.colors.uboxContent,
         backgroundColor = UTheme.colors.uboxBackground,
-        borderColor = UTheme.colors.uboxBorder(selected = selected, clickable = onClick != null),
+        borderColor = UTheme.colors.uboxBorder(selected = selected, clickable = false/* FIXME: onClick != null */),
         borderWidth = UTheme.sizes.uboxBorder,
         padding = UTheme.sizes.uboxPadding,
-        onClick = onClick,
         onUReport = onUReport,
         withHorizontalScroll = withHorizontalScroll,
         withVerticalScroll = withVerticalScroll,
     ) { UDepth {
         CompositionLocalProvider(
-            LocalUOnContainerClick provides null,
             LocalUOnContainerReport provides null,
             LocalUChildrenModifier provides null,
             content = content
@@ -87,11 +84,6 @@ inline fun <reified T> Modifier.foldInExtractedPushees(
     noinline tryExtract: (Element) -> ((T) -> Unit)?,
 ) = foldInExtracted(initial, tryExtract) { outer, inner -> { outer(it); inner(it) } }
 
-// It's a really hacky solution for multiplatform minimalist onClick support.
-// Mostly to avoid more parameters in functions. Probably will be changed later.
-@Deprecated("Modifier.onUClick")
-@Composable fun UOnContainerClick(onContainerClick: (Unit) -> Unit, content: @Composable () -> Unit) =
-    CompositionLocalProvider(LocalUOnContainerClick provides onContainerClick, content = content)
 
 @Deprecated("Modifier.onUReport")
 @Composable fun UOnContainerReport(
@@ -122,7 +114,6 @@ inline fun <reified T> Modifier.foldInExtractedPushees(
 }
 
 
-private val LocalUOnContainerClick = staticCompositionLocalOf<((Unit) -> Unit)?> { null }
 private val LocalUOnContainerReport = staticCompositionLocalOf<OnUReport?> { null }
 private val LocalUChildrenModifier = staticCompositionLocalOf<(Modifier.() -> Modifier)?> { null }
 
@@ -162,7 +153,7 @@ private val LocalUChildrenModifier = staticCompositionLocalOf<(Modifier.() -> Mo
     content: @Composable () -> Unit,
 ) = UContainer(UROW, size, modifier, selected, withHorizontalScroll, withVerticalScroll, content)
 
-@Composable fun UBoxedText(text: String, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) = UBox {
+@Composable fun UBoxedText(text: String, modifier: Modifier = Modifier, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) = UBox(modifier = modifier) {
     UAlign(
         if (center) UCENTER else UTheme.alignments.horizontal,
         if (center) UCENTER else UTheme.alignments.vertical,
@@ -182,20 +173,26 @@ private val LocalUChildrenModifier = staticCompositionLocalOf<(Modifier.() -> Mo
 @Composable
 internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) = UAllStartRow {
     var selectedTabIndex by remember { mutableStateOf(0) }
-    tabs.forEachIndexed { index, title ->
-        UOnContainerClick({ selectedTabIndex = index; onSelected(index, title) }) {
-            UBoxedText(title, center = true, bold = index == selectedTabIndex, mono = true)
-        }
-    }
+    tabs.forEachIndexed { index, title -> UBoxedText(
+        text = title,
+        modifier = Modifier.onUClick { selectedTabIndex = index; onSelected(index, title) },
+        center = true,
+        bold = index == selectedTabIndex,
+        mono = true
+    ) }
 }
 
 @Composable fun <T> ustate(init: T): MutableState<T> = remember { mutableStateOf(init) }
 @Composable fun <T> ustates(vararg inits: T): List<MutableState<T>> = inits.map { ustate(it) }
 
 @Composable fun USwitch(state: MutableState<Boolean>, labelOn: String = " on  ", labelOff: String = " off ") = UAllStart {
-    UOnContainerClick({ state.value = !state.value }) {
-        UBoxedText(if (state.value) labelOn else labelOff, center = true, bold = state.value, mono = true)
-    }
+    UBoxedText(
+        text = if (state.value) labelOn else labelOff,
+        modifier = Modifier.onUClick { state.value = !state.value },
+        center = true,
+        bold = state.value,
+        mono = true
+    )
 }
 
 @Composable fun USwitches(
@@ -205,10 +202,13 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
 ) = UAllStartRow { for (s in states) USwitch(s, labelOn, labelOff) }
 
 @Composable fun <T> USwitch(state: MutableState<T>, vararg options: Pair<String, T>) = UAllStartRow {
-    for ((label, value) in options)
-        UOnContainerClick({ state.value = value }) {
-            UBoxedText(label, true, state.value == value, true)
-        }
+    for ((label, value) in options) UBoxedText(
+        text = label,
+        modifier = Modifier.onUClick { state.value = value },
+        center = true,
+        bold = state.value == value,
+        mono = true
+    )
 }
 
 @Composable inline fun <reified E : Enum<E>> USwitchEnum(state: MutableState<E>) =

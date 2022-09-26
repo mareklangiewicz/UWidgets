@@ -109,7 +109,7 @@ fun UDemo() = UAllStretch {
     repeat(count) { i ->
         val c = 'A' + i
         val s = "$c".repeat(1 + i * growFactor)
-        if (boxed) UBoxedText(s, center, bold, mono)
+        if (boxed) UBoxedText(s, center = center, bold = bold, mono = mono)
         else UText(s, bold, mono)
     }
 }

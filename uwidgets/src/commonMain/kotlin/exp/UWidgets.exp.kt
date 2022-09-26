@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.*
     borderColor: Color,
     borderWidth: Dp,
     padding: Dp,
-    onClick: ((Unit) -> Unit)?,
     onUReport: OnUReport? = null,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
@@ -44,7 +43,6 @@ import androidx.compose.ui.unit.*
     borderColor: Color = Color.Transparent,
     borderWidth: Dp = 0.dp,
     padding: Dp = 0.dp,
-    onClick: ((Unit) -> Unit)? = null,
     onUReport: OnUReport? = null,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
@@ -59,7 +57,6 @@ import androidx.compose.ui.unit.*
     borderColor = borderColor,
     borderWidth = borderWidth,
     padding = padding,
-    onClick = onClick,
     onUReport = onUReport,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,
@@ -69,6 +66,7 @@ import androidx.compose.ui.unit.*
 @Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) =
     UBasicContainerAct(type, content)
 
+// FIXME_NOW: it also probably should take modifier..
 @Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) =
     UTextAct(text, bold, mono, maxLines)
 

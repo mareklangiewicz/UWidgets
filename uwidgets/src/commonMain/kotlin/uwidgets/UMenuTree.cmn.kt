@@ -1,6 +1,7 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import kotlinx.coroutines.*
 
 
@@ -21,12 +22,11 @@ fun UMenuTree(tree: UCallbackTree, dispatcher: CoroutineDispatcher) {
     val subt = tree.subtrees
     require(subt.isEmpty() || tree.callback == null) { "Tree with sub trees and callback" }
     when {
-        subt.isEmpty() -> {
-            UOnContainerClick({ scope.launch(dispatcher) { tree.callback?.invoke() } }) {
-                UBoxedText(tree.label!!, mono = true)
-            }
-        }
-
+        subt.isEmpty() -> UBoxedText(
+            text = tree.label!!,
+            modifier = Modifier.onUClick { scope.launch(dispatcher) { tree.callback?.invoke() } },
+            mono = true
+        )
         else -> UColumn {
             tree.label?.let { UBox { UBoxedText(it, center = true, bold = true, mono = true) } }
             for (t in subt) UMenuTree(t, dispatcher)
