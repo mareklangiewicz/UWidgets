@@ -50,7 +50,14 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
             overflowX(if (withHorizontalScroll) "auto" else "clip") // TODO later: make sure we clip the similarly on both platforms
             overflowY(if (withVerticalScroll) "auto" else "clip")
         },
-        onClick = onUClick,
+        addAttrs = if (onUClick == null) null else {
+            {
+                addEventListener("click") { event ->
+                    event.preventDefault()
+                    event.stopPropagation()
+                    onUClick(Unit)
+                }
+            } },
         onUReport = onUReport,
         content = content
     )
@@ -65,7 +72,6 @@ var leakyDomReportsEnabled: Boolean = false
     inline: Boolean = false,
     addStyle: (StyleScope.() -> Unit)? = null,
     addAttrs: (AttrsScope<out HTMLElement>.() -> Unit)? = null,
-    onClick: ((Unit) -> Unit)? = null,
     onUReport: OnUReport? = null,
     content: @Composable () -> Unit,
 ) {
@@ -80,13 +86,6 @@ var leakyDomReportsEnabled: Boolean = false
             addStyle?.let { it() }
         }
         addAttrs?.let { it() }
-        onClick?.run {
-            addEventListener("click") { event ->
-                event.preventDefault()
-                event.stopPropagation()
-                this(Unit)
-            }
-        }
         if (leakyDomReportsEnabled && onUReport != null) {
             ref {
                 onUReport("dom enter" to it)
