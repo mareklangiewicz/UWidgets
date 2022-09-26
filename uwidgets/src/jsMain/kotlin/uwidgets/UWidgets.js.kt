@@ -50,14 +50,13 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
             overflowX(if (withHorizontalScroll) "auto" else "clip") // TODO later: make sure we clip the similarly on both platforms
             overflowY(if (withVerticalScroll) "auto" else "clip")
         },
-        addAttrs = if (onUClick == null) null else {
-            {
-                addEventListener("click") { event ->
-                    event.preventDefault()
-                    event.stopPropagation()
-                    onUClick(Unit)
-                }
-            } },
+        addAttrs = onUClick?.let { {
+            addEventListener("click") { event ->
+                event.preventDefault()
+                event.stopPropagation()
+                onUClick(Unit)
+            }
+        } },
         onUReport = onUReport,
         content = content
     )
