@@ -29,14 +29,13 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     borderColor: Color,
     borderWidth: Dp,
     padding: Dp,
-    onDeprecatedUReport: OnUReport?,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
 ) {
     val materialized = currentComposer.materialize(modifier)
     val onUClick = materialized.foldInExtractedPushees { (it as? OnUClickModifier)?.onUClick }
-    val onUReport = materialized.foldInExtractedPushees(onDeprecatedUReport) { (it as? OnUReportModifier)?.onUReport }
+    val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportModifier)?.onUReport }
     UBasicContainerDom(
         type = type,
         addStyle = {

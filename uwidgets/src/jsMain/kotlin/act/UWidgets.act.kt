@@ -18,7 +18,6 @@ import pl.mareklangiewicz.usystem.*
     borderColor: Color,
     borderWidth: Dp,
     padding: Dp,
-    onUReport: OnUReport?,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
@@ -32,7 +31,6 @@ import pl.mareklangiewicz.usystem.*
     borderColor = borderColor,
     borderWidth = borderWidth,
     padding = padding,
-    onDeprecatedUReport = onUReport,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,
     content = content
@@ -46,7 +44,6 @@ import pl.mareklangiewicz.usystem.*
     borderColor = borderColor,
     borderWidth = borderWidth,
     padding = padding,
-    onDeprecatedUReport = onUReport,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,
     content = content

@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.*
     borderColor: Color,
     borderWidth: Dp,
     padding: Dp,
-    onUReport: OnUReport?,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
@@ -31,7 +30,6 @@ import androidx.compose.ui.unit.*
     borderColor = borderColor,
     borderWidth = borderWidth,
     padding = padding,
-    onDeprecatedUReport = onUReport,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,
     content = content

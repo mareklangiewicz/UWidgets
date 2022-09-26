@@ -44,17 +44,11 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     withSon4Blue: Boolean = false,
     onUReport: OnUReport? = null,
 ) = UAllStart {
-    UOnContainerReport(onUReport?.withKeyPrefix("rigid father ")) {
-        UDebug {
-            RigidFather(type, size) {
-                // have to inject same onreport again to children, because father consumed it.
-                UOnContainerReport(onUReport) {
-                    if (withSon1Cyan) UAlign(USTART, UEND) { ColoredSon("cyan son", Color.Cyan, 150.dp.square) }
-                    if (withSon2Red) UAllCenter { ColoredSon("red son", Color.Red, 70.dp.square, sizeRequired = true) }
-                    if (withSon3Green) UAlign(USTRETCH, UEND) { ColoredSon("green son", Color.Green, 60.dp.square) }
-                    if (withSon4Blue) UAllStretch { ColoredSon("blue son", Color.Blue, 30.dp.square) }
-            } }
-        }
+    RigidFather(type, size, onUReport) {
+        if (withSon1Cyan) UAlign(USTART, UEND) { ColoredSon("cyan son", Color.Cyan, 150.dp.square) }
+        if (withSon2Red) UAllCenter { ColoredSon("red son", Color.Red, 70.dp.square, sizeRequired = true) }
+        if (withSon3Green) UAlign(USTRETCH, UEND) { ColoredSon("green son", Color.Green, 60.dp.square) }
+        if (withSon4Blue) UAllStretch { ColoredSon("blue son", Color.Blue, 30.dp.square) }
     }
 }
 
@@ -71,7 +65,8 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         .border(4.dp, Color.Blue)
         .padding(4.dp)
         .requiredSize(size)
-    // FIXME NOW: use high level container (in sons too, then hide some lowlevel Basic..flavors??)
+    // FIXME NOW: use high level container (in sons too, then hide some lowlevel Basic/Raw..stuff)
+    //  Then I can try to use UDebug in MyExaminedLayout
     UBasicContainerSki(type, m, onUReport?.withKeyPrefix("rigid father "), content)
 }
 

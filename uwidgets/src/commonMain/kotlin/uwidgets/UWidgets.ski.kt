@@ -33,7 +33,6 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
     borderColor: Color,
     borderWidth: Dp,
     padding: Dp,
-    onDeprecatedUReport: OnUReport?,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
@@ -41,7 +40,7 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
     // TODO_later: make sure .materialize here is ok (Layout does it internally again later)
     val materialized = currentComposer.materialize(modifier)
     val onUClick = materialized.foldInExtractedPushees { (it as? OnUClickModifier)?.onUClick }
-    val onUReport = materialized.foldInExtractedPushees(onDeprecatedUReport) { (it as? OnUReportModifier)?.onUReport }
+    val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportModifier)?.onUReport }
     val hScrollS = if (withHorizontalScroll) rememberScrollState() else null
     val vScrollS = if (withVerticalScroll) rememberScrollState() else null
     UBasicContainerSki(

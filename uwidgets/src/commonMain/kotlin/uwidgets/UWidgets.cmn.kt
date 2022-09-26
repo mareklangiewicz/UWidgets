@@ -35,8 +35,8 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    val onUReport = LocalUOnContainerReport.current
     val umodifier = LocalUChildrenModifier.current
+    @Suppress("RemoveRedundantQualifierName") // IDE issue
     UCoreContainer(
         type = type,
         size = size,
@@ -47,15 +47,10 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
         borderColor = UTheme.colors.uboxBorder(selected = selected, clickable = false/* FIXME: onClick != null */),
         borderWidth = UTheme.sizes.uboxBorder,
         padding = UTheme.sizes.uboxPadding,
-        onUReport = onUReport,
         withHorizontalScroll = withHorizontalScroll,
         withVerticalScroll = withVerticalScroll,
     ) { UDepth {
-        CompositionLocalProvider(
-            LocalUOnContainerReport provides null,
-            LocalUChildrenModifier provides null,
-            content = content
-        )
+        CompositionLocalProvider(LocalUChildrenModifier provides null, content = content)
     } }
 }
 
@@ -65,7 +60,8 @@ class OnUReportModifier(val onUReport: OnUReport?): Element
 /** Non-null modifiers are accumulated (all are called in outside in order); null are ignored */
 fun Modifier.onUClick(onUClick: ((Unit) -> Unit)?) = then(OnUClickModifier(onUClick))
 /** Non-null modifiers are accumulated (all are called in outside in order); null are ignored - TODO NOW: test it! */
-fun Modifier.onUReport(onUReport: OnUReport?) = then(OnUReportModifier(onUReport))
+fun Modifier.onUReport(onUReport: OnUReport?, keyPrefix: String = "") =
+    then(OnUReportModifier(onUReport?.withKeyPrefix(keyPrefix)))
 
 
 inline fun <reified R: Any> Modifier.foldInExtracted(
@@ -85,19 +81,6 @@ inline fun <reified T> Modifier.foldInExtractedPushees(
 ) = foldInExtracted(initial, tryExtract) { outer, inner -> { outer(it); inner(it) } }
 
 
-@Deprecated("Modifier.onUReport")
-@Composable fun UOnContainerReport(
-    onUReport: OnUReport?,
-    keyPrefix: String = "",
-    alsoCallCurrent: Boolean = false,
-    content: @Composable () -> Unit,
-) {
-    val on = onUReport
-        ?.withKeyPrefix(keyPrefix)
-        ?.withOptOtherOnUReport(if (alsoCallCurrent) LocalUOnContainerReport.current else null)
-    CompositionLocalProvider(LocalUOnContainerReport provides on, content = content)
-}
-
 /**
  * Warning: It will add these modifiers to ALL children UContainers.
  * (but not indirect descendants because each child clears it for own subtree when using it)
@@ -113,8 +96,6 @@ inline fun <reified T> Modifier.foldInExtractedPushees(
     CompositionLocalProvider(LocalUChildrenModifier provides new, content = content)
 }
 
-
-private val LocalUOnContainerReport = staticCompositionLocalOf<OnUReport?> { null }
 private val LocalUChildrenModifier = staticCompositionLocalOf<(Modifier.() -> Modifier)?> { null }
 
 
