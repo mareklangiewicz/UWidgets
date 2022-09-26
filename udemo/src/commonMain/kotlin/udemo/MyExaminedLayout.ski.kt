@@ -45,10 +45,10 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     onUReport: OnUReport? = null,
 ) = UAllStart {
     RigidFather(type, size, onUReport) {
-        if (withSon1Cyan) UAlign(USTART, UEND) { ColoredSon("cyan son", Color.Cyan, 150.dp.square) }
-        if (withSon2Red) UAllCenter { ColoredSon("red son", Color.Red, 70.dp.square, sizeRequired = true) }
-        if (withSon3Green) UAlign(USTRETCH, UEND) { ColoredSon("green son", Color.Green, 60.dp.square) }
-        if (withSon4Blue) UAllStretch { ColoredSon("blue son", Color.Blue, 30.dp.square) }
+        if (withSon1Cyan) UAlign(USTART, UEND) { ColoredSon("cyan son", Color.Cyan, 150.dp.square, onUReport = onUReport) }
+        if (withSon2Red) UAllCenter { ColoredSon("red son", Color.Red, 70.dp.square, sizeRequired = true, onUReport = onUReport) }
+        if (withSon3Green) UAlign(USTRETCH, UEND) { ColoredSon("green son", Color.Green, 60.dp.square, onUReport = onUReport) }
+        if (withSon4Blue) UAllStretch { ColoredSon("blue son", Color.Blue, 30.dp.square, onUReport = onUReport) }
     }
 }
 
