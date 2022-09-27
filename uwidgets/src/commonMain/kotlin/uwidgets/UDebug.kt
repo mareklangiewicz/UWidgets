@@ -2,6 +2,7 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier as Mod
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.text.*
@@ -9,7 +10,7 @@ import pl.mareklangiewicz.udata.*
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-fun UDebug(keyPrefix: String = "", content: @Composable () -> Unit) = UChildrenComposedModifier(
+fun UDebug(keyPrefix: String = "", content: @Composable () -> Unit) = UChildrenComposedMod(
     factory = {
         val measurer = rememberTextMeasurer()
         val ureports = rememberUReports {}
@@ -19,7 +20,7 @@ fun UDebug(keyPrefix: String = "", content: @Composable () -> Unit) = UChildrenC
 )
 
 @OptIn(ExperimentalTextApi::class)
-fun Modifier.drawUReports(measurer: TextMeasurer, ureports: UReports): Modifier =
+fun Mod.drawUReports(measurer: TextMeasurer, ureports: UReports): Mod =
     drawWithContent { drawContent(); drawUReports(measurer, ureports) }
 
 @OptIn(ExperimentalTextApi::class)

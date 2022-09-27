@@ -3,7 +3,7 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.Modifier as Mod
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.materialize
 import androidx.compose.ui.unit.*
@@ -22,7 +22,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 @Composable internal fun UCoreContainerImplDom(
     type: UContainerType,
     size: DpSize?,
-    modifier: Modifier,
+    modifier: Mod,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
@@ -36,8 +36,8 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     val uborderColor = materialized.foldInExtracted(null, { (it as? UBorderColorMod)?.borderColor }) { _, inner -> inner } ?: UTheme.colors.uboxBorder(/*FIXME*/)
     val uborderWidth = materialized.foldInExtracted(null, { (it as? UBorderWidthMod)?.borderWidth }) { _, inner -> inner } ?: UTheme.sizes.uboxBorder
     val upadding = materialized.foldInExtracted(null, { (it as? UPaddingMod)?.padding }) { _, inner -> inner } ?: UTheme.sizes.uboxPadding
-    val onUClick = materialized.foldInExtractedPushees { (it as? OnUClickModifier)?.onUClick }
-    val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportModifier)?.onUReport }
+    val onUClick = materialized.foldInExtractedPushees { (it as? OnUClickMod)?.onUClick }
+    val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportMod)?.onUReport }
     UBasicContainerDom(
         type = type,
         addStyle = {

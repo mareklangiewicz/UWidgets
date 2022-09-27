@@ -1,7 +1,7 @@
 package pl.mareklangiewicz.utheme
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.Modifier as Mod
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
@@ -55,7 +55,7 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
 @Composable fun UAllStartRow(
     size: DpSize? = null,
-    modifier: Modifier = Modifier,
+    modifier: Mod = Mod,
     selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
@@ -64,7 +64,7 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
 @Composable fun UAllStartColumn(
     size: DpSize? = null,
-    modifier: Modifier = Modifier,
+    modifier: Mod = Mod,
     selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,

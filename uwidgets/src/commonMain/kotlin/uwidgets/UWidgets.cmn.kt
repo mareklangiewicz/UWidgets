@@ -3,7 +3,7 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.Modifier as Mod
 import androidx.compose.ui.Modifier.Element
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.*
@@ -29,23 +29,23 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 @Composable fun UContainer(
     type: UContainerType,
     size: DpSize? = null, // TODO NOW: use normal modifiers for size in common too
-    modifier: Modifier = Modifier,
+    modifier: Mod = Mod,
     selected: Boolean = false, // TODO NOW: also modifiers?
     // TODO NOW: use modifiers for scrolling in common too (custom or map ski modifiers to js?)
     withHorizontalScroll: Boolean = false, // TODO_someday: tint border differently if scrollable??
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    val childrenModifier = LocalUChildrenModifier.current
+    val childrenMod = LocalUChildrenMod.current
     @Suppress("RemoveRedundantQualifierName") // IDE issue
     UCoreContainer(
         type = type,
         size = size,
-        modifier = if (childrenModifier == null) modifier else Modifier.childrenModifier().then(modifier),
+        modifier = if (childrenMod == null) modifier else Mod.childrenMod().then(modifier),
         withHorizontalScroll = withHorizontalScroll,
         withVerticalScroll = withVerticalScroll,
     ) { UDepth {
-        CompositionLocalProvider(LocalUChildrenModifier provides null, content = content)
+        CompositionLocalProvider(LocalUChildrenMod provides null, content = content)
     } }
 }
 
@@ -55,35 +55,35 @@ internal class UBackgroundColorMod(val backgroundColor: Color): Element
 internal class UBorderColorMod(val borderColor: Color): Element
 internal class UBorderWidthMod(val borderWidth: Dp): Element
 internal class UPaddingMod(val padding: Dp): Element
-internal class OnUClickModifier(val onUClick: OnUClick?): Element
-internal class OnUReportModifier(val onUReport: OnUReport?): Element
+internal class OnUClickMod(val onUClick: OnUClick?): Element
+internal class OnUReportMod(val onUReport: OnUReport?): Element
 
-fun Modifier.umargin(margin: Dp) = then(UMarginMod(margin))
-fun Modifier.ucontentColor(contentColor: Color) = then(UContentColorMod(contentColor))
-fun Modifier.ubackgroundColor(backgroundColor: Color) = then(UBackgroundColorMod(backgroundColor))
-fun Modifier.uborderColor(borderColor: Color) = then(UBorderColorMod(borderColor))
-fun Modifier.uborderWidth(borderWidth: Dp) = then(UBorderWidthMod(borderWidth))
-fun Modifier.upadding(padding: Dp) = then(UPaddingMod(padding))
+fun Mod.umargin(margin: Dp) = then(UMarginMod(margin))
+fun Mod.ucontentColor(contentColor: Color) = then(UContentColorMod(contentColor))
+fun Mod.ubackgroundColor(backgroundColor: Color) = then(UBackgroundColorMod(backgroundColor))
+fun Mod.uborderColor(borderColor: Color) = then(UBorderColorMod(borderColor))
+fun Mod.uborderWidth(borderWidth: Dp) = then(UBorderWidthMod(borderWidth))
+fun Mod.upadding(padding: Dp) = then(UPaddingMod(padding))
 
-@Composable fun Modifier.ucolors(
+@Composable fun Mod.ucolors(
     contentColor: Color = UTheme.colors.uboxContent,
     backgroundColor: Color = UTheme.colors.uboxBackground,
     borderColor: Color = UTheme.colors.uboxBorder(/*FIXME*/),
 ) = ucontentColor(contentColor).ubackgroundColor(backgroundColor).uborderColor(borderColor)
 
-@Composable fun Modifier.uborder(
+@Composable fun Mod.uborder(
     borderColor: Color = UTheme.colors.uboxBorder(/*FIXME*/),
     borderWidth: Dp = UTheme.sizes.uboxBorder,
 ) = uborderColor(borderColor).uborderWidth(borderWidth)
 
-@Composable fun Modifier.ustyle(
+@Composable fun Mod.ustyle(
     margin: Dp = UTheme.sizes.uboxMargin,
     contentColor: Color = UTheme.colors.uboxContent,
     backgroundColor: Color = UTheme.colors.uboxBackground,
     borderColor: Color = UTheme.colors.uboxBorder(/*FIXME*/),
 ) = ucontentColor(contentColor).ubackgroundColor(backgroundColor).uborderColor(borderColor)
 
-@Composable fun Modifier.ustyle(
+@Composable fun Mod.ustyle(
     margin: Dp = UTheme.sizes.uboxMargin,
     contentColor: Color = UTheme.colors.uboxContent,
     backgroundColor: Color = UTheme.colors.uboxBackground,
@@ -98,7 +98,7 @@ fun Modifier.upadding(padding: Dp) = then(UPaddingMod(padding))
     .uborderWidth(borderWidth)
     .upadding(padding)
 
-fun Modifier.ustyleBlank(
+fun Mod.ustyleBlank(
     margin: Dp = 0.dp,
     contentColor: Color = Color.Black,
     backgroundColor: Color = Color.Transparent,
@@ -114,13 +114,13 @@ fun Modifier.ustyleBlank(
     .upadding(padding)
 
 /** Non-null modifiers are accumulated (all are called in outside in order); null are ignored */
-fun Modifier.onUClick(onUClick: OnUClick?) = then(OnUClickModifier(onUClick))
+fun Mod.onUClick(onUClick: OnUClick?) = then(OnUClickMod(onUClick))
 /** Non-null modifiers are accumulated (all are called in outside in order); null are ignored - TODO NOW: test it! */
-fun Modifier.onUReport(onUReport: OnUReport?, keyPrefix: String = "") =
-    then(OnUReportModifier(onUReport?.withKeyPrefix(keyPrefix)))
+fun Mod.onUReport(onUReport: OnUReport?, keyPrefix: String = "") =
+    then(OnUReportMod(onUReport?.withKeyPrefix(keyPrefix)))
 
 
-inline fun <reified R: Any> Modifier.foldInExtracted(
+inline fun <reified R: Any> Mod.foldInExtracted(
     initial: R? = null,
     noinline tryExtract: (Element) -> R?,
     noinline operation: (R, R) -> R
@@ -131,7 +131,7 @@ inline fun <reified R: Any> Modifier.foldInExtracted(
     operation(outer, inner)
 }
 
-inline fun <reified T> Modifier.foldInExtractedPushees(
+inline fun <reified T> Mod.foldInExtractedPushees(
     noinline initial: ((T) -> Unit)? = null,
     noinline tryExtract: (Element) -> ((T) -> Unit)?,
 ) = foldInExtracted(initial, tryExtract) { outer, inner -> { outer(it); inner(it) } }
@@ -140,29 +140,29 @@ inline fun <reified T> Modifier.foldInExtractedPushees(
 /**
  * Warning: It will add these modifiers to ALL children UContainers.
  * (but not indirect descendants because each child clears it for own subtree when using it)
- * Also not consumed UChildrenModifier is chained if another UChildrenModifier is nested inside.
- * @see UChildrenComposedModifier
+ * Also not consumed UChildrenMod is chained if another UChildrenMod is nested inside.
+ * @see UChildrenComposedMod
  */
-@Composable fun UChildrenModifier(
-    modifier: Modifier.() -> Modifier,
+@Composable fun UChildrenMod(
+    modifier: Mod.() -> Mod,
     content: @Composable () -> Unit,
 ) {
-    val current = LocalUChildrenModifier.current
+    val current = LocalUChildrenMod.current
     val new = if (current == null) modifier else { { current().modifier() } }
-    CompositionLocalProvider(LocalUChildrenModifier provides new, content = content)
+    CompositionLocalProvider(LocalUChildrenMod provides new, content = content)
 }
 
-@Composable fun UChildrenComposedModifier(
-    factory: @Composable Modifier.() -> Modifier,
+@Composable fun UChildrenComposedMod(
+    factory: @Composable Mod.() -> Mod,
     content: @Composable () -> Unit,
-) = UChildrenModifier({ composed { factory() } }, content)
+) = UChildrenMod({ composed { factory() } }, content)
 
-private val LocalUChildrenModifier = staticCompositionLocalOf<(Modifier.() -> Modifier)?> { null }
+private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { null }
 
 
 @Composable fun UBox(
     size: DpSize? = null,
-    modifier: Modifier = Modifier,
+    modifier: Mod = Mod,
     selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
@@ -171,7 +171,7 @@ private val LocalUChildrenModifier = staticCompositionLocalOf<(Modifier.() -> Mo
 
 @Composable fun UBoxEnabledIf(enabled: Boolean, content: @Composable () -> Unit) = UBox {
     content()
-    if (!enabled) UAllStretch { UCoreContainer(UBOX, modifier = Modifier.ustyleBlank(
+    if (!enabled) UAllStretch { UCoreContainer(UBOX, modifier = Mod.ustyleBlank(
         backgroundColor = UTheme.colors.uboxBackground.copy(alpha = .4f)
     )) {} }
 }
@@ -179,7 +179,7 @@ private val LocalUChildrenModifier = staticCompositionLocalOf<(Modifier.() -> Mo
 
 @Composable fun UColumn(
     size: DpSize? = null,
-    modifier: Modifier = Modifier,
+    modifier: Mod = Mod,
     selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
@@ -188,14 +188,14 @@ private val LocalUChildrenModifier = staticCompositionLocalOf<(Modifier.() -> Mo
 
 @Composable fun URow(
     size: DpSize? = null,
-    modifier: Modifier = Modifier,
+    modifier: Mod = Mod,
     selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
 ) = UContainer(UROW, size, modifier, selected, withHorizontalScroll, withVerticalScroll, content)
 
-@Composable fun UBoxedText(text: String, modifier: Modifier = Modifier, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) = UBox(modifier = modifier) {
+@Composable fun UBoxedText(text: String, modifier: Mod = Mod, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) = UBox(modifier = modifier) {
     UAlign(
         if (center) UCENTER else UTheme.alignments.horizontal,
         if (center) UCENTER else UTheme.alignments.vertical,
@@ -217,7 +217,7 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     var selectedTabIndex by remember { mutableStateOf(0) }
     tabs.forEachIndexed { index, title -> UBoxedText(
         text = title,
-        modifier = Modifier.onUClick { selectedTabIndex = index; onSelected(index, title) },
+        modifier = Mod.onUClick { selectedTabIndex = index; onSelected(index, title) },
         center = true,
         bold = index == selectedTabIndex,
         mono = true
@@ -230,7 +230,7 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
 @Composable fun USwitch(state: MutableState<Boolean>, labelOn: String = " on  ", labelOff: String = " off ") = UAllStart {
     UBoxedText(
         text = if (state.value) labelOn else labelOff,
-        modifier = Modifier.onUClick { state.value = !state.value },
+        modifier = Mod.onUClick { state.value = !state.value },
         center = true,
         bold = state.value,
         mono = true
@@ -246,7 +246,7 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
 @Composable fun <T> USwitch(state: MutableState<T>, vararg options: Pair<String, T>) = UAllStartRow {
     for ((label, value) in options) UBoxedText(
         text = label,
-        modifier = Modifier.onUClick { state.value = value },
+        modifier = Mod.onUClick { state.value = value },
         center = true,
         bold = state.value == value,
         mono = true
@@ -269,9 +269,9 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     UAllCenter {
         URow {
             UText(min.ustr, bold = bold, mono = true)
-            UCoreContainer(UBOX, modifier = Modifier.ustyleBlank(backgroundColor = Color.Blue, padding = 2.dp), size = DpSize(w1.dp, 4.dp)) {}
+            UCoreContainer(UBOX, modifier = Mod.ustyleBlank(backgroundColor = Color.Blue, padding = 2.dp), size = DpSize(w1.dp, 4.dp)) {}
             UText(pos.ustr, bold = bold, mono = true)
-            UCoreContainer(UBOX, modifier = Modifier.ustyleBlank(backgroundColor = Color.White, padding = 2.dp), size = DpSize(w2.dp, 4.dp)) {}
+            UCoreContainer(UBOX, modifier = Mod.ustyleBlank(backgroundColor = Color.White, padding = 2.dp), size = DpSize(w2.dp, 4.dp)) {}
             UText(max.ustr, bold = bold, mono = true)
         }
     }

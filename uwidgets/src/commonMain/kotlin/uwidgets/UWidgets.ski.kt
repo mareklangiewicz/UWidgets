@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier as Mod
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
@@ -26,7 +27,7 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
 @Composable internal fun UCoreContainerImplSki(
     type: UContainerType,
     requiredSize: DpSize?,
-    modifier: Modifier,
+    modifier: Mod,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
@@ -39,8 +40,8 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
     val uborderColor = materialized.foldInExtracted(null, { (it as? UBorderColorMod)?.borderColor }) { _, inner -> inner } ?: UTheme.colors.uboxBorder(/*FIXME*/)
     val uborderWidth = materialized.foldInExtracted(null, { (it as? UBorderWidthMod)?.borderWidth }) { _, inner -> inner } ?: UTheme.sizes.uboxBorder
     val upadding = materialized.foldInExtracted(null, { (it as? UPaddingMod)?.padding }) { _, inner -> inner } ?: UTheme.sizes.uboxPadding
-    val onUClick = materialized.foldInExtractedPushees { (it as? OnUClickModifier)?.onUClick }
-    val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportModifier)?.onUReport }
+    val onUClick = materialized.foldInExtractedPushees { (it as? OnUClickMod)?.onUClick }
+    val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportMod)?.onUReport }
     val hScrollS = if (withHorizontalScroll) rememberScrollState() else null
     val vScrollS = if (withVerticalScroll) rememberScrollState() else null
     UBasicContainerSki(
@@ -59,7 +60,7 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
 }
 
 
-fun Modifier.horizontalScroll(type: UScrollerType, state: ScrollState): Modifier = this
+fun Mod.horizontalScroll(type: UScrollerType, state: ScrollState): Mod = this
     .drawWithContent {
         require(type == UBASIC) // TODO later: implement different UScrollerTypes
         drawContent()
@@ -69,7 +70,7 @@ fun Modifier.horizontalScroll(type: UScrollerType, state: ScrollState): Modifier
     }
     .horizontalScroll(state)
 
-fun Modifier.verticalScroll(type: UScrollerType, state: ScrollState): Modifier = this
+fun Mod.verticalScroll(type: UScrollerType, state: ScrollState): Mod = this
     .drawWithContent {
         require(type == UBASIC) // TODO later: implement different UScrollerTypes
         drawContent()
@@ -80,16 +81,16 @@ fun Modifier.verticalScroll(type: UScrollerType, state: ScrollState): Modifier =
     .verticalScroll(state)
 
 
-// thanIf would be wrong name (we use factory, not just Modifier)
-inline fun Modifier.andIf(condition: Boolean, add: Modifier.() -> Modifier): Modifier =
+// thanIf would be wrong name (we use factory, not just Mod)
+inline fun Mod.andIf(condition: Boolean, add: Mod.() -> Mod): Mod =
     if (condition) add() else this // then(add()) would be incorrect
 
-inline fun <V : Any> Modifier.andIfNotNull(value: V?, add: Modifier.(V) -> Modifier): Modifier =
+inline fun <V : Any> Mod.andIfNotNull(value: V?, add: Mod.(V) -> Mod): Mod =
     if (value != null) add(value) else this
 
 @Composable fun UBasicContainerSki(
     type: UContainerType,
-    modifier: Modifier = Modifier,
+    modifier: Mod = Mod,
     onUReport: OnUReport? = null,
     content: @Composable () -> Unit = {},
 ) {
@@ -393,7 +394,7 @@ private fun IntrinsicMeasurable.uChildData(defaultHorizontal: UAlignmentType, de
 private fun Measured.uChildData(defaultHorizontal: UAlignmentType, defaultVertical: UAlignmentType) =
     parentData as? UChildData ?: UChildData(defaultHorizontal, defaultVertical)
 
-fun Modifier.ualign(horizontal: UAlignmentType, vertical: UAlignmentType) = then(UChildData(horizontal, vertical))
+fun Mod.ualign(horizontal: UAlignmentType, vertical: UAlignmentType) = then(UChildData(horizontal, vertical))
 
 private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = when (this) {
     USTART, USTRETCH -> 0
@@ -433,4 +434,4 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
 
 /** No need to start new compose window - we are already in skiko based composition */
 @Composable internal fun UFakeSkikoBoxImplSki(size: DpSize? = null, content: @Composable () -> Unit) =
-    UBasicContainerSki(UBOX, Modifier.andIfNotNull(size) { requiredSize(it) }, content = content)
+    UBasicContainerSki(UBOX, Mod.andIfNotNull(size) { requiredSize(it) }, content = content)

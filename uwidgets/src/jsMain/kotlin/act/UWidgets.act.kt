@@ -3,14 +3,14 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.Modifier as Mod
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.usystem.*
 
 @Composable internal actual fun UCoreContainerAct(
     type: UContainerType,
     size: DpSize?,
-    modifier: Modifier,
+    modifier: Mod,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,

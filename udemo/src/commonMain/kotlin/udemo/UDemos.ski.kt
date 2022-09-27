@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier as Mod
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
 import pl.mareklangiewicz.udata.*
@@ -44,7 +45,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
             onUReport = ureports::invoke,
         )
         if (textsS.value) UColumn(size, withHorizontalScroll = hScroll, withVerticalScroll = vScroll) {
-            UBasicContainerSki(UCOLUMN, Modifier.reportMeasuringAndPlacement(ureports::invoke.withKeyPrefix("d3t "))) {
+            UBasicContainerSki(UCOLUMN, Mod.reportMeasuringAndPlacement(ureports::invoke.withKeyPrefix("d3t "))) {
                 UDemoTexts(growFactor = 4)
             }
         }
@@ -62,7 +63,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     }
     val countf by animateFloatAsState(count.flt)
     // Some crazy moving layouts to stress test layout/snapshot system inside browser canvas environment
-    Column(Modifier.padding(horizontal = (countf * 5).dp)) {
+    Column(Mod.padding(horizontal = (countf * 5).dp)) {
         UDemo2(DpSize((100 + countf * 3).dp, (300 - countf * 4).dp))
         for (i in 1..6) Text("x".repeat(i), fontSize = (countf * 2 + 16 - i).sp)
     }

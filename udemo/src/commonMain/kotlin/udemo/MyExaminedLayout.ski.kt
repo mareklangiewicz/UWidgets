@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier as Mod
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
@@ -22,7 +23,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 
     val ureports = rememberUReports { ulogw("rspek ${it.ustr}") } // rspek so I can filter logs with uspek/rspek/spek
 
-    Column(Modifier.fillMaxWidth()) {
+    Column(Mod.fillMaxWidth()) {
         MyExaminedLayout(
             type = type,
             withSon1Cyan = true,
@@ -31,7 +32,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
             withSon4Blue = false,
             onUReport = ureports::invoke,
         )
-        UReportsUi(ureports, Modifier.height(400.dp), reversed = true)
+        UReportsUi(ureports, Mod.height(400.dp), reversed = true)
     }
 }
 
@@ -59,7 +60,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     onUReport: OnUReport? = null,
     content: @Composable () -> Unit,
 ) {
-    val m = Modifier
+    val m = Mod
         .wrapContentSize()
         .background(Color.LightGray)
         .border(4.dp, Color.Blue)
@@ -77,7 +78,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     sizeRequired: Boolean = false,
     onUReport: OnUReport? = null,
 ) {
-    val m = Modifier
+    val m = Mod
         .andIfNotNull(onUReport) { reportMeasuringAndPlacement(it.withKeyPrefix("$tag outer ")) }
         .background(color.copy(alpha = color.alpha * .8f), RoundedCornerShape(4.dp))
         .run { if (sizeRequired) requiredSize(size) else size(size) }
