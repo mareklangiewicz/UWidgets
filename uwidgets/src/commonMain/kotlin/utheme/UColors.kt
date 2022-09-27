@@ -11,67 +11,67 @@ val Color.Companion.DarkDarkGray get() = Color(0xFF222222)
 
 @Stable
 class UColors(
-    uboxContent: Color,
-    uboxBaseBackground: Color,
-    uboxTintBackground: Color,
-    uboxTintBorder: Color,
-    uboxTintBorderSelected: Color,
-    uboxTintBorderClickable: Color = uboxTintBorderSelected.copy(alpha = uboxTintBorderSelected.alpha / 3),
+    ubinContent: Color,
+    ubinBaseBackground: Color,
+    ubinTintBackground: Color,
+    ubinTintBorder: Color,
+    ubinTintBorderSelected: Color,
+    ubinTintBorderClickable: Color = ubinTintBorderSelected.copy(alpha = ubinTintBorderSelected.alpha / 3),
 ) {
 
-    var uboxContent by mutableStateOf(uboxContent)
-    var uboxBaseBackground by mutableStateOf(uboxBaseBackground)
-    var uboxTintBackground by mutableStateOf(uboxTintBackground)
-    var uboxTintBorder by mutableStateOf(uboxTintBorder)
-    var uboxTintBorderSelected by mutableStateOf(uboxTintBorderSelected)
-    var uboxTintBorderClickable by mutableStateOf(uboxTintBorderClickable)
+    var ubinContent by mutableStateOf(ubinContent)
+    var ubinBaseBackground by mutableStateOf(ubinBaseBackground)
+    var ubinTintBackground by mutableStateOf(ubinTintBackground)
+    var ubinTintBorder by mutableStateOf(ubinTintBorder)
+    var ubinTintBorderSelected by mutableStateOf(ubinTintBorderSelected)
+    var ubinTintBorderClickable by mutableStateOf(ubinTintBorderClickable)
 
-    val uboxBackground
+    val ubinBackground
         @Composable
         @ReadOnlyComposable
-        get() = uboxTintBackground
-            .copy(alpha = uboxTintBackground.alpha * UDepth.appearance)
-            .compositeOver(uboxBaseBackground)
+        get() = ubinTintBackground
+            .copy(alpha = ubinTintBackground.alpha * UDepth.appearance)
+            .compositeOver(ubinBaseBackground)
 
-    @Composable fun uboxBorder(selected: Boolean = false, clickable: Boolean = false) =
-        uboxBackground
-            .tintIf(true, uboxTintBorder)
-            .tintIf(selected, uboxTintBorderSelected)
-            .tintIf(clickable, uboxTintBorderClickable)
+    @Composable fun ubinBorder(selected: Boolean = false, clickable: Boolean = false) =
+        ubinBackground
+            .tintIf(true, ubinTintBorder)
+            .tintIf(selected, ubinTintBorderSelected)
+            .tintIf(clickable, ubinTintBorderClickable)
 }
 
 private fun Color.tintIf(condition: Boolean, tintColor: Color) =
     if (condition) tintColor.compositeOver(this) else this
 
 fun lightUColors(
-    uboxContent: Color = Color.Black,
-    uboxBaseBackground: Color = Color.White,
-    uboxTintBackground: Color = Color.Gray,
-    uboxTintBorder: Color = Color.Black.copy(alpha = .1f),
-    uboxTintBorderSelected: Color = Color.Blue.copy(alpha = .4f),
-) = UColors(uboxContent, uboxBaseBackground, uboxTintBackground, uboxTintBorder, uboxTintBorderSelected)
+    ubinContent: Color = Color.Black,
+    ubinBaseBackground: Color = Color.White,
+    ubinTintBackground: Color = Color.Gray,
+    ubinTintBorder: Color = Color.Black.copy(alpha = .1f),
+    ubinTintBorderSelected: Color = Color.Blue.copy(alpha = .4f),
+) = UColors(ubinContent, ubinBaseBackground, ubinTintBackground, ubinTintBorder, ubinTintBorderSelected)
 
 fun darkUColors(
-    uboxContent: Color = Color.White,
-    uboxBaseBackground: Color = Color.DarkDarkGray, // Black here would be wrong because we always want border to be a bit darker.
-    uboxTintBackground: Color = Color.Gray,
-    uboxTintBorder: Color = Color.Black.copy(alpha = .4f),
-    uboxTintBorderSelected: Color = Color.Blue.copy(alpha = .4f),
-) = UColors(uboxContent, uboxBaseBackground, uboxTintBackground, uboxTintBorder, uboxTintBorderSelected)
+    ubinContent: Color = Color.White,
+    ubinBaseBackground: Color = Color.DarkDarkGray, // Black here would be wrong because we always want border to be a bit darker.
+    ubinTintBackground: Color = Color.Gray,
+    ubinTintBorder: Color = Color.Black.copy(alpha = .4f),
+    ubinTintBorderSelected: Color = Color.Blue.copy(alpha = .4f),
+) = UColors(ubinContent, ubinBaseBackground, ubinTintBackground, ubinTintBorder, ubinTintBorderSelected)
 
 fun lightBluishUColors(
-    uboxContent: Color = Color.DarkDarkBlue,
-    uboxBaseBackground: Color = Color.White,
-    uboxTintBackground: Color = Color.Blue,
-    uboxTintBorder: Color = Color.DarkBlue.copy(alpha = .1f),
-    uboxTintBorderSelected: Color = Color.Blue.copy(alpha = .4f),
-) = UColors(uboxContent, uboxBaseBackground, uboxTintBackground, uboxTintBorder, uboxTintBorderSelected)
+    ubinContent: Color = Color.DarkDarkBlue,
+    ubinBaseBackground: Color = Color.White,
+    ubinTintBackground: Color = Color.Blue,
+    ubinTintBorder: Color = Color.DarkBlue.copy(alpha = .1f),
+    ubinTintBorderSelected: Color = Color.Blue.copy(alpha = .4f),
+) = UColors(ubinContent, ubinBaseBackground, ubinTintBackground, ubinTintBorder, ubinTintBorderSelected)
 
 @Composable fun m3UColors(
-    uboxContent: Color = MaterialTheme.colorScheme.primary,
-    uboxBaseBackground: Color = MaterialTheme.colorScheme.background,
-    uboxTintBackground: Color = MaterialTheme.colorScheme.onBackground,
-    uboxTintBorder: Color = MaterialTheme.colorScheme.secondary.copy(alpha = .1f),
-    uboxTintBorderSelected: Color = MaterialTheme.colorScheme.primary.copy(alpha = .4f),
-) = UColors(uboxContent, uboxBaseBackground, uboxTintBackground, uboxTintBorder, uboxTintBorderSelected)
+    ubinContent: Color = MaterialTheme.colorScheme.primary,
+    ubinBaseBackground: Color = MaterialTheme.colorScheme.background,
+    ubinTintBackground: Color = MaterialTheme.colorScheme.onBackground,
+    ubinTintBorder: Color = MaterialTheme.colorScheme.secondary.copy(alpha = .1f),
+    ubinTintBorderSelected: Color = MaterialTheme.colorScheme.primary.copy(alpha = .4f),
+) = UColors(ubinContent, ubinBaseBackground, ubinTintBackground, ubinTintBorder, ubinTintBorderSelected)
 

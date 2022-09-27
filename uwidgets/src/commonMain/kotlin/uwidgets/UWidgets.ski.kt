@@ -34,12 +34,12 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
 ) {
     // TODO_later: make sure .materialize here is ok (Layout does it internally again later)
     val materialized = currentComposer.materialize(mod)
-    val umargin = materialized.foldInExtracted(null, { (it as? UMarginMod)?.margin }) { _, inner -> inner } ?: UTheme.sizes.uboxMargin
-    val ucontentColor = materialized.foldInExtracted(null, { (it as? UContentColorMod)?.contentColor }) { _, inner -> inner } ?: UTheme.colors.uboxContent
-    val ubackgroundColor = materialized.foldInExtracted(null, { (it as? UBackgroundColorMod)?.backgroundColor }) { _, inner -> inner } ?: UTheme.colors.uboxBackground
-    val uborderColor = materialized.foldInExtracted(null, { (it as? UBorderColorMod)?.borderColor }) { _, inner -> inner } ?: UTheme.colors.uboxBorder(/*FIXME*/)
-    val uborderWidth = materialized.foldInExtracted(null, { (it as? UBorderWidthMod)?.borderWidth }) { _, inner -> inner } ?: UTheme.sizes.uboxBorder
-    val upadding = materialized.foldInExtracted(null, { (it as? UPaddingMod)?.padding }) { _, inner -> inner } ?: UTheme.sizes.uboxPadding
+    val umargin = materialized.foldInExtracted(null, { (it as? UMarginMod)?.margin }) { _, inner -> inner } ?: UTheme.sizes.ubinMargin
+    val ucontentColor = materialized.foldInExtracted(null, { (it as? UContentColorMod)?.contentColor }) { _, inner -> inner } ?: UTheme.colors.ubinContent
+    val ubackgroundColor = materialized.foldInExtracted(null, { (it as? UBackgroundColorMod)?.backgroundColor }) { _, inner -> inner } ?: UTheme.colors.ubinBackground
+    val uborderColor = materialized.foldInExtracted(null, { (it as? UBorderColorMod)?.borderColor }) { _, inner -> inner } ?: UTheme.colors.ubinBorder(/*FIXME*/)
+    val uborderWidth = materialized.foldInExtracted(null, { (it as? UBorderWidthMod)?.borderWidth }) { _, inner -> inner } ?: UTheme.sizes.ubinBorder
+    val upadding = materialized.foldInExtracted(null, { (it as? UPaddingMod)?.padding }) { _, inner -> inner } ?: UTheme.sizes.ubinPadding
     val onUClick = materialized.foldInExtractedPushees { (it as? OnUClickMod)?.onUClick }
     val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportMod)?.onUReport }
     val hScrollS = if (withHorizontalScroll) rememberScrollState() else null

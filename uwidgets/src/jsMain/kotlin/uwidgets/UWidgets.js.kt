@@ -30,12 +30,12 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
     // FIXME: refactor (in ski version too); but be careful not to do unnecessary allocations (like UBinStyle data class or sth..)
     //  also it would be better to do folding once, but not allocate on recomposition!
     val materialized = currentComposer.materialize(mod)
-    val umargin = materialized.foldInExtracted(null, { (it as? UMarginMod)?.margin }) { _, inner -> inner } ?: UTheme.sizes.uboxMargin
-    val ucontentColor = materialized.foldInExtracted(null, { (it as? UContentColorMod)?.contentColor }) { _, inner -> inner } ?: UTheme.colors.uboxContent
-    val ubackgroundColor = materialized.foldInExtracted(null, { (it as? UBackgroundColorMod)?.backgroundColor }) { _, inner -> inner } ?: UTheme.colors.uboxBackground
-    val uborderColor = materialized.foldInExtracted(null, { (it as? UBorderColorMod)?.borderColor }) { _, inner -> inner } ?: UTheme.colors.uboxBorder(/*FIXME*/)
-    val uborderWidth = materialized.foldInExtracted(null, { (it as? UBorderWidthMod)?.borderWidth }) { _, inner -> inner } ?: UTheme.sizes.uboxBorder
-    val upadding = materialized.foldInExtracted(null, { (it as? UPaddingMod)?.padding }) { _, inner -> inner } ?: UTheme.sizes.uboxPadding
+    val umargin = materialized.foldInExtracted(null, { (it as? UMarginMod)?.margin }) { _, inner -> inner } ?: UTheme.sizes.ubinMargin
+    val ucontentColor = materialized.foldInExtracted(null, { (it as? UContentColorMod)?.contentColor }) { _, inner -> inner } ?: UTheme.colors.ubinContent
+    val ubackgroundColor = materialized.foldInExtracted(null, { (it as? UBackgroundColorMod)?.backgroundColor }) { _, inner -> inner } ?: UTheme.colors.ubinBackground
+    val uborderColor = materialized.foldInExtracted(null, { (it as? UBorderColorMod)?.borderColor }) { _, inner -> inner } ?: UTheme.colors.ubinBorder(/*FIXME*/)
+    val uborderWidth = materialized.foldInExtracted(null, { (it as? UBorderWidthMod)?.borderWidth }) { _, inner -> inner } ?: UTheme.sizes.ubinBorder
+    val upadding = materialized.foldInExtracted(null, { (it as? UPaddingMod)?.padding }) { _, inner -> inner } ?: UTheme.sizes.ubinPadding
     val onUClick = materialized.foldInExtractedPushees { (it as? OnUClickMod)?.onUClick }
     val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportMod)?.onUReport }
     UBasicBinDom(
@@ -147,7 +147,7 @@ private fun StyleScope.ugridFor(type: UBinType, horizontal: UAlignmentType, vert
 
 private fun StyleScope.uflexChildFor(parentType: UBinType, horizontal: UAlignmentType, vertical: UAlignmentType) {
     when (parentType) {
-        UBOX -> error("flex uboxes are not supported")
+        UBOX -> error("flex ubins are not supported")
         UCOLUMN -> {
             alignSelf(horizontal.css)
             if (vertical == USTRETCH) flexGrow(1)
@@ -166,7 +166,7 @@ private fun StyleScope.uflexFor(type: UBinType, horizontal: UAlignmentType, vert
     if (type == UCOLUMN) flexDirection(FlexDirection.Column)
     flexWrap(FlexWrap.Nowrap)
     when (type) {
-        UBOX -> error("flex uboxes are not supported")
+        UBOX -> error("flex ubins are not supported")
         UCOLUMN -> {
             horizontal.css.let {
                 alignContent(AlignContent(it))

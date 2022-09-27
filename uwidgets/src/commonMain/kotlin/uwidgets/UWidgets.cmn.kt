@@ -66,30 +66,30 @@ fun Mod.uborderWidth(borderWidth: Dp) = then(UBorderWidthMod(borderWidth))
 fun Mod.upadding(padding: Dp) = then(UPaddingMod(padding))
 
 @Composable fun Mod.ucolors(
-    contentColor: Color = UTheme.colors.uboxContent,
-    backgroundColor: Color = UTheme.colors.uboxBackground,
-    borderColor: Color = UTheme.colors.uboxBorder(/*FIXME*/),
+    contentColor: Color = UTheme.colors.ubinContent,
+    backgroundColor: Color = UTheme.colors.ubinBackground,
+    borderColor: Color = UTheme.colors.ubinBorder(/*FIXME*/),
 ) = ucontentColor(contentColor).ubackgroundColor(backgroundColor).uborderColor(borderColor)
 
 @Composable fun Mod.uborder(
-    borderColor: Color = UTheme.colors.uboxBorder(/*FIXME*/),
-    borderWidth: Dp = UTheme.sizes.uboxBorder,
+    borderColor: Color = UTheme.colors.ubinBorder(/*FIXME*/),
+    borderWidth: Dp = UTheme.sizes.ubinBorder,
 ) = uborderColor(borderColor).uborderWidth(borderWidth)
 
 @Composable fun Mod.ustyle(
-    margin: Dp = UTheme.sizes.uboxMargin,
-    contentColor: Color = UTheme.colors.uboxContent,
-    backgroundColor: Color = UTheme.colors.uboxBackground,
-    borderColor: Color = UTheme.colors.uboxBorder(/*FIXME*/),
+    margin: Dp = UTheme.sizes.ubinMargin,
+    contentColor: Color = UTheme.colors.ubinContent,
+    backgroundColor: Color = UTheme.colors.ubinBackground,
+    borderColor: Color = UTheme.colors.ubinBorder(/*FIXME*/),
 ) = ucontentColor(contentColor).ubackgroundColor(backgroundColor).uborderColor(borderColor)
 
 @Composable fun Mod.ustyle(
-    margin: Dp = UTheme.sizes.uboxMargin,
-    contentColor: Color = UTheme.colors.uboxContent,
-    backgroundColor: Color = UTheme.colors.uboxBackground,
-    borderColor: Color = UTheme.colors.uboxBorder(/*FIXME*/),
-    borderWidth: Dp = UTheme.sizes.uboxBorder,
-    padding: Dp = UTheme.sizes.uboxPadding,
+    margin: Dp = UTheme.sizes.ubinMargin,
+    contentColor: Color = UTheme.colors.ubinContent,
+    backgroundColor: Color = UTheme.colors.ubinBackground,
+    borderColor: Color = UTheme.colors.ubinBorder(/*FIXME*/),
+    borderWidth: Dp = UTheme.sizes.ubinBorder,
+    padding: Dp = UTheme.sizes.ubinPadding,
 ) = this
     .umargin(margin)
     .ucontentColor(contentColor)
@@ -172,7 +172,7 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
 @Composable fun UBoxEnabledIf(enabled: Boolean, content: @Composable () -> Unit) = UBox {
     content()
     if (!enabled) UAllStretch { UCoreBin(UBOX, mod = Mod.ustyleBlank(
-        backgroundColor = UTheme.colors.uboxBackground.copy(alpha = .4f)
+        backgroundColor = UTheme.colors.ubinBackground.copy(alpha = .4f)
     )) {} }
 }
 // FIXME_later: think more about how to visually disable bin (another color in theme for overlay?)

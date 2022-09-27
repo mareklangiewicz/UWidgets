@@ -89,10 +89,10 @@ object UTheme {
         get() = LocalUAlignments.current
 }
 
-@Stable class USizes(uboxMargin: Dp = 1.dp, uboxBorder: Dp = 1.dp, uboxPadding: Dp = 1.dp) {
-    var uboxMargin by mutableStateOf(uboxMargin)
-    var uboxBorder by mutableStateOf(uboxBorder)
-    var uboxPadding by mutableStateOf(uboxPadding)
+@Stable class USizes(ubinMargin: Dp = 1.dp, ubinBorder: Dp = 1.dp, ubinPadding: Dp = 1.dp) {
+    var ubinMargin by mutableStateOf(ubinMargin)
+    var ubinBorder by mutableStateOf(ubinBorder)
+    var ubinPadding by mutableStateOf(ubinPadding)
 }
 
 @Stable class UAlignments(horizontal: UAlignmentType = USTART, vertical: UAlignmentType = USTART) {
