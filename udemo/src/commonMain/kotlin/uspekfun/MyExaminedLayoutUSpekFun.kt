@@ -6,7 +6,7 @@ import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.uspek.*
 import pl.mareklangiewicz.uwidgets.*
-import pl.mareklangiewicz.uwidgets.UContainerType.*
+import pl.mareklangiewicz.uwidgets.UBinType.*
 import kotlin.math.*
 
 // TODO_later: use context receiver for UComposeScope

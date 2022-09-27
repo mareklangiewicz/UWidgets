@@ -6,14 +6,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier as Mod
 import androidx.compose.ui.unit.*
 
-@Composable internal actual fun UCoreContainerAct(
-    type: UContainerType,
+@Composable internal actual fun UCoreBinAct(
+    type: UBinType,
     size: DpSize?,
     mod: Mod,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
-) = UCoreContainerImplSki(
+) = UCoreBinImplSki(
     type = type,
     requiredSize = size,
     mod = mod,
@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.*
     content = content
 )
 
-@Composable internal actual fun UBasicContainerAct(type: UContainerType, content: @Composable () -> Unit) =
-    UBasicContainerImplSki(type, content)
+@Composable internal actual fun UBasicBinAct(type: UBinType, content: @Composable () -> Unit) =
+    UBasicBinImplSki(type, content)
 
 @Composable internal actual fun UTextAct(text: String, bold: Boolean, mono: Boolean, maxLines: Int) =
     UTextImplSki(text, bold, mono, maxLines)

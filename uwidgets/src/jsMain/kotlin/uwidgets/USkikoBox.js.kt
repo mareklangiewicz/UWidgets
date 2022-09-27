@@ -14,13 +14,13 @@ import org.jetbrains.skiko.wasm.*
 import androidx.compose.ui.platform.JSTextInputService
 import org.w3c.dom.*
 import pl.mareklangiewicz.udata.*
-import pl.mareklangiewicz.uwidgets.UContainerType.*
+import pl.mareklangiewicz.uwidgets.UBinType.*
 
 // TODO_maybe: copy UAlign composition locals, and other settings to embedded skiko composition
 // (maybe all locals? - see global prop: currentCompositionLocalContext)
 @Composable fun USkikoBoxDom(size: DpSize? = null, content: @Composable () -> Unit) {
     var currentSize by remember { mutableStateOf(DpSize.Zero) }
-    UBasicContainerDom(UBOX,
+    UBasicBinDom(UBOX,
         addStyle = {
             size?.let {
                 width(it.width.value.px)

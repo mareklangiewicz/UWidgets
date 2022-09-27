@@ -14,20 +14,20 @@ import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
-import pl.mareklangiewicz.uwidgets.UContainerType.*
+import pl.mareklangiewicz.uwidgets.UBinType.*
 
-@Composable internal fun UBasicContainerImplDom(type: UContainerType, content: @Composable () -> Unit) =
-    UBasicContainerDom(type) { content() }
+@Composable internal fun UBasicBinImplDom(type: UBinType, content: @Composable () -> Unit) =
+    UBasicBinDom(type) { content() }
 
-@Composable internal fun UCoreContainerImplDom(
-    type: UContainerType,
+@Composable internal fun UCoreBinImplDom(
+    type: UBinType,
     size: DpSize?,
     mod: Mod,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
 ) {
-    // FIXME: refactor (in ski version too); but be careful not to do unnecessary allocations (like UContainerStyle data class or sth..)
+    // FIXME: refactor (in ski version too); but be careful not to do unnecessary allocations (like UBinStyle data class or sth..)
     //  also it would be better to do folding once, but not allocate on recomposition!
     val materialized = currentComposer.materialize(mod)
     val umargin = materialized.foldInExtracted(null, { (it as? UMarginMod)?.margin }) { _, inner -> inner } ?: UTheme.sizes.uboxMargin
@@ -38,7 +38,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     val upadding = materialized.foldInExtracted(null, { (it as? UPaddingMod)?.padding }) { _, inner -> inner } ?: UTheme.sizes.uboxPadding
     val onUClick = materialized.foldInExtractedPushees { (it as? OnUClickMod)?.onUClick }
     val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportMod)?.onUReport }
-    UBasicContainerDom(
+    UBasicBinDom(
         type = type,
         addStyle = {
             size?.let { width(it.width.value.px); height(it.height.value.px) }
@@ -66,16 +66,16 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 var leakyDomReportsEnabled: Boolean = false
 
 /** @param inline false -> div; true -> span (and if type != null: css display: inline-grid instead of grid) */
-@Composable fun UBasicContainerDom(
-    type: UContainerType? = null,
+@Composable fun UBasicBinDom(
+    type: UBinType? = null,
     inline: Boolean = false,
     addStyle: (StyleScope.() -> Unit)? = null,
     addAttrs: (AttrsScope<out HTMLElement>.() -> Unit)? = null,
     onUReport: OnUReport? = null,
     content: @Composable () -> Unit,
 ) {
-    onUReport?.invoke("ucontainer" to type)
-    val parentType = LocalUContainerType.current
+    onUReport?.invoke("ubin" to type)
+    val parentType = LocalUBinType.current
     val horizontal = UTheme.alignments.horizontal
     val vertical = UTheme.alignments.vertical
     val attrs: AttrsScope<out HTMLElement>.() -> Unit = {
@@ -92,18 +92,18 @@ var leakyDomReportsEnabled: Boolean = false
             }
         }
     }
-    CompositionLocalProvider(LocalUContainerType provides type) {
+    CompositionLocalProvider(LocalUBinType provides type) {
         if (inline) Span(attrs) { content() } else Div(attrs) { content() }
     }
 }
 
-private val LocalUContainerType = staticCompositionLocalOf<UContainerType?> { null }
+private val LocalUBinType = staticCompositionLocalOf<UBinType?> { null }
 
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
-// all U*Text has to be wrapped in some of U*Container to make sure all out public text flavors respect UAlign etc.
+// all U*Text has to be wrapped in some of U*Bin to make sure all out public text flavors respect UAlign etc.
 @Composable internal fun UTextImplDom(text: String, bold: Boolean, mono: Boolean, maxLines: Int) =
-    UBasicContainerDom(inline = true, addStyle = {
+    UBasicBinDom(inline = true, addStyle = {
         if (maxLines == 1) property("text-overflow", "clip") // TODO: better support for maxLines > 1 on JS
         if (bold) fontWeight("bold")
         if (mono) fontFamily("monospace")
@@ -112,17 +112,17 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 @Composable internal fun UTabsImplDom(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     UTabsCmn(*tabs, onSelected = onSelected)
 
-private fun StyleScope.ustyleChildFor(parentType: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
+private fun StyleScope.ustyleChildFor(parentType: UBinType, horizontal: UAlignmentType, vertical: UAlignmentType) {
     if (parentType == UBOX) ugridChildFor(parentType, horizontal, vertical)
     else uflexChildFor(parentType, horizontal, vertical)
 }
 
-private fun StyleScope.ustyleFor(type: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType, inline: Boolean = false) {
+private fun StyleScope.ustyleFor(type: UBinType, horizontal: UAlignmentType, vertical: UAlignmentType, inline: Boolean = false) {
     if (type == UBOX) ugridFor(type, horizontal, vertical, inline)
     else uflexFor(type, horizontal, vertical, inline)
 }
 
-private fun StyleScope.ugridChildFor(parentType: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
+private fun StyleScope.ugridChildFor(parentType: UBinType, horizontal: UAlignmentType, vertical: UAlignmentType) {
     if (parentType == UBOX || parentType == UROW) gridRow("UROW")
     if (parentType == UBOX || parentType == UCOLUMN) gridColumn("UCOLUMN")
     justifySelf(horizontal.css)
@@ -131,7 +131,7 @@ private fun StyleScope.ugridChildFor(parentType: UContainerType, horizontal: UAl
     // We can then just additionally wrap these children in UAlign(..) { .. }
 }
 
-private fun StyleScope.ugridFor(type: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType, inline: Boolean = false) {
+private fun StyleScope.ugridFor(type: UBinType, horizontal: UAlignmentType, vertical: UAlignmentType, inline: Boolean = false) {
     display(if (inline) DisplayStyle.LegacyInlineGrid else DisplayStyle.Grid)
     horizontal.css.let {
         justifyContent(JustifyContent(it))
@@ -145,7 +145,7 @@ private fun StyleScope.ugridFor(type: UContainerType, horizontal: UAlignmentType
     if (type == UBOX || type == UCOLUMN) gridTemplateColumns("[UCOLUMN] auto")
 }
 
-private fun StyleScope.uflexChildFor(parentType: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType) {
+private fun StyleScope.uflexChildFor(parentType: UBinType, horizontal: UAlignmentType, vertical: UAlignmentType) {
     when (parentType) {
         UBOX -> error("flex uboxes are not supported")
         UCOLUMN -> {
@@ -161,7 +161,7 @@ private fun StyleScope.uflexChildFor(parentType: UContainerType, horizontal: UAl
 
 }
 
-private fun StyleScope.uflexFor(type: UContainerType, horizontal: UAlignmentType, vertical: UAlignmentType, inline: Boolean = false) {
+private fun StyleScope.uflexFor(type: UBinType, horizontal: UAlignmentType, vertical: UAlignmentType, inline: Boolean = false) {
     display(if (inline) DisplayStyle.LegacyInlineFlex else DisplayStyle.Flex)
     if (type == UCOLUMN) flexDirection(FlexDirection.Column)
     flexWrap(FlexWrap.Nowrap)

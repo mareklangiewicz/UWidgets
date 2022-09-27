@@ -11,9 +11,9 @@ import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
-import pl.mareklangiewicz.uwidgets.UContainerType.*
+import pl.mareklangiewicz.uwidgets.UBinType.*
 
-enum class UContainerType { UBOX, UROW, UCOLUMN }
+enum class UBinType { UBOX, UROW, UCOLUMN }
 
 enum class UAlignmentType(val css: String) {
     USTART("start"), UEND("end"), UCENTER("center"), USTRETCH("stretch");
@@ -26,8 +26,8 @@ enum class UAlignmentType(val css: String) {
 fun Color.lighten(fraction: Float = 0.1f) = lerp(this, Color.White, fraction.coerceIn(0f, 1f))
 fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coerceIn(0f, 1f))
 
-@Composable fun UContainer(
-    type: UContainerType,
+@Composable fun UBin(
+    type: UBinType,
     size: DpSize? = null, // TODO NOW: use normal mods for size in common too
     mod: Mod = Mod,
     selected: Boolean = false, // TODO NOW: also mods?
@@ -38,7 +38,7 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 ) {
     val childrenMod = LocalUChildrenMod.current
     @Suppress("RemoveRedundantQualifierName") // IDE issue
-    UCoreContainer(
+    UCoreBin(
         type = type,
         size = size,
         mod = if (childrenMod == null) mod else Mod.childrenMod().then(mod),
@@ -138,7 +138,7 @@ inline fun <reified T> Mod.foldInExtractedPushees(
 
 
 /**
- * Warning: It will add these mods to ALL children UContainers.
+ * Warning: It will add these mods to ALL children UBins.
  * (but not indirect descendants because each child clears it for own subtree when using it)
  * Also not consumed UChildrenMod is chained if another UChildrenMod is nested inside.
  * @see UChildrenComposedMod
@@ -167,15 +167,15 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UContainer(UBOX, size, mod, selected, withHorizontalScroll, withVerticalScroll, content)
+) = UBin(UBOX, size, mod, selected, withHorizontalScroll, withVerticalScroll, content)
 
 @Composable fun UBoxEnabledIf(enabled: Boolean, content: @Composable () -> Unit) = UBox {
     content()
-    if (!enabled) UAllStretch { UCoreContainer(UBOX, mod = Mod.ustyleBlank(
+    if (!enabled) UAllStretch { UCoreBin(UBOX, mod = Mod.ustyleBlank(
         backgroundColor = UTheme.colors.uboxBackground.copy(alpha = .4f)
     )) {} }
 }
-// FIXME_later: think more about how to visually disable container (another color in theme for overlay?)
+// FIXME_later: think more about how to visually disable bin (another color in theme for overlay?)
 
 @Composable fun UColumn(
     size: DpSize? = null,
@@ -184,7 +184,7 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UContainer(UCOLUMN, size, mod, selected, withHorizontalScroll, withVerticalScroll, content)
+) = UBin(UCOLUMN, size, mod, selected, withHorizontalScroll, withVerticalScroll, content)
 
 @Composable fun URow(
     size: DpSize? = null,
@@ -193,13 +193,13 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UContainer(UROW, size, mod, selected, withHorizontalScroll, withVerticalScroll, content)
+) = UBin(UROW, size, mod, selected, withHorizontalScroll, withVerticalScroll, content)
 
 @Composable fun UBoxedText(text: String, mod: Mod = Mod, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) = UBox(mod = mod) {
     UAlign(
         if (center) UCENTER else UTheme.alignments.horizontal,
         if (center) UCENTER else UTheme.alignments.vertical,
-    ) { UText(text, bold, mono) } // UText uses another UBasicContainer(BOX). It's intentional. (to make sure all U*Text respect UAlign etc)
+    ) { UText(text, bold, mono) } // UText uses another UBasicBin(BOX). It's intentional. (to make sure all U*Text respect UAlign etc)
 }
 
 // Renaming tab -> _ breaks layout inspector in AS!!
@@ -269,9 +269,9 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     UAllCenter {
         URow {
             UText(min.ustr, bold = bold, mono = true)
-            UCoreContainer(UBOX, mod = Mod.ustyleBlank(backgroundColor = Color.Blue, padding = 2.dp), size = DpSize(w1.dp, 4.dp)) {}
+            UCoreBin(UBOX, mod = Mod.ustyleBlank(backgroundColor = Color.Blue, padding = 2.dp), size = DpSize(w1.dp, 4.dp)) {}
             UText(pos.ustr, bold = bold, mono = true)
-            UCoreContainer(UBOX, mod = Mod.ustyleBlank(backgroundColor = Color.White, padding = 2.dp), size = DpSize(w2.dp, 4.dp)) {}
+            UCoreBin(UBOX, mod = Mod.ustyleBlank(backgroundColor = Color.White, padding = 2.dp), size = DpSize(w2.dp, 4.dp)) {}
             UText(max.ustr, bold = bold, mono = true)
         }
     }

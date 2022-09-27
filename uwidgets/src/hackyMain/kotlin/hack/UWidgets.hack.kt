@@ -6,8 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 
-@Composable fun UCoreContainer(
-    type: UContainerType,
+@Composable fun UCoreBin(
+    type: UBinType,
     size: DpSize? = null,
     margin: Dp = 0.dp,
     contentColor: Color = Color.Black,
@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.*
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UCoreContainerImplSki(
+) = UCoreBinImplSki(
     type = type,
     requiredSize = size,
     margin = margin,
@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.*
     content = content
 )
 
-@Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) =
-    UBasicContainerImplSki(type, content)
+@Composable fun UBasicBin(type: UBinType, content: @Composable () -> Unit) =
+    UBasicBinImplSki(type, content)
 
 @Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) =
     UTextImplSki(text, bold, mono, maxLines)

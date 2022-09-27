@@ -6,8 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier as Mod
 import androidx.compose.ui.unit.*
 
-@Composable internal expect fun UCoreContainerAct(
-    type: UContainerType,
+@Composable internal expect fun UCoreBinAct(
+    type: UBinType,
     // FIXME NOW: use mods for size/width/height/min/max?
     size: DpSize?,
     mod: Mod,
@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.*
     content: @Composable () -> Unit,
 )
 
-@Composable internal expect fun UBasicContainerAct(type: UContainerType, content: @Composable () -> Unit)
+@Composable internal expect fun UBasicBinAct(type: UBinType, content: @Composable () -> Unit)
 
 @Composable internal expect fun UTextAct(text: String, bold: Boolean, mono: Boolean, maxLines: Int)
 
@@ -26,14 +26,14 @@ import androidx.compose.ui.unit.*
 @Composable internal expect fun USkikoBoxAct(size: DpSize? = null, content: @Composable () -> Unit)
 
 
-@Composable fun UCoreContainer(
-    type: UContainerType,
+@Composable fun UCoreBin(
+    type: UBinType,
     size: DpSize? = null,
     mod: Mod = Mod,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UCoreContainerAct(
+) = UCoreBinAct(
     type = type,
     size = size,
     mod = mod,
@@ -42,8 +42,8 @@ import androidx.compose.ui.unit.*
     content = content
 )
 
-@Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) =
-    UBasicContainerAct(type, content)
+@Composable fun UBasicBin(type: UBinType, content: @Composable () -> Unit) =
+    UBasicBinAct(type, content)
 
 // FIXME_NOW: it also probably should take mod..
 @Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) =

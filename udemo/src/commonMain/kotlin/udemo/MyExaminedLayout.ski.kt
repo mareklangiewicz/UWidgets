@@ -16,10 +16,10 @@ import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
-import pl.mareklangiewicz.uwidgets.UContainerType.*
+import pl.mareklangiewicz.uwidgets.UBinType.*
 
 
-@Composable fun MyExaminedLayoutPlayground(type: UContainerType = UBOX) {
+@Composable fun MyExaminedLayoutPlayground(type: UBinType = UBOX) {
 
     val ureports = rememberUReports { ulogw("rspek ${it.ustr}") } // rspek so I can filter logs with uspek/rspek/spek
 
@@ -37,7 +37,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 }
 
 @Composable fun MyExaminedLayout(
-    type: UContainerType = UBOX,
+    type: UBinType = UBOX,
     size: DpSize = 400.dp.square,
     withSon1Cyan: Boolean = false,
     withSon2Red: Boolean = false,
@@ -55,7 +55,7 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 
 // sets up rigid/required/fixed constraints for children, so it's easier to reason about content
 @Composable fun RigidFather(
-    type: UContainerType = UBOX,
+    type: UBinType = UBOX,
     size: DpSize = 400.dp.square,
     onUReport: OnUReport? = null,
     content: @Composable () -> Unit,
@@ -66,9 +66,9 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         .border(4.dp, Color.Blue)
         .padding(4.dp)
         .requiredSize(size)
-    // FIXME NOW: use high level container (in sons too, then hide some lowlevel Basic/Raw..stuff)
+    // FIXME NOW: use high level bin (in sons too, then hide some lowlevel Basic/Raw..stuff)
     //  Then I can try to use UDebug in MyExaminedLayout
-    UBasicContainerSki(type, m, onUReport?.withKeyPrefix("rigid father "), content)
+    UBasicBinSki(type, m, onUReport?.withKeyPrefix("rigid father "), content)
 }
 
 @Composable fun ColoredSon(
@@ -82,14 +82,14 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
         .andIfNotNull(onUReport) { reportMeasuringAndPlacement(it.withKeyPrefix("$tag outer ")) }
         .background(color.copy(alpha = color.alpha * .8f), RoundedCornerShape(4.dp))
         .run { if (sizeRequired) requiredSize(size) else size(size) }
-    UBasicContainerSki(UBOX, m, onUReport?.withKeyPrefix("$tag inner "))
+    UBasicBinSki(UBOX, m, onUReport?.withKeyPrefix("$tag inner "))
 }
 
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable fun MyAnimatedContentPlayground() {
     val type by produceState(initialValue = UBOX) {
-        val types = UContainerType.values()
+        val types = UBinType.values()
         for (i in 1..200) {
             delay(2000)
             value = types[i % 3]

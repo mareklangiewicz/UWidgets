@@ -16,16 +16,16 @@ import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
-import pl.mareklangiewicz.uwidgets.UContainerType.*
+import pl.mareklangiewicz.uwidgets.UBinType.*
 import pl.mareklangiewicz.uwidgets.UScrollerType.*
 
 enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
 
-@Composable internal fun UBasicContainerImplSki(type: UContainerType, content: @Composable () -> Unit) =
-    UBasicContainerSki(type, content = content)
+@Composable internal fun UBasicBinImplSki(type: UBinType, content: @Composable () -> Unit) =
+    UBasicBinSki(type, content = content)
 
-@Composable internal fun UCoreContainerImplSki(
-    type: UContainerType,
+@Composable internal fun UCoreBinImplSki(
+    type: UBinType,
     requiredSize: DpSize?,
     mod: Mod,
     withHorizontalScroll: Boolean,
@@ -44,7 +44,7 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
     val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportMod)?.onUReport }
     val hScrollS = if (withHorizontalScroll) rememberScrollState() else null
     val vScrollS = if (withVerticalScroll) rememberScrollState() else null
-    UBasicContainerSki(
+    UBasicBinSki(
         type = type,
         mod = materialized
             .padding(umargin)
@@ -88,8 +88,8 @@ inline fun Mod.andIf(condition: Boolean, add: Mod.() -> Mod): Mod =
 inline fun <V : Any> Mod.andIfNotNull(value: V?, add: Mod.(V) -> Mod): Mod =
     if (value != null) add(value) else this
 
-@Composable fun UBasicContainerSki(
-    type: UContainerType,
+@Composable fun UBasicBinSki(
+    type: UBinType,
     mod: Mod = Mod,
     onUReport: OnUReport? = null,
     content: @Composable () -> Unit = {},
@@ -173,7 +173,7 @@ inline fun <V : Any> Mod.andIfNotNull(value: V?, add: Mod.(V) -> Mod): Mod =
             }
 
             // FIXME NOW: fix strategy for measuring stretched elements in cross-axis (for both UROW and UCOLUMN).
-            // so they don't get smaller than max of wrapped children size (especially when container is unbounded)
+            // so they don't get smaller than max of wrapped children size (especially when bin is unbounded)
             // (see last commit for UBOX)
             UROW -> {
                 val placeables = mutableListOfNulls<Placeable?>(measurables.size)
@@ -402,13 +402,13 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
     UEND -> parentSize - childSize
 }
 
-// all U*Text has to be wrapped in some of U*Container to make sure all out public text flavors respect UAlign etc.
+// all U*Text has to be wrapped in some of U*Bin to make sure all out public text flavors respect UAlign etc.
 @Composable internal fun UTextImplSki(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) {
     val style = LocalTextStyle.current.copy(
         fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
         fontFamily = if (mono) FontFamily.Monospace else FontFamily.Default
     )
-    UBasicContainerSki(UBOX) { Text(text, maxLines = maxLines, style = style) }
+    UBasicBinSki(UBOX) { Text(text, maxLines = maxLines, style = style) }
 }
 
 @Composable internal fun UTabsImplSki(vararg tabs: String, useM3TabRow: Boolean = false, onSelected: (index: Int, tab: String) -> Unit) {
@@ -434,4 +434,4 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
 
 /** No need to start new compose window - we are already in skiko based composition */
 @Composable internal fun UFakeSkikoBoxImplSki(size: DpSize? = null, content: @Composable () -> Unit) =
-    UBasicContainerSki(UBOX, Mod.andIfNotNull(size) { requiredSize(it) }, content = content)
+    UBasicBinSki(UBOX, Mod.andIfNotNull(size) { requiredSize(it) }, content = content)
