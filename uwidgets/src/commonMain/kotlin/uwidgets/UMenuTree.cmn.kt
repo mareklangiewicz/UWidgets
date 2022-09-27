@@ -24,7 +24,7 @@ fun UMenuTree(tree: UCallbackTree, dispatcher: CoroutineDispatcher) {
     when {
         subt.isEmpty() -> UBoxedText(
             text = tree.label!!,
-            modifier = Mod.onUClick { scope.launch(dispatcher) { tree.callback?.invoke() } },
+            mod = Mod.onUClick { scope.launch(dispatcher) { tree.callback?.invoke() } },
             mono = true
         )
         else -> UColumn {

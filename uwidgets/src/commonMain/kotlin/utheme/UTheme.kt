@@ -55,21 +55,21 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
 @Composable fun UAllStartRow(
     size: DpSize? = null,
-    modifier: Mod = Mod,
+    mod: Mod = Mod,
     selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UAllStart { URow(size, modifier, selected, withHorizontalScroll, withVerticalScroll, content) }
+) = UAllStart { URow(size, mod, selected, withHorizontalScroll, withVerticalScroll, content) }
 
 @Composable fun UAllStartColumn(
     size: DpSize? = null,
-    modifier: Mod = Mod,
+    mod: Mod = Mod,
     selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UAllStart { UColumn(size, modifier, selected, withHorizontalScroll, withVerticalScroll, content) }
+) = UAllStart { UColumn(size, mod, selected, withHorizontalScroll, withVerticalScroll, content) }
 
 object UTheme {
 

@@ -13,10 +13,10 @@ import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
 
 // TODO_later: move it to "more common" code using other uwidgets, so it can be used with DOM "backend" too
-@Composable fun UReportsUi(reports: UReports, modifier: Mod = Mod, reversed: Boolean = false) {
+@Composable fun UReportsUi(reports: UReports, mod: Mod = Mod, reversed: Boolean = false) {
     CompositionLocalProvider(LocalDensity provides Density(1f)) {
         val vScrollS = rememberScrollState()
-        Column(modifier.verticalScroll(UScrollerType.UBASIC, vScrollS)) {
+        Column(mod.verticalScroll(UScrollerType.UBASIC, vScrollS)) {
             val range = 0 until reports.size
             for (idx in if (reversed) range.reversed() else range) {
                 val entry = reports[idx]

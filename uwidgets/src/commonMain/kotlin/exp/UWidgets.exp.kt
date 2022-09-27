@@ -8,10 +8,10 @@ import androidx.compose.ui.unit.*
 
 @Composable internal expect fun UCoreContainerAct(
     type: UContainerType,
-    // FIXME NOW: use modifiers for size/width/height/min/max?
+    // FIXME NOW: use mods for size/width/height/min/max?
     size: DpSize?,
-    modifier: Mod,
-    // FIXME NOW: use modifiers for scrolling
+    mod: Mod,
+    // FIXME NOW: use mods for scrolling
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
@@ -29,14 +29,14 @@ import androidx.compose.ui.unit.*
 @Composable fun UCoreContainer(
     type: UContainerType,
     size: DpSize? = null,
-    modifier: Mod = Mod,
+    mod: Mod = Mod,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
 ) = UCoreContainerAct(
     type = type,
     size = size,
-    modifier = modifier,
+    mod = mod,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,
     content = content
@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.*
 @Composable fun UBasicContainer(type: UContainerType, content: @Composable () -> Unit) =
     UBasicContainerAct(type, content)
 
-// FIXME_NOW: it also probably should take modifier..
+// FIXME_NOW: it also probably should take mod..
 @Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) =
     UTextAct(text, bold, mono, maxLines)
 

@@ -22,14 +22,14 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
 @Composable internal fun UCoreContainerImplDom(
     type: UContainerType,
     size: DpSize?,
-    modifier: Mod,
+    mod: Mod,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
 ) {
     // FIXME: refactor (in ski version too); but be careful not to do unnecessary allocations (like UContainerStyle data class or sth..)
     //  also it would be better to do folding once, but not allocate on recomposition!
-    val materialized = currentComposer.materialize(modifier)
+    val materialized = currentComposer.materialize(mod)
     val umargin = materialized.foldInExtracted(null, { (it as? UMarginMod)?.margin }) { _, inner -> inner } ?: UTheme.sizes.uboxMargin
     val ucontentColor = materialized.foldInExtracted(null, { (it as? UContentColorMod)?.contentColor }) { _, inner -> inner } ?: UTheme.colors.uboxContent
     val ubackgroundColor = materialized.foldInExtracted(null, { (it as? UBackgroundColorMod)?.backgroundColor }) { _, inner -> inner } ?: UTheme.colors.uboxBackground

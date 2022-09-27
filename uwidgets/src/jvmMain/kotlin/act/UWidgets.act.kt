@@ -9,14 +9,14 @@ import androidx.compose.ui.unit.*
 @Composable internal actual fun UCoreContainerAct(
     type: UContainerType,
     size: DpSize?,
-    modifier: Mod,
+    mod: Mod,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
 ) = UCoreContainerImplSki(
     type = type,
     requiredSize = size,
-    modifier = modifier,
+    mod = mod,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,
     content = content

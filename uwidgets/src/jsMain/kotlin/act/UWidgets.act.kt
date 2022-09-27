@@ -10,21 +10,21 @@ import pl.mareklangiewicz.usystem.*
 @Composable internal actual fun UCoreContainerAct(
     type: UContainerType,
     size: DpSize?,
-    modifier: Mod,
+    mod: Mod,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
 ) = if (currentCompositionIsDom) UCoreContainerImplDom(
     type = type,
     size = size,
-    modifier = modifier,
+    mod = mod,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,
     content = content
 ) else UCoreContainerImplSki(
     type = type,
     requiredSize = size,
-    modifier = modifier,
+    mod = mod,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,
     content = content

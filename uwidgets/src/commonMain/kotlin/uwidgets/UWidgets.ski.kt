@@ -27,13 +27,13 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
 @Composable internal fun UCoreContainerImplSki(
     type: UContainerType,
     requiredSize: DpSize?,
-    modifier: Mod,
+    mod: Mod,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
 ) {
     // TODO_later: make sure .materialize here is ok (Layout does it internally again later)
-    val materialized = currentComposer.materialize(modifier)
+    val materialized = currentComposer.materialize(mod)
     val umargin = materialized.foldInExtracted(null, { (it as? UMarginMod)?.margin }) { _, inner -> inner } ?: UTheme.sizes.uboxMargin
     val ucontentColor = materialized.foldInExtracted(null, { (it as? UContentColorMod)?.contentColor }) { _, inner -> inner } ?: UTheme.colors.uboxContent
     val ubackgroundColor = materialized.foldInExtracted(null, { (it as? UBackgroundColorMod)?.backgroundColor }) { _, inner -> inner } ?: UTheme.colors.uboxBackground
@@ -46,7 +46,7 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
     val vScrollS = if (withVerticalScroll) rememberScrollState() else null
     UBasicContainerSki(
         type = type,
-        modifier = materialized
+        mod = materialized
             .padding(umargin)
             .andIfNotNull(onUClick) { clickable { it(Unit) } }
             .andIfNotNull(requiredSize) { requiredSize(it) }
@@ -90,14 +90,14 @@ inline fun <V : Any> Mod.andIfNotNull(value: V?, add: Mod.(V) -> Mod): Mod =
 
 @Composable fun UBasicContainerSki(
     type: UContainerType,
-    modifier: Mod = Mod,
+    mod: Mod = Mod,
     onUReport: OnUReport? = null,
     content: @Composable () -> Unit = {},
 ) {
     onUReport?.invoke("compose" to type)
     val phorizontal = UTheme.alignments.horizontal
     val pvertical = UTheme.alignments.vertical
-    val m = modifier.ualign(phorizontal, pvertical)
+    val m = mod.ualign(phorizontal, pvertical)
     Layout(content = content, modifier = m) { measurables, parentConstraints ->
         onUReport?.invoke("measure in" to parentConstraints)
         var maxChildWidth = 0
