@@ -4,20 +4,14 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 
 @Composable internal expect fun UCoreContainerAct(
     type: UContainerType,
+    // FIXME NOW: use modifiers for size/width/height/min/max?
     size: DpSize?,
     modifier: Modifier,
-    // TODO NOW: use modifiers for all style related stuff already in common code.
-    margin: Dp,
-    contentColor: Color,
-    backgroundColor: Color,
-    borderColor: Color,
-    borderWidth: Dp,
-    padding: Dp,
+    // FIXME NOW: use modifiers for scrolling
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
@@ -36,12 +30,6 @@ import androidx.compose.ui.unit.*
     type: UContainerType,
     size: DpSize? = null,
     modifier: Modifier = Modifier,
-    margin: Dp = 0.dp,
-    contentColor: Color = Color.Black,
-    backgroundColor: Color = Color.Transparent,
-    borderColor: Color = Color.Transparent,
-    borderWidth: Dp = 0.dp,
-    padding: Dp = 0.dp,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
@@ -49,12 +37,6 @@ import androidx.compose.ui.unit.*
     type = type,
     size = size,
     modifier = modifier,
-    margin = margin,
-    contentColor = contentColor,
-    backgroundColor = backgroundColor,
-    borderColor = borderColor,
-    borderWidth = borderWidth,
-    padding = padding,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,
     content = content

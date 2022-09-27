@@ -27,18 +27,18 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
     type: UContainerType,
     requiredSize: DpSize?,
     modifier: Modifier,
-    margin: Dp,
-    contentColor: Color,
-    backgroundColor: Color,
-    borderColor: Color,
-    borderWidth: Dp,
-    padding: Dp,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
 ) {
     // TODO_later: make sure .materialize here is ok (Layout does it internally again later)
     val materialized = currentComposer.materialize(modifier)
+    val umargin = materialized.foldInExtracted(null, { (it as? UMarginMod)?.margin }) { _, inner -> inner } ?: UTheme.sizes.uboxMargin
+    val ucontentColor = materialized.foldInExtracted(null, { (it as? UContentColorMod)?.contentColor }) { _, inner -> inner } ?: UTheme.colors.uboxContent
+    val ubackgroundColor = materialized.foldInExtracted(null, { (it as? UBackgroundColorMod)?.backgroundColor }) { _, inner -> inner } ?: UTheme.colors.uboxBackground
+    val uborderColor = materialized.foldInExtracted(null, { (it as? UBorderColorMod)?.borderColor }) { _, inner -> inner } ?: UTheme.colors.uboxBorder(/*FIXME*/)
+    val uborderWidth = materialized.foldInExtracted(null, { (it as? UBorderWidthMod)?.borderWidth }) { _, inner -> inner } ?: UTheme.sizes.uboxBorder
+    val upadding = materialized.foldInExtracted(null, { (it as? UPaddingMod)?.padding }) { _, inner -> inner } ?: UTheme.sizes.uboxPadding
     val onUClick = materialized.foldInExtractedPushees { (it as? OnUClickModifier)?.onUClick }
     val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportModifier)?.onUReport }
     val hScrollS = if (withHorizontalScroll) rememberScrollState() else null
@@ -46,16 +46,16 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
     UBasicContainerSki(
         type = type,
         modifier = materialized
-            .padding(margin)
+            .padding(umargin)
             .andIfNotNull(onUClick) { clickable { it(Unit) } }
             .andIfNotNull(requiredSize) { requiredSize(it) }
-            .background(backgroundColor)
-            .border(borderWidth, borderColor)
-            .padding(borderWidth + padding)
+            .background(ubackgroundColor)
+            .border(uborderWidth, uborderColor)
+            .padding(uborderWidth + upadding)
             .andIfNotNull(hScrollS) { horizontalScroll(UBASIC, it) }
             .andIfNotNull(vScrollS) { verticalScroll(UBASIC, it) },
         onUReport = onUReport,
-    ) { CompositionLocalProvider(LocalContentColor provides contentColor) { content() } }
+    ) { CompositionLocalProvider(LocalContentColor provides ucontentColor) { content() } }
 }
 
 

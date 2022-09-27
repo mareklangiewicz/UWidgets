@@ -23,28 +23,30 @@ import pl.mareklangiewicz.uwidgets.UContainerType.*
     type: UContainerType,
     size: DpSize?,
     modifier: Modifier,
-    margin: Dp,
-    contentColor: Color,
-    backgroundColor: Color,
-    borderColor: Color,
-    borderWidth: Dp,
-    padding: Dp,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
 ) {
+    // FIXME: refactor (in ski version too); but be careful not to do unnecessary allocations (like UContainerStyle data class or sth..)
+    //  also it would be better to do folding once, but not allocate on recomposition!
     val materialized = currentComposer.materialize(modifier)
+    val umargin = materialized.foldInExtracted(null, { (it as? UMarginMod)?.margin }) { _, inner -> inner } ?: UTheme.sizes.uboxMargin
+    val ucontentColor = materialized.foldInExtracted(null, { (it as? UContentColorMod)?.contentColor }) { _, inner -> inner } ?: UTheme.colors.uboxContent
+    val ubackgroundColor = materialized.foldInExtracted(null, { (it as? UBackgroundColorMod)?.backgroundColor }) { _, inner -> inner } ?: UTheme.colors.uboxBackground
+    val uborderColor = materialized.foldInExtracted(null, { (it as? UBorderColorMod)?.borderColor }) { _, inner -> inner } ?: UTheme.colors.uboxBorder(/*FIXME*/)
+    val uborderWidth = materialized.foldInExtracted(null, { (it as? UBorderWidthMod)?.borderWidth }) { _, inner -> inner } ?: UTheme.sizes.uboxBorder
+    val upadding = materialized.foldInExtracted(null, { (it as? UPaddingMod)?.padding }) { _, inner -> inner } ?: UTheme.sizes.uboxPadding
     val onUClick = materialized.foldInExtractedPushees { (it as? OnUClickModifier)?.onUClick }
     val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportModifier)?.onUReport }
     UBasicContainerDom(
         type = type,
         addStyle = {
             size?.let { width(it.width.value.px); height(it.height.value.px) }
-            color(contentColor.cssRgba)
-            margin(margin.value.px)
-            backgroundColor(backgroundColor.cssRgba)
-            border(borderWidth.value.px, LineStyle.Solid, borderColor.cssRgba) // in css .px is kinda .dp
-            padding(padding.value.px)
+            color(ucontentColor.cssRgba)
+            margin(umargin.value.px)
+            backgroundColor(ubackgroundColor.cssRgba)
+            border(uborderWidth.value.px, LineStyle.Solid, uborderColor.cssRgba) // in css .px is kinda .dp
+            padding(upadding.value.px)
             overflowX(if (withHorizontalScroll) "auto" else "clip") // TODO later: make sure we clip the similarly on both platforms
             overflowY(if (withVerticalScroll) "auto" else "clip")
         },

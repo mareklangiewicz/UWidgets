@@ -36,18 +36,12 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    val umodifier = LocalUChildrenModifier.current
+    val childrenModifier = LocalUChildrenModifier.current
     @Suppress("RemoveRedundantQualifierName") // IDE issue
     UCoreContainer(
         type = type,
         size = size,
-        modifier = if (umodifier == null) modifier else Modifier.umodifier().then(modifier),
-        margin = UTheme.sizes.uboxMargin,
-        contentColor = UTheme.colors.uboxContent,
-        backgroundColor = UTheme.colors.uboxBackground,
-        borderColor = UTheme.colors.uboxBorder(selected = selected, clickable = false/* FIXME: onClick != null */),
-        borderWidth = UTheme.sizes.uboxBorder,
-        padding = UTheme.sizes.uboxPadding,
+        modifier = if (childrenModifier == null) modifier else Modifier.childrenModifier().then(modifier),
         withHorizontalScroll = withHorizontalScroll,
         withVerticalScroll = withVerticalScroll,
     ) { UDepth {
@@ -55,8 +49,69 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
     } }
 }
 
-class OnUClickModifier(val onUClick: OnUClick?): Element
-class OnUReportModifier(val onUReport: OnUReport?): Element
+internal class UMarginMod(val margin: Dp): Element
+internal class UContentColorMod(val contentColor: Color): Element
+internal class UBackgroundColorMod(val backgroundColor: Color): Element
+internal class UBorderColorMod(val borderColor: Color): Element
+internal class UBorderWidthMod(val borderWidth: Dp): Element
+internal class UPaddingMod(val padding: Dp): Element
+internal class OnUClickModifier(val onUClick: OnUClick?): Element
+internal class OnUReportModifier(val onUReport: OnUReport?): Element
+
+fun Modifier.umargin(margin: Dp) = then(UMarginMod(margin))
+fun Modifier.ucontentColor(contentColor: Color) = then(UContentColorMod(contentColor))
+fun Modifier.ubackgroundColor(backgroundColor: Color) = then(UBackgroundColorMod(backgroundColor))
+fun Modifier.uborderColor(borderColor: Color) = then(UBorderColorMod(borderColor))
+fun Modifier.uborderWidth(borderWidth: Dp) = then(UBorderWidthMod(borderWidth))
+fun Modifier.upadding(padding: Dp) = then(UPaddingMod(padding))
+
+@Composable fun Modifier.ucolors(
+    contentColor: Color = UTheme.colors.uboxContent,
+    backgroundColor: Color = UTheme.colors.uboxBackground,
+    borderColor: Color = UTheme.colors.uboxBorder(/*FIXME*/),
+) = ucontentColor(contentColor).ubackgroundColor(backgroundColor).uborderColor(borderColor)
+
+@Composable fun Modifier.uborder(
+    borderColor: Color = UTheme.colors.uboxBorder(/*FIXME*/),
+    borderWidth: Dp = UTheme.sizes.uboxBorder,
+) = uborderColor(borderColor).uborderWidth(borderWidth)
+
+@Composable fun Modifier.ustyle(
+    margin: Dp = UTheme.sizes.uboxMargin,
+    contentColor: Color = UTheme.colors.uboxContent,
+    backgroundColor: Color = UTheme.colors.uboxBackground,
+    borderColor: Color = UTheme.colors.uboxBorder(/*FIXME*/),
+) = ucontentColor(contentColor).ubackgroundColor(backgroundColor).uborderColor(borderColor)
+
+@Composable fun Modifier.ustyle(
+    margin: Dp = UTheme.sizes.uboxMargin,
+    contentColor: Color = UTheme.colors.uboxContent,
+    backgroundColor: Color = UTheme.colors.uboxBackground,
+    borderColor: Color = UTheme.colors.uboxBorder(/*FIXME*/),
+    borderWidth: Dp = UTheme.sizes.uboxBorder,
+    padding: Dp = UTheme.sizes.uboxPadding,
+) = this
+    .umargin(margin)
+    .ucontentColor(contentColor)
+    .ubackgroundColor(backgroundColor)
+    .uborderColor(borderColor)
+    .uborderWidth(borderWidth)
+    .upadding(padding)
+
+fun Modifier.ustyleBlank(
+    margin: Dp = 0.dp,
+    contentColor: Color = Color.Black,
+    backgroundColor: Color = Color.Transparent,
+    borderColor: Color = Color.Transparent,
+    borderWidth: Dp = 0.dp,
+    padding: Dp = 0.dp,
+) = this
+    .umargin(margin)
+    .ucontentColor(contentColor)
+    .ubackgroundColor(backgroundColor)
+    .uborderColor(borderColor)
+    .uborderWidth(borderWidth)
+    .upadding(padding)
 
 /** Non-null modifiers are accumulated (all are called in outside in order); null are ignored */
 fun Modifier.onUClick(onUClick: OnUClick?) = then(OnUClickModifier(onUClick))
@@ -116,9 +171,9 @@ private val LocalUChildrenModifier = staticCompositionLocalOf<(Modifier.() -> Mo
 
 @Composable fun UBoxEnabledIf(enabled: Boolean, content: @Composable () -> Unit) = UBox {
     content()
-    if (!enabled) UAllStretch {
-        UCoreContainer(UBOX, backgroundColor = UTheme.colors.uboxBackground.copy(alpha = .4f)) {}
-    }
+    if (!enabled) UAllStretch { UCoreContainer(UBOX, modifier = Modifier.ustyleBlank(
+        backgroundColor = UTheme.colors.uboxBackground.copy(alpha = .4f)
+    )) {} }
 }
 // FIXME_later: think more about how to visually disable container (another color in theme for overlay?)
 
@@ -214,9 +269,9 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     UAllCenter {
         URow {
             UText(min.ustr, bold = bold, mono = true)
-            UCoreContainer(UBOX, size = DpSize(w1.dp, 4.dp), backgroundColor = Color.Blue, padding = 2.dp) {}
+            UCoreContainer(UBOX, modifier = Modifier.ustyleBlank(backgroundColor = Color.Blue, padding = 2.dp), size = DpSize(w1.dp, 4.dp)) {}
             UText(pos.ustr, bold = bold, mono = true)
-            UCoreContainer(UBOX, size = DpSize(w2.dp, 4.dp), backgroundColor = Color.White, padding = 2.dp) {}
+            UCoreContainer(UBOX, modifier = Modifier.ustyleBlank(backgroundColor = Color.White, padding = 2.dp), size = DpSize(w2.dp, 4.dp)) {}
             UText(max.ustr, bold = bold, mono = true)
         }
     }
