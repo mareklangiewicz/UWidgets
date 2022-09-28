@@ -21,8 +21,7 @@ import androidx.compose.ui.Modifier as Mod
 
 @Composable internal fun UCoreBinImplDom(
     type: UBinType,
-    size: DpSize?,
-    mod: Mod,
+    mod: Mod = Mod,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
@@ -38,7 +37,8 @@ import androidx.compose.ui.Modifier as Mod
     UBasicBinDom(
         type = type,
         addStyle = {
-            size?.let { width(it.width.value.px); height(it.height.value.px) }
+            conf.width?.let { width(it.value.px) }
+            conf.height?.let { height(it.value.px) }
             color(ucontentColor.cssRgba)
             margin(umargin.value.px)
             backgroundColor(ubackgroundColor.cssRgba)

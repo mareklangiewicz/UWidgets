@@ -19,15 +19,12 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
 import pl.mareklangiewicz.uwidgets.UScrollerType.*
 import androidx.compose.ui.Modifier as Mod
 
-enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
-
 @Composable internal fun UBasicBinImplSki(type: UBinType, content: @Composable () -> Unit) =
     UBasicBinSki(type, content = content)
 
 @Composable internal fun UCoreBinImplSki(
     type: UBinType,
-    requiredSize: DpSize?,
-    mod: Mod,
+    mod: Mod = Mod,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
@@ -42,8 +39,8 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
         type = type,
         mod = m
             .padding(conf.marginOrT)
+            .andUSize(conf.width, conf.height)
             .andIfNotNull(conf.onUClick) { clickable { it(Unit) } }
-            .andIfNotNull(requiredSize) { requiredSize(it) }
             .background(conf.backgroundColorOrT)
             .border(conf.borderWidthOrT, conf.borderColorOrT)
             .padding(conf.borderWidthOrT + conf.paddingOrT)
@@ -52,35 +49,6 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
         onUReport = conf.onUReport,
     ) { CompositionLocalProvider(LocalContentColor provides conf.contentColorOrT) { content() } }
 }
-
-
-fun Mod.horizontalScroll(type: UScrollerType, state: ScrollState): Mod = this
-    .drawWithContent {
-        require(type == UBASIC) // TODO later: implement different UScrollerTypes
-        drawContent()
-        // TODO NOW: scroller
-        if (state.maxValue > 0 && state.maxValue < Int.MAX_VALUE)
-            drawCircle(Color.Blue.copy(alpha = .1f), size.minDimension * .5f * state.value / state.maxValue)
-    }
-    .horizontalScroll(state)
-
-fun Mod.verticalScroll(type: UScrollerType, state: ScrollState): Mod = this
-    .drawWithContent {
-        require(type == UBASIC) // TODO later: implement different UScrollerTypes
-        drawContent()
-        // TODO NOW: scroller
-        if (state.maxValue > 0 && state.maxValue < Int.MAX_VALUE)
-            drawCircle(Color.Green.copy(alpha = .1f), size.minDimension * .5f * state.value / state.maxValue)
-    }
-    .verticalScroll(state)
-
-
-// thanIf would be wrong name (we use factory, not just Mod)
-inline fun Mod.andIf(condition: Boolean, add: Mod.() -> Mod): Mod =
-    if (condition) add() else this // then(add()) would be incorrect
-
-inline fun <V : Any> Mod.andIfNotNull(value: V?, add: Mod.(V) -> Mod): Mod =
-    if (value != null) add(value) else this
 
 @Composable fun UBasicBinSki(
     type: UBinType,

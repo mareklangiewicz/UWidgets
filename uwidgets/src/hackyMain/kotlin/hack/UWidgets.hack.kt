@@ -5,32 +5,17 @@ package pl.mareklangiewicz.uwidgets
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
+import androidx.compose.ui.Modifier as Mod
 
 @Composable fun UCoreBin(
     type: UBinType,
-    size: DpSize? = null,
-    margin: Dp = 0.dp,
-    contentColor: Color = Color.Black,
-    backgroundColor: Color = Color.Transparent,
-    borderColor: Color = Color.Transparent,
-    borderWidth: Dp = 0.dp,
-    padding: Dp = 0.dp,
-    onClick: (() -> Unit)? = null,
-    onUReport: OnUReport? = null,
+    mod: Mod = Mod,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
 ) = UCoreBinImplSki(
     type = type,
-    requiredSize = size,
-    margin = margin,
-    contentColor = contentColor,
-    backgroundColor = backgroundColor,
-    borderColor = borderColor,
-    borderWidth = borderWidth,
-    padding = padding,
-    onClick = onClick,
-    onUReport = onUReport,
+    mod = mod,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,
     content = content

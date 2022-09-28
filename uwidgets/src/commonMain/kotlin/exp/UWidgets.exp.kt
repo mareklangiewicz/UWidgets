@@ -8,8 +8,6 @@ import androidx.compose.ui.Modifier as Mod
 
 @Composable internal expect fun UCoreBinAct(
     type: UBinType,
-    // FIXME NOW: use mods for size/width/height/min/max?
-    size: DpSize?,
     mod: Mod,
     // FIXME NOW: use mods for scrolling
     withHorizontalScroll: Boolean = false,
@@ -28,14 +26,12 @@ import androidx.compose.ui.Modifier as Mod
 
 @Composable fun UCoreBin(
     type: UBinType,
-    size: DpSize? = null,
     mod: Mod = Mod,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
 ) = UCoreBinAct(
     type = type,
-    size = size,
     mod = mod,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,

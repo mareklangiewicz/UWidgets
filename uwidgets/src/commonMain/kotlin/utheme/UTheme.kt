@@ -54,22 +54,20 @@ import androidx.compose.ui.Modifier as Mod
 @Composable fun UAllStretch(content: @Composable () -> Unit) = UAlign(USTRETCH, USTRETCH, content)
 
 @Composable fun UAllStartRow(
-    size: DpSize? = null,
     mod: Mod = Mod,
     selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UAllStart { URow(size, mod, selected, withHorizontalScroll, withVerticalScroll, content) }
+) = UAllStart { URow(mod, selected, withHorizontalScroll, withVerticalScroll, content) }
 
 @Composable fun UAllStartColumn(
-    size: DpSize? = null,
     mod: Mod = Mod,
     selected: Boolean = false,
     withHorizontalScroll: Boolean = false,
     withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
-) = UAllStart { UColumn(size, mod, selected, withHorizontalScroll, withVerticalScroll, content) }
+) = UAllStart { UColumn(mod, selected, withHorizontalScroll, withVerticalScroll, content) }
 
 object UTheme {
 

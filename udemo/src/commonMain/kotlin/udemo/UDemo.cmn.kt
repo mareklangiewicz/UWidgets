@@ -31,21 +31,22 @@ fun UDemo() = UAllStretch {
 
 // FIXME NOW: remove this temporary code
 @Composable fun UDemoTemp() {
-    UBox(400.dp.square, Mod
+    UBox(Mod
+        .usize(400.dp.square)
         .onUClick { println("out box onuclick1") }
         .onUClick { println("out box onuclick2") }
     ) {
         UColumn {
             UChildrenMod({ onUClick { println("children") } }) {
-                UBox(200.dp.square) {
+                UBox(Mod.usize(200.dp.square)) {
                     UChildrenMod({ onUClick { println("nb 1 children") } }) {
-                        UBox(100.dp.square, Mod.onUClick { println("newborn 1") }) {
+                        UBox(Mod.usize(100.dp.square).onUClick { println("newborn 1") }) {
                             UText("jklfjdkal")
                         }
                     }
                 }
-                UBox(200.dp.square) {
-                    UBox(100.dp.square, Mod.onUClick { println("newborn 2") }) {
+                UBox(Mod.usize(200.dp.square)) {
+                    UBox(Mod.usize(100.dp.square).onUClick { println("newborn 2") }) {
                         UText("jklfjdkal")
                     }
                 }
@@ -131,7 +132,7 @@ fun UDemo() = UAllStretch {
     }
 
 @Composable fun UDemo2(size: DpSize, withHorizontalScroll: Boolean = true, withVerticalScroll: Boolean = true) =
-    UColumn(size, withHorizontalScroll = withHorizontalScroll, withVerticalScroll = withVerticalScroll) {
+    UColumn(Mod.usize(size), withHorizontalScroll = withHorizontalScroll, withVerticalScroll = withVerticalScroll) {
         UDemoTexts(growFactor = 4)
     }
 

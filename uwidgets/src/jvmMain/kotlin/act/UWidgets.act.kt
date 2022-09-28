@@ -8,14 +8,12 @@ import androidx.compose.ui.Modifier as Mod
 
 @Composable internal actual fun UCoreBinAct(
     type: UBinType,
-    size: DpSize?,
     mod: Mod,
     withHorizontalScroll: Boolean,
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
 ) = UCoreBinImplSki(
     type = type,
-    requiredSize = size,
     mod = mod,
     withHorizontalScroll = withHorizontalScroll,
     withVerticalScroll = withVerticalScroll,

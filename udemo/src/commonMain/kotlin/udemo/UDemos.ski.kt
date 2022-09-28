@@ -43,7 +43,7 @@ import androidx.compose.ui.Modifier as Mod
             withSon4Blue = son4S.value,
             onUReport = ureports::invoke,
         )
-        if (textsS.value) UColumn(size, withHorizontalScroll = hScroll, withVerticalScroll = vScroll) {
+        if (textsS.value) UColumn(Mod.usize(size), withHorizontalScroll = hScroll, withVerticalScroll = vScroll) {
             UBasicBinSki(UCOLUMN, Mod.reportMeasuringAndPlacement(ureports::invoke.withKeyPrefix("d3t "))) {
                 UDemoTexts(growFactor = 4)
             }
@@ -75,10 +75,10 @@ fun UDemoSimpleDebugSki() {
             RigidFather {
                 // FIXME NOW: RigidFather private reports don't report private stuff (because onReport=null), but report child UBox instead..
                 // (child UBox consumes LocalUOnBinReport instead of RigidFather itself)
-                UBox(size = DpSize(200.dp, 100.dp)) {}
+                UBox(Mod.usize(200.dp, 100.dp)) {}
             }
-            UBox(size = DpSize(200.dp, 50.dp)) {}
-            UBox(size = DpSize(200.dp, 80.dp)) {}
+            UBox(Mod.usize(200.dp, 50.dp)) {}
+            UBox(Mod.usize(200.dp, 80.dp)) {}
         }
     }
 }
