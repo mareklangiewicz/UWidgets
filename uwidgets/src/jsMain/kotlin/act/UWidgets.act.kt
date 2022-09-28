@@ -3,9 +3,9 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier as Mod
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.usystem.*
+import androidx.compose.ui.Modifier as Mod
 
 @Composable internal actual fun UCoreBinAct(
     type: UBinType,

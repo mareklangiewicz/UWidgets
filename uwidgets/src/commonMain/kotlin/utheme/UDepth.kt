@@ -36,8 +36,10 @@ private val LocalUDepthSettings = staticCompositionLocalOf { UDepthSettings() }
 class UDepthSettings(step: Int = 1, modulo: Int = 4, steepness: Float = .1f) {
     /** how much local depth increases every time */
     var step by mutableStateOf(step)
+
     /** after how big depth, more depth appearance (like background) is wrapped around - the depth itself is not wrapped */
     var modulo by mutableStateOf(modulo)
+
     /** how much appearance (like background) is changed depending on depth */
     var steepness by mutableStateOf(steepness)
 }

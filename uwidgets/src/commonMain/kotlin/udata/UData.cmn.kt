@@ -31,8 +31,8 @@ data class ULayoutCoordinatesData(
     val size: IntSize,
     // val parentLayoutCoordinatesData: ULayoutCoordinatesData?,
     // val parentCoordinatesData: ULayoutCoordinatesData?,
-        // FIXME_someday: parent walk is disabled because I had OOM issues - investigate more
-        // (OOM on android but also performance issues in uspek tests in UDemo3 on every platform)
+    // FIXME_someday: parent walk is disabled because I had OOM issues - investigate more
+    // (OOM on android but also performance issues in uspek tests in UDemo3 on every platform)
     val isAttached: Boolean,
 
     // computed when creating data class

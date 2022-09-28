@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.Modifier as Mod
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
@@ -18,6 +17,7 @@ import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
 import pl.mareklangiewicz.uwidgets.UScrollerType.*
+import androidx.compose.ui.Modifier as Mod
 
 enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
 
@@ -105,10 +105,12 @@ inline fun <V : Any> Mod.andIfNotNull(value: V?, add: Mod.(V) -> Mod): Mod =
                     // skip measuring stretched items (when NOT bounded size) (will measure it later)
                     uhorizontal == USTRETCH && !parentConstraints.hasBoundedWidth && return@forEachIndexed
                     uvertical == USTRETCH && !parentConstraints.hasBoundedHeight && return@forEachIndexed
-                    placeables[idx] = measurable.measure(parentConstraints.copy(
-                        minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else 0,
-                        minHeight = if (uvertical == USTRETCH) parentConstraints.maxHeight else 0
-                    )).also {
+                    placeables[idx] = measurable.measure(
+                        parentConstraints.copy(
+                            minWidth = if (uhorizontal == USTRETCH) parentConstraints.maxWidth else 0,
+                            minHeight = if (uvertical == USTRETCH) parentConstraints.maxHeight else 0
+                        )
+                    ).also {
                         maxChildWidth = maxChildWidth.coerceAtLeast(it.width)
                         maxChildHeight = maxChildHeight.coerceAtLeast(it.height)
                     }
@@ -138,13 +140,15 @@ inline fun <V : Any> Mod.andIfNotNull(value: V?, add: Mod.(V) -> Mod): Mod =
                     placeables[idx] == null || return@forEachIndexed
                     val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
                     check(uvertical == USTRETCH && !parentConstraints.hasBoundedHeight)
-                    placeables[idx] = measurable.measure(parentConstraints.copy(
-                        minWidth = if (uhorizontal != USTRETCH) 0 else {
-                            if (parentConstraints.hasBoundedWidth) parentConstraints.maxWidth
-                            else maxChildWidth
-                        },
-                        minHeight = maxChildHeight
-                    )).also {
+                    placeables[idx] = measurable.measure(
+                        parentConstraints.copy(
+                            minWidth = if (uhorizontal != USTRETCH) 0 else {
+                                if (parentConstraints.hasBoundedWidth) parentConstraints.maxWidth
+                                else maxChildWidth
+                            },
+                            minHeight = maxChildHeight
+                        )
+                    ).also {
                         maxChildWidth = maxChildWidth.coerceAtLeast(it.width)
                         maxChildHeight = maxChildHeight.coerceAtLeast(it.height)
                     }

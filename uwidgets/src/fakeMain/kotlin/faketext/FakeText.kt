@@ -1,10 +1,9 @@
 package androidx.compose.ui.text
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.runtime.*
+import androidx.compose.ui.geometry.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.*
 
 typealias TextMeasurer = String
 
@@ -26,7 +25,7 @@ fun DrawScope.drawText(
     for ((idx, t) in text.withIndex()) drawCircle(
         color = Color.hsl((t.code % 360).toFloat(), .5f, .7f),
         radius = r.coerceAtLeast(5f),
-        center = Offset((r + idx * 2*r), r + idx/2),
+        center = Offset((r + idx * 2 * r), r + idx / 2),
         alpha = .8f,
     )
 }

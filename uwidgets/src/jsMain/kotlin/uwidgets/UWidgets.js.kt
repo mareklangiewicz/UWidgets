@@ -3,9 +3,8 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier as Mod
+import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.materialize
 import androidx.compose.ui.unit.*
 import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.*
@@ -15,6 +14,7 @@ import org.w3c.dom.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
+import androidx.compose.ui.Modifier as Mod
 
 @Composable internal fun UBasicBinImplDom(type: UBinType, content: @Composable () -> Unit) =
     UBasicBinDom(type) { content() }
@@ -47,13 +47,15 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
             overflowX(if (withHorizontalScroll) "auto" else "clip") // TODO later: make sure we clip the similarly on both platforms
             overflowY(if (withVerticalScroll) "auto" else "clip")
         },
-        addAttrs = conf.onUClick?.let { click -> {
-            addEventListener("click") { event ->
-                event.preventDefault()
-                event.stopPropagation()
-                click(Unit)
+        addAttrs = conf.onUClick?.let { click ->
+            {
+                addEventListener("click") { event ->
+                    event.preventDefault()
+                    event.stopPropagation()
+                    click(Unit)
+                }
             }
-        } },
+        },
         onUReport = conf.onUReport,
         content = content
     )

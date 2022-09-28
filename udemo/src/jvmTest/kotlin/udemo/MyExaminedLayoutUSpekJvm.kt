@@ -15,6 +15,7 @@ class MyExaminedLayoutUSpekJvm {
 
     @get:Rule val rule = createComposeRule()
     private val scope = UComposeRuleScope(rule)
+
     @Suppress("MISSING_DEPENDENCY_CLASS") // IDE issue
     @USpekTestTree(33) fun melusf() = runTest { scope.MyExaminedLayoutUSpekFun() }
 }

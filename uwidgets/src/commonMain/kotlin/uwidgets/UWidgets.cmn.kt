@@ -3,15 +3,15 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier as Mod
-import androidx.compose.ui.Modifier.Element
-import androidx.compose.ui.composed
+import androidx.compose.ui.*
+import androidx.compose.ui.Modifier.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
+import androidx.compose.ui.Modifier as Mod
 
 enum class UBinType { UBOX, UROW, UCOLUMN }
 
@@ -44,9 +44,11 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
         mod = if (childrenMod == null) mod else Mod.childrenMod().then(mod),
         withHorizontalScroll = withHorizontalScroll,
         withVerticalScroll = withVerticalScroll,
-    ) { UDepth {
-        CompositionLocalProvider(LocalUChildrenMod provides null, content = content)
-    } }
+    ) {
+        UDepth {
+            CompositionLocalProvider(LocalUChildrenMod provides null, content = content)
+        }
+    }
 }
 
 internal class UBinConf {
@@ -68,32 +70,34 @@ internal class UBinConf {
     val paddingOrT: Dp @Composable get() = padding ?: UTheme.sizes.ubinPadding
 
     /** mod should be already materialized by user */
-    fun foldInFrom(mod: Mod) = mod.foldIn(Unit) { _, e -> when (e) {
-        is UMarginMod -> margin = e.margin
-        is UContentColorMod -> contentColor = e.contentColor
-        is UBackgroundColorMod -> backgroundColor = e.backgroundColor
-        is UBorderColorMod -> borderColor = e.borderColor
-        is UBorderWidthMod -> borderWidth = e.borderWidth
-        is UPaddingMod -> padding = e.padding
-        is OnUClickMod -> onUClick = e.onUClick // new onUClick replaces upstream (and deletes it if null)
-        is OnUReportMod -> onUReport = e.onUReport // new onUReport replaces upstream (and deletes it if null)
-        // FIXME: I experimented with calling both lambdas (when not null)
-        //  sth like: onUClick = { onUClick(it); e.onUClick(it) }
-        //  (moments of reading/writing state probably play important role)
-        //  So I had some nasty issues with sometimes not working onUClicks in UDemo1
-        //  So I resigned and chose simple replacing (inner most modifier wins).
-        //  still it would be cool to have this accumulation for example for UDebug
-    } }
+    fun foldInFrom(mod: Mod) = mod.foldIn(Unit) { _, e ->
+        when (e) {
+            is UMarginMod -> margin = e.margin
+            is UContentColorMod -> contentColor = e.contentColor
+            is UBackgroundColorMod -> backgroundColor = e.backgroundColor
+            is UBorderColorMod -> borderColor = e.borderColor
+            is UBorderWidthMod -> borderWidth = e.borderWidth
+            is UPaddingMod -> padding = e.padding
+            is OnUClickMod -> onUClick = e.onUClick // new onUClick replaces upstream (and deletes it if null)
+            is OnUReportMod -> onUReport = e.onUReport // new onUReport replaces upstream (and deletes it if null)
+            // FIXME: I experimented with calling both lambdas (when not null)
+            //  sth like: onUClick = { onUClick(it); e.onUClick(it) }
+            //  (moments of reading/writing state probably play important role)
+            //  So I had some nasty issues with sometimes not working onUClicks in UDemo1
+            //  So I resigned and chose simple replacing (inner most modifier wins).
+            //  still it would be cool to have this accumulation for example for UDebug
+        }
+    }
 }
 
-internal class UMarginMod(val margin: Dp): Element
-internal class UContentColorMod(val contentColor: Color): Element
-internal class UBackgroundColorMod(val backgroundColor: Color): Element
-internal class UBorderColorMod(val borderColor: Color): Element
-internal class UBorderWidthMod(val borderWidth: Dp): Element
-internal class UPaddingMod(val padding: Dp): Element
-internal class OnUClickMod(val onUClick: OnUClick?): Element
-internal class OnUReportMod(val onUReport: OnUReport?): Element
+internal class UMarginMod(val margin: Dp) : Element
+internal class UContentColorMod(val contentColor: Color) : Element
+internal class UBackgroundColorMod(val backgroundColor: Color) : Element
+internal class UBorderColorMod(val borderColor: Color) : Element
+internal class UBorderWidthMod(val borderWidth: Dp) : Element
+internal class UPaddingMod(val padding: Dp) : Element
+internal class OnUClickMod(val onUClick: OnUClick?) : Element
+internal class OnUReportMod(val onUReport: OnUReport?) : Element
 
 fun Mod.umargin(margin: Dp) = then(UMarginMod(margin))
 fun Mod.ucontentColor(contentColor: Color) = then(UContentColorMod(contentColor))
@@ -153,6 +157,7 @@ fun Mod.ustyleBlank(
 /** Warning: it replaces upstream Mod.onUClick - see comment at UBin.foldInFrom */
 // It would be better if non-null mods were accumulated (all called in outside in order)
 fun Mod.onUClick(onUClick: OnUClick?) = then(OnUClickMod(onUClick))
+
 /** Warning: it replaces upstream Mod.onUReport - see comment at UBin.foldInFrom */
 // It would be better if non-null mods were accumulated (all called in outside in order)
 fun Mod.onUReport(onUReport: OnUReport?, keyPrefix: String = "") =
@@ -169,7 +174,9 @@ fun Mod.onUReport(onUReport: OnUReport?, keyPrefix: String = "") =
     content: @Composable () -> Unit,
 ) {
     val current = LocalUChildrenMod.current
-    val new = if (current == null) mod else { { current().mod() } }
+    val new = if (current == null) mod else {
+        { current().mod() }
+    }
     CompositionLocalProvider(LocalUChildrenMod provides new, content = content)
 }
 
@@ -192,9 +199,13 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
 
 @Composable fun UBoxEnabledIf(enabled: Boolean, content: @Composable () -> Unit) = UBox {
     content()
-    if (!enabled) UAllStretch { UCoreBin(UBOX, mod = Mod.ustyleBlank(
-        backgroundColor = UTheme.colors.ubinBackground.copy(alpha = .4f)
-    )) {} }
+    if (!enabled) UAllStretch {
+        UCoreBin(
+            UBOX, mod = Mod.ustyleBlank(
+                backgroundColor = UTheme.colors.ubinBackground.copy(alpha = .4f)
+            )
+        ) {}
+    }
 }
 // FIXME_later: think more about how to visually disable bin (another color in theme for overlay?)
 
@@ -216,12 +227,13 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
     content: @Composable () -> Unit,
 ) = UBin(UROW, size, mod, selected, withHorizontalScroll, withVerticalScroll, content)
 
-@Composable fun UBoxedText(text: String, mod: Mod = Mod, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) = UBox(mod = mod) {
-    UAlign(
-        if (center) UCENTER else UTheme.alignments.horizontal,
-        if (center) UCENTER else UTheme.alignments.vertical,
-    ) { UText(text, bold, mono) } // UText uses another UBasicBin(BOX). It's intentional. (to make sure all U*Text respect UAlign etc)
-}
+@Composable fun UBoxedText(text: String, mod: Mod = Mod, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) =
+    UBox(mod = mod) {
+        UAlign(
+            if (center) UCENTER else UTheme.alignments.horizontal,
+            if (center) UCENTER else UTheme.alignments.vertical,
+        ) { UText(text, bold, mono) } // UText uses another UBasicBin(BOX). It's intentional. (to make sure all U*Text respect UAlign etc)
+    }
 
 // Renaming tab -> _ breaks layout inspector in AS!!
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
@@ -236,13 +248,15 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
 @Composable
 internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) = UAllStartRow {
     var selectedTabIndex by remember { mutableStateOf(0) }
-    tabs.forEachIndexed { index, title -> UBoxedText(
-        text = title,
-        mod = Mod.onUClick { selectedTabIndex = index; onSelected(index, title) },
-        center = true,
-        bold = index == selectedTabIndex,
-        mono = true
-    ) }
+    tabs.forEachIndexed { index, title ->
+        UBoxedText(
+            text = title,
+            mod = Mod.onUClick { selectedTabIndex = index; onSelected(index, title) },
+            center = true,
+            bold = index == selectedTabIndex,
+            mono = true
+        )
+    }
 }
 
 @Composable fun <T> ustate(init: T): MutableState<T> = remember { mutableStateOf(init) }

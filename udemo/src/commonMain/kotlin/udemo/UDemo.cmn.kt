@@ -1,7 +1,6 @@
 package pl.mareklangiewicz.udemo
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier as Mod
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
 import pl.mareklangiewicz.udata.*
@@ -9,6 +8,7 @@ import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
+import androidx.compose.ui.Modifier as Mod
 
 @Composable
 fun UDemo() = UAllStretch {
@@ -36,9 +36,9 @@ fun UDemo() = UAllStretch {
         .onUClick { println("out box onuclick2") }
     ) {
         UColumn {
-            UChildrenMod({ onUClick { println("children") }}) {
+            UChildrenMod({ onUClick { println("children") } }) {
                 UBox(200.dp.square) {
-                    UChildrenMod({ onUClick { println("nb 1 children") }}) {
+                    UChildrenMod({ onUClick { println("nb 1 children") } }) {
                         UBox(100.dp.square, Mod.onUClick { println("newborn 1") }) {
                             UText("jklfjdkal")
                         }

@@ -6,12 +6,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.native.*
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
 import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.skiko.wasm.*
-import androidx.compose.ui.platform.JSTextInputService
 import org.w3c.dom.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
