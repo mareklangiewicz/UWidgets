@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier as Mod
 @Composable fun UReportsUi(reports: UReports, mod: Mod = Mod, reversed: Boolean = false) {
     CompositionLocalProvider(LocalDensity provides Density(1f)) {
         val vScrollS = rememberScrollState()
-        Column(mod.verticalScroll(UScrollerType.UBASIC, vScrollS)) {
+        Column(mod.verticalScroll(UScrollStyle.UBASIC, vScrollS)) {
             val range = 0 until reports.size
             for (idx in if (reversed) range.reversed() else range) {
                 val entry = reports[idx]

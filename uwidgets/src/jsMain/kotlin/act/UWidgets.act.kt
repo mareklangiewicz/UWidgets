@@ -7,25 +7,8 @@ import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.usystem.*
 import androidx.compose.ui.Modifier as Mod
 
-@Composable internal actual fun UCoreBinAct(
-    type: UBinType,
-    mod: Mod,
-    withHorizontalScroll: Boolean,
-    withVerticalScroll: Boolean,
-    content: @Composable () -> Unit,
-) = if (currentCompositionIsDom) UCoreBinImplDom(
-    type = type,
-    mod = mod,
-    withHorizontalScroll = withHorizontalScroll,
-    withVerticalScroll = withVerticalScroll,
-    content = content
-) else UCoreBinImplSki(
-    type = type,
-    mod = mod,
-    withHorizontalScroll = withHorizontalScroll,
-    withVerticalScroll = withVerticalScroll,
-    content = content
-)
+@Composable internal actual fun UCoreBinAct(type: UBinType, mod: Mod, content: @Composable () -> Unit) =
+    if (currentCompositionIsDom) UCoreBinImplDom(type, mod, content) else UCoreBinImplSki(type, mod, content)
 
 @Composable internal actual fun UBasicBinAct(type: UBinType, content: @Composable () -> Unit) =
     if (currentCompositionIsDom) UBasicBinImplDom(type, content)

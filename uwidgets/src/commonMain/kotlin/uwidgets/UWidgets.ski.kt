@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.draw.*
-import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
@@ -16,25 +14,19 @@ import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
-import pl.mareklangiewicz.uwidgets.UScrollerType.*
+import pl.mareklangiewicz.uwidgets.UScrollStyle.*
 import androidx.compose.ui.Modifier as Mod
 
 @Composable internal fun UBasicBinImplSki(type: UBinType, content: @Composable () -> Unit) =
     UBasicBinSki(type, content = content)
 
-@Composable internal fun UCoreBinImplSki(
-    type: UBinType,
-    mod: Mod = Mod,
-    withHorizontalScroll: Boolean,
-    withVerticalScroll: Boolean,
-    content: @Composable () -> Unit,
-) {
+@Composable internal fun UCoreBinImplSki(type: UBinType, mod: Mod = Mod, content: @Composable () -> Unit) {
     // TODO_later: make sure .materialize here is ok (Layout does it internally again later)
     val m = currentComposer.materialize(mod)
     val conf = remember { UBinConf() }
     conf.foldInFrom(m)
-    val hScrollS = if (withHorizontalScroll) rememberScrollState() else null
-    val vScrollS = if (withVerticalScroll) rememberScrollState() else null
+    val hScrollS = if (conf.uscrollHoriz) rememberScrollState() else null
+    val vScrollS = if (conf.uscrollVerti) rememberScrollState() else null
     UBasicBinSki(
         type = type,
         mod = m

@@ -5,7 +5,6 @@ package pl.mareklangiewicz.uwidgets
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.*
 import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -22,8 +21,6 @@ import androidx.compose.ui.Modifier as Mod
 @Composable internal fun UCoreBinImplDom(
     type: UBinType,
     mod: Mod = Mod,
-    withHorizontalScroll: Boolean,
-    withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
 ) {
     val conf = remember { UBinConf() }
@@ -44,8 +41,8 @@ import androidx.compose.ui.Modifier as Mod
             backgroundColor(ubackgroundColor.cssRgba)
             border(uborderWidth.value.px, LineStyle.Solid, uborderColor.cssRgba) // in css .px is kinda .dp
             padding(upadding.value.px)
-            overflowX(if (withHorizontalScroll) "auto" else "clip") // TODO later: make sure we clip the similarly on both platforms
-            overflowY(if (withVerticalScroll) "auto" else "clip")
+            overflowX(if (conf.uscrollHoriz) "auto" else "clip") // TODO later: make sure we clip the similarly on both platforms
+            overflowY(if (conf.uscrollVerti) "auto" else "clip")
         },
         addAttrs = conf.onUClick?.let { click ->
             {
@@ -69,7 +66,7 @@ var leakyDomReportsEnabled: Boolean = false
     type: UBinType? = null,
     inline: Boolean = false,
     addStyle: (StyleScope.() -> Unit)? = null,
-    addAttrs: (AttrsScope<out HTMLElement>.() -> Unit)? = null,
+    addAttrs: (AttrsScope<HTMLElement>.() -> Unit)? = null,
     onUReport: OnUReport? = null,
     content: @Composable () -> Unit,
 ) {
@@ -77,7 +74,7 @@ var leakyDomReportsEnabled: Boolean = false
     val parentType = LocalUBinType.current
     val horizontal = UTheme.alignments.horizontal
     val vertical = UTheme.alignments.vertical
-    val attrs: AttrsScope<out HTMLElement>.() -> Unit = {
+    val attrs: AttrsScope<HTMLElement>.() -> Unit = {
         style {
             type?.let { ustyleFor(it, horizontal, vertical, inline) }
             parentType?.let { ustyleChildFor(it, horizontal, vertical) }

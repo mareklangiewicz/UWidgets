@@ -7,19 +7,8 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.Modifier as Mod
 
-@Composable fun UCoreBin(
-    type: UBinType,
-    mod: Mod = Mod,
-    withHorizontalScroll: Boolean = false,
-    withVerticalScroll: Boolean = false,
-    content: @Composable () -> Unit,
-) = UCoreBinImplSki(
-    type = type,
-    mod = mod,
-    withHorizontalScroll = withHorizontalScroll,
-    withVerticalScroll = withVerticalScroll,
-    content = content
-)
+@Composable fun UCoreBin(type: UBinType, mod: Mod = Mod, content: @Composable () -> Unit) =
+    UCoreBinImplSki(type, mod, content)
 
 @Composable fun UBasicBin(type: UBinType, content: @Composable () -> Unit) =
     UBasicBinImplSki(type, content)

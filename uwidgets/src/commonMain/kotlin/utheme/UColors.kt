@@ -17,6 +17,7 @@ class UColors(
     ubinTintBorder: Color,
     ubinTintBorderSelected: Color,
     ubinTintBorderClickable: Color = ubinTintBorderSelected.copy(alpha = ubinTintBorderSelected.alpha / 3),
+    // TODO_someday: tint border differently if scrollable??
 ) {
 
     var ubinContent by mutableStateOf(ubinContent)

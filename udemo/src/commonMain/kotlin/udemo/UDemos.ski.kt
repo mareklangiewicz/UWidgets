@@ -43,7 +43,7 @@ import androidx.compose.ui.Modifier as Mod
             withSon4Blue = son4S.value,
             onUReport = ureports::invoke,
         )
-        if (textsS.value) UColumn(Mod.usize(size), withHorizontalScroll = hScroll, withVerticalScroll = vScroll) {
+        if (textsS.value) UColumn(Mod.usize(size).uscroll(hScroll, vScroll)) {
             UBasicBinSki(UCOLUMN, Mod.reportMeasuringAndPlacement(ureports::invoke.withKeyPrefix("d3t "))) {
                 UDemoTexts(growFactor = 4)
             }

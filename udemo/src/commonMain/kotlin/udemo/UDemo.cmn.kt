@@ -116,7 +116,7 @@ fun UDemo() = UAllStretch {
 }
 
 @Composable fun UDemo1(withHorizontalScroll: Boolean = true, withVerticalScroll: Boolean = true) =
-    URow(withHorizontalScroll = withHorizontalScroll, withVerticalScroll = withVerticalScroll) {
+    URow(Mod.uscroll(withHorizontalScroll, withVerticalScroll)) {
         // FIXME: adjust default colors etc. so states like selected, clickable, etc are visible
         UTheme(lightUColors()) { SomeTree() }
         UTheme(darkUColors()) { SomeTree() }
@@ -132,7 +132,7 @@ fun UDemo() = UAllStretch {
     }
 
 @Composable fun UDemo2(size: DpSize, withHorizontalScroll: Boolean = true, withVerticalScroll: Boolean = true) =
-    UColumn(Mod.usize(size), withHorizontalScroll = withHorizontalScroll, withVerticalScroll = withVerticalScroll) {
+    UColumn(Mod.usize(size).uscroll(withHorizontalScroll, withVerticalScroll)) {
         UDemoTexts(growFactor = 4)
     }
 

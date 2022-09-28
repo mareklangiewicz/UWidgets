@@ -29,22 +29,12 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
     type: UBinType,
     mod: Mod = Mod,
     selected: Boolean = false, // TODO NOW: also mods?
-    // TODO NOW: use mods for scrolling in common too (custom or map ski mods to js?)
-    withHorizontalScroll: Boolean = false, // TODO_someday: tint border differently if scrollable??
-    withVerticalScroll: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val childrenMod = LocalUChildrenMod.current
     @Suppress("RemoveRedundantQualifierName") // IDE issue
-    UCoreBin(
-        type = type,
-        mod = if (childrenMod == null) mod else Mod.childrenMod().then(mod),
-        withHorizontalScroll = withHorizontalScroll,
-        withVerticalScroll = withVerticalScroll,
-    ) {
-        UDepth {
-            CompositionLocalProvider(LocalUChildrenMod provides null, content = content)
-        }
+    UCoreBin(type, if (childrenMod == null) mod else Mod.childrenMod().then(mod)) {
+        UDepth { CompositionLocalProvider(LocalUChildrenMod provides null, content = content) }
     }
 }
 
@@ -73,13 +63,8 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { null }
 
 
-@Composable fun UBox(
-    mod: Mod = Mod,
-    selected: Boolean = false,
-    withHorizontalScroll: Boolean = false,
-    withVerticalScroll: Boolean = false,
-    content: @Composable () -> Unit,
-) = UBin(UBOX, mod, selected, withHorizontalScroll, withVerticalScroll, content)
+@Composable fun UBox(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
+    UBin(UBOX, mod, selected, content)
 
 @Composable fun UBoxEnabledIf(enabled: Boolean, content: @Composable () -> Unit) = UBox {
     content()
@@ -93,21 +78,11 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
 }
 // FIXME_later: think more about how to visually disable bin (another color in theme for overlay?)
 
-@Composable fun UColumn(
-    mod: Mod = Mod,
-    selected: Boolean = false,
-    withHorizontalScroll: Boolean = false,
-    withVerticalScroll: Boolean = false,
-    content: @Composable () -> Unit,
-) = UBin(UCOLUMN, mod, selected, withHorizontalScroll, withVerticalScroll, content)
+@Composable fun UColumn(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
+    UBin(UCOLUMN, mod, selected, content)
 
-@Composable fun URow(
-    mod: Mod = Mod,
-    selected: Boolean = false,
-    withHorizontalScroll: Boolean = false,
-    withVerticalScroll: Boolean = false,
-    content: @Composable () -> Unit,
-) = UBin(UROW, mod, selected, withHorizontalScroll, withVerticalScroll, content)
+@Composable fun URow(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
+    UBin(UROW, mod, selected, content)
 
 @Composable fun UBoxedText(text: String, mod: Mod = Mod, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) =
     UBox(mod = mod) {

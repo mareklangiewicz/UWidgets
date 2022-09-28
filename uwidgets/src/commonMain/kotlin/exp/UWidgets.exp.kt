@@ -6,14 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.Modifier as Mod
 
-@Composable internal expect fun UCoreBinAct(
-    type: UBinType,
-    mod: Mod,
-    // FIXME NOW: use mods for scrolling
-    withHorizontalScroll: Boolean = false,
-    withVerticalScroll: Boolean = false,
-    content: @Composable () -> Unit,
-)
+@Composable internal expect fun UCoreBinAct(type: UBinType, mod: Mod, content: @Composable () -> Unit)
 
 @Composable internal expect fun UBasicBinAct(type: UBinType, content: @Composable () -> Unit)
 
@@ -24,19 +17,8 @@ import androidx.compose.ui.Modifier as Mod
 @Composable internal expect fun USkikoBoxAct(size: DpSize? = null, content: @Composable () -> Unit)
 
 
-@Composable fun UCoreBin(
-    type: UBinType,
-    mod: Mod = Mod,
-    withHorizontalScroll: Boolean = false,
-    withVerticalScroll: Boolean = false,
-    content: @Composable () -> Unit,
-) = UCoreBinAct(
-    type = type,
-    mod = mod,
-    withHorizontalScroll = withHorizontalScroll,
-    withVerticalScroll = withVerticalScroll,
-    content = content
-)
+@Composable fun UCoreBin(type: UBinType, mod: Mod = Mod, content: @Composable () -> Unit) =
+    UCoreBinAct(type, mod, content)
 
 @Composable fun UBasicBin(type: UBinType, content: @Composable () -> Unit) =
     UBasicBinAct(type, content)

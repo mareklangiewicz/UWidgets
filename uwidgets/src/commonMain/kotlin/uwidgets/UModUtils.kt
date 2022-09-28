@@ -9,7 +9,7 @@ import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.utheme.*
-import pl.mareklangiewicz.uwidgets.UScrollerType.*
+import pl.mareklangiewicz.uwidgets.UScrollStyle.*
 import androidx.compose.ui.Modifier as Mod
 
 
@@ -37,6 +37,9 @@ internal class UBinConf {
     var padding: Dp? by mutableStateOf(null)
     var onUClick: OnUClick? by mutableStateOf(null)
     var onUReport: OnUReport? by mutableStateOf(null)
+    var uscrollHoriz: Boolean by mutableStateOf(false)
+    var uscrollVerti: Boolean by mutableStateOf(false)
+    var uscrollStyle: UScrollStyle by mutableStateOf(UBASIC)
 
     // These repetitions below are not pretty, but I want to read UTheme reactively ONLY when null.
     val marginOrT: Dp @Composable get() = margin ?: UTheme.sizes.ubinMargin
@@ -64,6 +67,7 @@ internal class UBinConf {
             //  So I had some nasty issues with sometimes not working onUClicks in UDemo1
             //  So I resigned and chose simple replacing (inner most modifier wins).
             //  still it would be cool to have this accumulation for example for UDebug
+            is UScrollMod -> { uscrollHoriz = e.horizontal; uscrollVerti = e.vertical; uscrollStyle = e.style }
         }
     }
 }
@@ -77,6 +81,7 @@ internal class UBorderWidthMod(val borderWidth: Dp) : Element
 internal class UPaddingMod(val padding: Dp) : Element
 internal class OnUClickMod(val onUClick: OnUClick?) : Element
 internal class OnUReportMod(val onUReport: OnUReport?) : Element
+internal class UScrollMod(val horizontal: Boolean, val vertical: Boolean, val style: UScrollStyle) : Element
 
 fun Mod.usize(width: Dp? = null, height: Dp? = null) = then(USizeMod(width, height))
 fun Mod.usize(size: DpSize) = usize(size.width, size.height)
@@ -89,6 +94,8 @@ fun Mod.ubackgroundColor(backgroundColor: Color) = then(UBackgroundColorMod(back
 fun Mod.uborderColor(borderColor: Color) = then(UBorderColorMod(borderColor))
 fun Mod.uborderWidth(borderWidth: Dp) = then(UBorderWidthMod(borderWidth))
 fun Mod.upadding(padding: Dp) = then(UPaddingMod(padding))
+fun Mod.uscroll(horizontal: Boolean = false, vertical: Boolean = false, style: UScrollStyle = UBASIC) =
+    then(UScrollMod(horizontal, vertical, style))
 
 @Composable fun Mod.ucolors(
     contentColor: Color = UTheme.colors.ubinContent,
@@ -148,12 +155,12 @@ fun Mod.onUReport(onUReport: OnUReport?, keyPrefix: String = "") =
     then(OnUReportMod(onUReport?.withKeyPrefix(keyPrefix)))
 
 
-enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
+enum class UScrollStyle { UFANCY, UBASIC, UHIDDEN }
 
 
-fun Mod.horizontalScroll(type: UScrollerType, state: ScrollState): Mod = this
+fun Mod.horizontalScroll(style: UScrollStyle, state: ScrollState): Mod = this
     .drawWithContent {
-        require(type == UBASIC) // TODO later: implement different UScrollerTypes
+        require(style == UBASIC) // TODO later: implement different UScrollStyles
         drawContent()
         // TODO NOW: scroller
         if (state.maxValue > 0 && state.maxValue < Int.MAX_VALUE)
@@ -161,9 +168,9 @@ fun Mod.horizontalScroll(type: UScrollerType, state: ScrollState): Mod = this
     }
     .horizontalScroll(state)
 
-fun Mod.verticalScroll(type: UScrollerType, state: ScrollState): Mod = this
+fun Mod.verticalScroll(style: UScrollStyle, state: ScrollState): Mod = this
     .drawWithContent {
-        require(type == UBASIC) // TODO later: implement different UScrollerTypes
+        require(style == UBASIC) // TODO later: implement different UScrollStyles
         drawContent()
         // TODO NOW: scroller
         if (state.maxValue > 0 && state.maxValue < Int.MAX_VALUE)
