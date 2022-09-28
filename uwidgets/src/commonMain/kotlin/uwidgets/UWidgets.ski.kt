@@ -14,7 +14,6 @@ import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
-import pl.mareklangiewicz.uwidgets.UScrollStyle.*
 import androidx.compose.ui.Modifier as Mod
 
 @Composable internal fun UBasicBinImplSki(type: UBinType, content: @Composable () -> Unit) =
@@ -50,7 +49,7 @@ import androidx.compose.ui.Modifier as Mod
     onUReport?.invoke("compose" to type)
     val phorizontal = UTheme.alignments.horizontal
     val pvertical = UTheme.alignments.vertical
-    val m = mod.ualign(phorizontal, pvertical)
+    val m = mod.then(UChildData(phorizontal, pvertical))
     Layout(content = content, modifier = m) { measurables, parentConstraints ->
         onUReport?.invoke("measure in" to parentConstraints)
         var maxChildWidth = 0
@@ -350,8 +349,6 @@ private fun IntrinsicMeasurable.uChildData(defaultHorizontal: UAlignmentType, de
 
 private fun Measured.uChildData(defaultHorizontal: UAlignmentType, defaultVertical: UAlignmentType) =
     parentData as? UChildData ?: UChildData(defaultHorizontal, defaultVertical)
-
-fun Mod.ualign(horizontal: UAlignmentType, vertical: UAlignmentType) = then(UChildData(horizontal, vertical))
 
 private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = when (this) {
     USTART, USTRETCH -> 0
