@@ -33,30 +33,24 @@ enum class UScrollerType { UFANCY, UBASIC, UHIDDEN }
     content: @Composable () -> Unit,
 ) {
     // TODO_later: make sure .materialize here is ok (Layout does it internally again later)
-    val materialized = currentComposer.materialize(mod)
-    val umargin = materialized.foldInExtracted(null, { (it as? UMarginMod)?.margin }) { _, inner -> inner } ?: UTheme.sizes.ubinMargin
-    val ucontentColor = materialized.foldInExtracted(null, { (it as? UContentColorMod)?.contentColor }) { _, inner -> inner } ?: UTheme.colors.ubinContent
-    val ubackgroundColor = materialized.foldInExtracted(null, { (it as? UBackgroundColorMod)?.backgroundColor }) { _, inner -> inner } ?: UTheme.colors.ubinBackground
-    val uborderColor = materialized.foldInExtracted(null, { (it as? UBorderColorMod)?.borderColor }) { _, inner -> inner } ?: UTheme.colors.ubinBorder(/*FIXME*/)
-    val uborderWidth = materialized.foldInExtracted(null, { (it as? UBorderWidthMod)?.borderWidth }) { _, inner -> inner } ?: UTheme.sizes.ubinBorder
-    val upadding = materialized.foldInExtracted(null, { (it as? UPaddingMod)?.padding }) { _, inner -> inner } ?: UTheme.sizes.ubinPadding
-    val onUClick = materialized.foldInExtractedPushees { (it as? OnUClickMod)?.onUClick }
-    val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportMod)?.onUReport }
+    val m = currentComposer.materialize(mod)
+    val conf = remember { UBinConf() }
+    conf.foldInFrom(m)
     val hScrollS = if (withHorizontalScroll) rememberScrollState() else null
     val vScrollS = if (withVerticalScroll) rememberScrollState() else null
     UBasicBinSki(
         type = type,
-        mod = materialized
-            .padding(umargin)
-            .andIfNotNull(onUClick) { clickable { it(Unit) } }
+        mod = m
+            .padding(conf.marginOrT)
+            .andIfNotNull(conf.onUClick) { clickable { it(Unit) } }
             .andIfNotNull(requiredSize) { requiredSize(it) }
-            .background(ubackgroundColor)
-            .border(uborderWidth, uborderColor)
-            .padding(uborderWidth + upadding)
+            .background(conf.backgroundColorOrT)
+            .border(conf.borderWidthOrT, conf.borderColorOrT)
+            .padding(conf.borderWidthOrT + conf.paddingOrT)
             .andIfNotNull(hScrollS) { horizontalScroll(UBASIC, it) }
             .andIfNotNull(vScrollS) { verticalScroll(UBASIC, it) },
-        onUReport = onUReport,
-    ) { CompositionLocalProvider(LocalContentColor provides ucontentColor) { content() } }
+        onUReport = conf.onUReport,
+    ) { CompositionLocalProvider(LocalContentColor provides conf.contentColorOrT) { content() } }
 }
 
 

@@ -27,17 +27,14 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
     withVerticalScroll: Boolean,
     content: @Composable () -> Unit,
 ) {
-    // FIXME: refactor (in ski version too); but be careful not to do unnecessary allocations (like UBinStyle data class or sth..)
-    //  also it would be better to do folding once, but not allocate on recomposition!
-    val materialized = currentComposer.materialize(mod)
-    val umargin = materialized.foldInExtracted(null, { (it as? UMarginMod)?.margin }) { _, inner -> inner } ?: UTheme.sizes.ubinMargin
-    val ucontentColor = materialized.foldInExtracted(null, { (it as? UContentColorMod)?.contentColor }) { _, inner -> inner } ?: UTheme.colors.ubinContent
-    val ubackgroundColor = materialized.foldInExtracted(null, { (it as? UBackgroundColorMod)?.backgroundColor }) { _, inner -> inner } ?: UTheme.colors.ubinBackground
-    val uborderColor = materialized.foldInExtracted(null, { (it as? UBorderColorMod)?.borderColor }) { _, inner -> inner } ?: UTheme.colors.ubinBorder(/*FIXME*/)
-    val uborderWidth = materialized.foldInExtracted(null, { (it as? UBorderWidthMod)?.borderWidth }) { _, inner -> inner } ?: UTheme.sizes.ubinBorder
-    val upadding = materialized.foldInExtracted(null, { (it as? UPaddingMod)?.padding }) { _, inner -> inner } ?: UTheme.sizes.ubinPadding
-    val onUClick = materialized.foldInExtractedPushees { (it as? OnUClickMod)?.onUClick }
-    val onUReport = materialized.foldInExtractedPushees { (it as? OnUReportMod)?.onUReport }
+    val conf = remember { UBinConf() }
+    conf.foldInFrom(currentComposer.materialize(mod))
+    val umargin = conf.marginOrT
+    val ucontentColor = conf.contentColorOrT
+    val ubackgroundColor = conf.backgroundColorOrT
+    val uborderWidth = conf.borderWidthOrT
+    val uborderColor = conf.borderColorOrT
+    val upadding = conf.paddingOrT
     UBasicBinDom(
         type = type,
         addStyle = {
@@ -50,14 +47,14 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
             overflowX(if (withHorizontalScroll) "auto" else "clip") // TODO later: make sure we clip the similarly on both platforms
             overflowY(if (withVerticalScroll) "auto" else "clip")
         },
-        addAttrs = onUClick?.let { {
+        addAttrs = conf.onUClick?.let { click -> {
             addEventListener("click") { event ->
                 event.preventDefault()
                 event.stopPropagation()
-                onUClick(Unit)
+                click(Unit)
             }
         } },
-        onUReport = onUReport,
+        onUReport = conf.onUReport,
         content = content
     )
 }

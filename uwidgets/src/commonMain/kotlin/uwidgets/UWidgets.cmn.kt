@@ -49,6 +49,43 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
     } }
 }
 
+internal class UBinConf {
+    var margin: Dp? by mutableStateOf(null)
+    var contentColor: Color? by mutableStateOf(null)
+    var backgroundColor: Color? by mutableStateOf(null)
+    var borderColor: Color? by mutableStateOf(null)
+    var borderWidth: Dp? by mutableStateOf(null)
+    var padding: Dp? by mutableStateOf(null)
+    var onUClick: OnUClick? by mutableStateOf(null)
+    var onUReport: OnUReport? by mutableStateOf(null)
+
+    // These repetitions below are not pretty, but I want to read UTheme reactively ONLY when null.
+    val marginOrT: Dp @Composable get() = margin ?: UTheme.sizes.ubinMargin
+    val contentColorOrT: Color @Composable get() = contentColor ?: UTheme.colors.ubinContent
+    val backgroundColorOrT: Color @Composable get() = backgroundColor ?: UTheme.colors.ubinBackground
+    val borderColorOrT: Color @Composable get() = borderColor ?: UTheme.colors.ubinBorder(/*FIXME*/)
+    val borderWidthOrT: Dp @Composable get() = borderWidth ?: UTheme.sizes.ubinBorder
+    val paddingOrT: Dp @Composable get() = padding ?: UTheme.sizes.ubinPadding
+
+    /** mod should be already materialized by user */
+    fun foldInFrom(mod: Mod) = mod.foldIn(Unit) { _, e -> when (e) {
+        is UMarginMod -> margin = e.margin
+        is UContentColorMod -> contentColor = e.contentColor
+        is UBackgroundColorMod -> backgroundColor = e.backgroundColor
+        is UBorderColorMod -> borderColor = e.borderColor
+        is UBorderWidthMod -> borderWidth = e.borderWidth
+        is UPaddingMod -> padding = e.padding
+        is OnUClickMod -> onUClick = e.onUClick // new onUClick replaces upstream (and deletes it if null)
+        is OnUReportMod -> onUReport = e.onUReport // new onUReport replaces upstream (and deletes it if null)
+        // FIXME: I experimented with calling both lambdas (when not null)
+        //  sth like: onUClick = { onUClick(it); e.onUClick(it) }
+        //  (moments of reading/writing state probably play important role)
+        //  So I had some nasty issues with sometimes not working onUClicks in UDemo1
+        //  So I resigned and chose simple replacing (inner most modifier wins).
+        //  still it would be cool to have this accumulation for example for UDebug
+    } }
+}
+
 internal class UMarginMod(val margin: Dp): Element
 internal class UContentColorMod(val contentColor: Color): Element
 internal class UBackgroundColorMod(val backgroundColor: Color): Element
@@ -113,29 +150,13 @@ fun Mod.ustyleBlank(
     .uborderWidth(borderWidth)
     .upadding(padding)
 
-/** Non-null mods are accumulated (all are called in outside in order); null are ignored */
+/** Warning: it replaces upstream Mod.onUClick - see comment at UBin.foldInFrom */
+// It would be better if non-null mods were accumulated (all called in outside in order)
 fun Mod.onUClick(onUClick: OnUClick?) = then(OnUClickMod(onUClick))
-/** Non-null mods are accumulated (all are called in outside in order); null are ignored - TODO NOW: test it! */
+/** Warning: it replaces upstream Mod.onUReport - see comment at UBin.foldInFrom */
+// It would be better if non-null mods were accumulated (all called in outside in order)
 fun Mod.onUReport(onUReport: OnUReport?, keyPrefix: String = "") =
     then(OnUReportMod(onUReport?.withKeyPrefix(keyPrefix)))
-
-
-inline fun <reified R: Any> Mod.foldInExtracted(
-    initial: R? = null,
-    noinline tryExtract: (Element) -> R?,
-    noinline operation: (R, R) -> R
-) = foldIn(initial) { outer, element ->
-    val inner = tryExtract(element)
-    outer ?: return@foldIn inner
-    inner ?: return@foldIn outer
-    operation(outer, inner)
-}
-
-inline fun <reified T> Mod.foldInExtractedPushees(
-    noinline initial: ((T) -> Unit)? = null,
-    noinline tryExtract: (Element) -> ((T) -> Unit)?,
-) = foldInExtracted(initial, tryExtract) { outer, inner -> { outer(it); inner(it) } }
-
 
 /**
  * Warning: It will add these mods to ALL children UBins.

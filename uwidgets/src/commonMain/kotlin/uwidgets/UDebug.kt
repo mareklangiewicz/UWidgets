@@ -10,6 +10,7 @@ import pl.mareklangiewicz.udata.*
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
+/** Warning: it replaces upstream Mod.onUReport - see comment at UBin.foldInFrom */
 fun UDebug(keyPrefix: String = "", content: @Composable () -> Unit) = UChildrenComposedMod(
     factory = {
         val measurer = rememberTextMeasurer()
