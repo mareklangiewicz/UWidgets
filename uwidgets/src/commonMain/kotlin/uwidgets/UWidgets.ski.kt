@@ -36,8 +36,7 @@ import androidx.compose.ui.Modifier as Mod
             .background(conf.backgroundColorOrT)
             .border(conf.borderWidthOrT, conf.borderColorOrT)
             .padding(conf.borderWidthOrT + conf.paddingOrT)
-            .andIfNotNull(hScrollS) { horizontalScroll(UBASIC, it) }
-            .andIfNotNull(vScrollS) { verticalScroll(UBASIC, it) },
+            .scroll(hScrollS, vScrollS),
         onUReport = conf.onUReport,
     ) { CompositionLocalProvider(LocalContentColor provides conf.contentColorOrT) { content() } }
 }

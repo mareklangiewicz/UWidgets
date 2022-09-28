@@ -154,27 +154,19 @@ fun Mod.onUClick(onUClick: OnUClick?) = then(OnUClickMod(onUClick))
 fun Mod.onUReport(onUReport: OnUReport?, keyPrefix: String = "") =
     then(OnUReportMod(onUReport?.withKeyPrefix(keyPrefix)))
 
-
 enum class UScrollStyle { UFANCY, UBASIC, UHIDDEN }
 
+fun Mod.scroll(horizontalS: ScrollState? = null, verticalS: ScrollState? = null, style: UScrollStyle = UBASIC) = this
+    .apply { require(style == UBASIC) } // TODO later: implement different UScrollStyles
+    .andIfNotNull(horizontalS) { drawWithScroll(it, isVertical = false) }
+    .andIfNotNull(verticalS) { drawWithScroll(it, isVertical = true) }
+    .andIfNotNull(horizontalS) { horizontalScroll(it) }
+    .andIfNotNull(verticalS) { verticalScroll(it) }
 
-fun Mod.horizontalScroll(style: UScrollStyle, state: ScrollState): Mod = this
-    .drawWithContent {
-        require(style == UBASIC) // TODO later: implement different UScrollStyles
-        drawContent()
-        // TODO NOW: scroller
-        if (state.maxValue > 0 && state.maxValue < Int.MAX_VALUE)
-            drawCircle(Color.Blue.copy(alpha = .1f), size.minDimension * .5f * state.value / state.maxValue)
-    }
-    .horizontalScroll(state)
-
-fun Mod.verticalScroll(style: UScrollStyle, state: ScrollState): Mod = this
-    .drawWithContent {
-        require(style == UBASIC) // TODO later: implement different UScrollStyles
-        drawContent()
-        // TODO NOW: scroller
-        if (state.maxValue > 0 && state.maxValue < Int.MAX_VALUE)
-            drawCircle(Color.Green.copy(alpha = .1f), size.minDimension * .5f * state.value / state.maxValue)
-    }
-    .verticalScroll(state)
-
+fun Mod.drawWithScroll(scrollS: ScrollState, isVertical: Boolean = false) = drawWithContent {
+    drawContent()
+    // TODO NOW: scroller
+    val c = if (isVertical) Color.Green else Color.Blue
+    if (scrollS.maxValue > 0 && scrollS.maxValue < Int.MAX_VALUE)
+        drawCircle(c.copy(alpha = .1f), size.minDimension * .5f * scrollS.value / scrollS.maxValue)
+}
