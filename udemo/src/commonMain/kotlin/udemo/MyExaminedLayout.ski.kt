@@ -51,6 +51,7 @@ import androidx.compose.ui.Modifier as Mod
 }
 
 // sets up rigid/required/fixed constraints for children, so it's easier to reason about content
+// FIXME NOW: Try to use UDebug in MyExaminedLayout - can I make it work?
 @Composable fun RigidFather(
     type: UBinType = UBOX,
     contentSize: DpSize = 400.dp.square,

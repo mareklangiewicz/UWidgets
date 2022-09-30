@@ -22,9 +22,6 @@ enum class UAlignmentType(val css: String) {
     }
 }
 
-fun Color.lighten(fraction: Float = 0.1f) = lerp(this, Color.White, fraction.coerceIn(0f, 1f))
-fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coerceIn(0f, 1f))
-
 @Composable fun UBin(
     type: UBinType,
     mod: Mod = Mod,
