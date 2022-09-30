@@ -28,6 +28,13 @@ internal fun Mod.andUSize(width: Dp? = null, height: Dp? = null): Mod = when {
     else -> requiredSize(width, height)
 }
 
+
+/**
+ * Default behavior for all Mod.u* parameters:
+ * Mod below overrides upstream setting.
+ * Null means it will be "default" (if not overridden below in Mod chain).
+ * Defaults are taken from UTheme in most cases.
+ */
 internal class UBinConf {
     var width: Dp? by mutableStateOf(null)
     var height: Dp? by mutableStateOf(null)
@@ -58,13 +65,19 @@ internal class UBinConf {
     /** mod should be already materialized by user */
     fun foldInFrom(mod: Mod) = mod.foldIn(Unit) { _, e ->
         when (e) {
-            is USizeMod -> { e.width?.let { width = it }; e.height?.let { height = it } }
+            is UWidthMod -> width = e.width
+            is UHeightMod -> height = e.height
             is UMarginMod -> margin = e.margin
             is UContentColorMod -> contentColor = e.contentColor
             is UBackgroundColorMod -> backgroundColor = e.backgroundColor
             is UBorderColorMod -> borderColor = e.borderColor
             is UBorderWidthMod -> borderWidth = e.borderWidth
             is UPaddingMod -> padding = e.padding
+            is UAlignHorizMod -> ualignHoriz = e.horiz
+            is UAlignVertiMod -> ualignVerti = e.verti
+            is UScrollHorizMod -> uscrollHoriz = e.horiz
+            is UScrollVertiMod -> uscrollVerti = e.verti
+            is UScrollStyleMod -> uscrollStyle = e.style
             is OnUClickMod -> onUClick = e.onUClick // new onUClick replaces upstream (and deletes it if null)
             is OnUReportMod -> onUReport = e.onUReport // new onUReport replaces upstream (and deletes it if null)
             // FIXME: I experimented with calling both lambdas (when not null)
@@ -73,40 +86,47 @@ internal class UBinConf {
             //  So I had some nasty issues with sometimes not working onUClicks in UDemo1
             //  So I resigned and chose simple replacing (inner most modifier wins).
             //  still it would be cool to have this accumulation for example for UDebug
-            is UAlignMod -> { ualignHoriz = e.horizontal; ualignVerti = e.vertical }
-            is UScrollMod -> { uscrollHoriz = e.horizontal; uscrollVerti = e.vertical; uscrollStyle = e.style }
         }
     }
 }
 
-internal class USizeMod(val width: Dp?, val height: Dp?) : Element
-internal class UMarginMod(val margin: Dp) : Element
-internal class UContentColorMod(val contentColor: Color) : Element
-internal class UBackgroundColorMod(val backgroundColor: Color) : Element
-internal class UBorderColorMod(val borderColor: Color) : Element
-internal class UBorderWidthMod(val borderWidth: Dp) : Element
-internal class UPaddingMod(val padding: Dp) : Element
-internal class OnUClickMod(val onUClick: OnUClick?) : Element
-internal class OnUReportMod(val onUReport: OnUReport?) : Element
-internal class UAlignMod(val horizontal: UAlignmentType?, val vertical: UAlignmentType?) : Element
-internal class UScrollMod(val horizontal: Boolean, val vertical: Boolean, val style: UScrollStyle) : Element
+// TODO: Refactor: use some generic UPropMod(key, value) (private enum for keys? - less dynamic allocations?)
+private class UWidthMod(val width: Dp?) : Element
+private class UHeightMod(val height: Dp?) : Element
+private class UMarginMod(val margin: Dp?) : Element
+private class UContentColorMod(val contentColor: Color?) : Element
+private class UBackgroundColorMod(val backgroundColor: Color?) : Element
+private class UBorderColorMod(val borderColor: Color?) : Element
+private class UBorderWidthMod(val borderWidth: Dp?) : Element
+private class UPaddingMod(val padding: Dp?) : Element
+private class OnUClickMod(val onUClick: OnUClick?) : Element
+private class OnUReportMod(val onUReport: OnUReport?) : Element
+private class UAlignHorizMod(val horiz: UAlignmentType?) : Element
+private class UAlignVertiMod(val verti: UAlignmentType?) : Element
+private class UScrollHorizMod(val horiz: Boolean) : Element
+private class UScrollVertiMod(val verti: Boolean) : Element
+private class UScrollStyleMod(val style: UScrollStyle) : Element
 
-fun Mod.usize(width: Dp? = null, height: Dp? = null) = then(USizeMod(width, height))
+fun Mod.uwidth(width: Dp?) = then(UWidthMod(width))
+fun Mod.uheight(height: Dp?) = then(UHeightMod(height))
+fun Mod.usize(width: Dp? = null, height: Dp? = null) = uwidth(width).uheight(height)
 fun Mod.usize(size: DpSize?) = usize(size?.width, size?.height)
-fun Mod.uwidth(width: Dp?) = then(USizeMod(width, null))
-fun Mod.uheight(height: Dp?) = then(USizeMod(null, height))
 
-fun Mod.umargin(margin: Dp) = then(UMarginMod(margin))
-fun Mod.ucontentColor(contentColor: Color) = then(UContentColorMod(contentColor))
-fun Mod.ubackgroundColor(backgroundColor: Color) = then(UBackgroundColorMod(backgroundColor))
-fun Mod.uborderColor(borderColor: Color) = then(UBorderColorMod(borderColor))
-fun Mod.uborderWidth(borderWidth: Dp) = then(UBorderWidthMod(borderWidth))
-fun Mod.upadding(padding: Dp) = then(UPaddingMod(padding))
-/** null resets to default, and default is always taken from UTheme */
-fun Mod.ualign(horizontal: UAlignmentType? = null, vertical: UAlignmentType? = null) =
-    then(UAlignMod(horizontal, vertical))
-fun Mod.uscroll(horizontal: Boolean = false, vertical: Boolean = false, style: UScrollStyle = UBASIC) =
-    then(UScrollMod(horizontal, vertical, style))
+fun Mod.umargin(margin: Dp?) = then(UMarginMod(margin))
+fun Mod.ucontentColor(contentColor: Color?) = then(UContentColorMod(contentColor))
+fun Mod.ubackgroundColor(backgroundColor: Color?) = then(UBackgroundColorMod(backgroundColor))
+fun Mod.uborderColor(borderColor: Color?) = then(UBorderColorMod(borderColor))
+fun Mod.uborderWidth(borderWidth: Dp?) = then(UBorderWidthMod(borderWidth))
+fun Mod.upadding(padding: Dp?) = then(UPaddingMod(padding))
+fun Mod.ualignHoriz(horiz: UAlignmentType?) = then(UAlignHorizMod(horiz))
+fun Mod.ualignVerti(verti: UAlignmentType?) = then(UAlignVertiMod(verti))
+fun Mod.ualign(horiz: UAlignmentType? = null, verti: UAlignmentType? = null) = ualignHoriz(horiz).ualignVerti(verti)
+fun Mod.uscrollHoriz(horiz: Boolean) = then(UScrollHorizMod(horiz))
+fun Mod.uscrollVerti(verti: Boolean) = then(UScrollVertiMod(verti))
+fun Mod.uscrollStyle(style: UScrollStyle) = then(UScrollStyleMod(style))
+fun Mod.uscroll(horiz: Boolean = false, verti: Boolean = false, style: UScrollStyle = UBASIC) =
+    uscrollHoriz(horiz).uscrollVerti(verti).uscrollStyle(style)
+
 
 @Composable fun Mod.ucolors(
     contentColor: Color = UTheme.colors.ubinContent,
