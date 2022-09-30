@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier as Mod
 /**
  * The mod: Mod is only passed to platform implementation. Mod.u* modifiers are ignored.
  * Use UText instead of URawText to add Mod.u* modifiers.
+ * TODO_someday: Maybe make it public if turns out to be really needed.
  */
 @Composable internal fun URawText(text: String, mod: Mod = Mod, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) =
     URawTextAct(text, mod, bold, mono, maxLines)
