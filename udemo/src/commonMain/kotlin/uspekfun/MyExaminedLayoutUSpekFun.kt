@@ -10,6 +10,7 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
 import kotlin.math.*
 
 // TODO_later: use context receiver for UComposeScope
+@Suppress("CanBeVal")
 suspend fun UComposeScope.MyExaminedLayoutUSpekFun() = with(density) {
 
     ureports.clear()
@@ -26,7 +27,7 @@ suspend fun UComposeScope.MyExaminedLayoutUSpekFun() = with(density) {
             USkikoBox {
                 MyExaminedLayout(
                     type = type,
-                    size = rigidSizeDp,
+                    contentSize = rigidSizeDp,
                     withSon1Cyan = withSon1Cyan,
                     withSon2Red = withSon2Red,
                     withSon3Green = withSon3Green,

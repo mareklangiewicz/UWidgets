@@ -35,14 +35,14 @@ import androidx.compose.ui.Modifier as Mod
 
 @Composable fun MyExaminedLayout(
     type: UBinType = UBOX,
-    size: DpSize = 400.dp.square,
+    contentSize: DpSize = 400.dp.square,
     withSon1Cyan: Boolean = false,
     withSon2Red: Boolean = false,
     withSon3Green: Boolean = false,
     withSon4Blue: Boolean = false,
     onUReport: OnUReport? = null,
 ) = UAllStart {
-    RigidFather(type, size, onUReport) {
+    RigidFather(type, contentSize, onUReport) {
         if (withSon1Cyan) UAlign(USTART, UEND) { ColoredSon("cyan son", Color.Cyan, 150.dp.square, onUReport = onUReport) }
         if (withSon2Red) UAllCenter { ColoredSon("red son", Color.Red, 70.dp.square, sizeRequired = true, onUReport = onUReport) }
         if (withSon3Green) UAlign(USTRETCH, UEND) { ColoredSon("green son", Color.Green, 60.dp.square, onUReport = onUReport) }
@@ -53,18 +53,17 @@ import androidx.compose.ui.Modifier as Mod
 // sets up rigid/required/fixed constraints for children, so it's easier to reason about content
 @Composable fun RigidFather(
     type: UBinType = UBOX,
-    size: DpSize = 400.dp.square,
+    contentSize: DpSize = 400.dp.square,
     onUReport: OnUReport? = null,
     content: @Composable () -> Unit,
 ) = UBin(
     type = type,
     mod = Mod
-        .usize(size)
+        .usize(contentSize + 8.dp.square)
         .ustyleBlank(
             backgroundColor = Color.LightGray,
             borderColor = Color.Blue,
             borderWidth = 4.dp,
-            padding = 4.dp
         )
         .onUReport(onUReport, "rigid father "),
     content = content,

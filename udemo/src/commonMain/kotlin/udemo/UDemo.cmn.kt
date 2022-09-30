@@ -21,6 +21,7 @@ fun UDemo() = UAllStretch {
             USwitch(vscroll, "vscroll on", "vscroll off")
         }
         UTabs(
+            "UDemo Temp" to { UDemoTemp() },
             "UDemo 0" to { UDemo0() },
             "UDemo 1" to { UDemo1(hscroll.value, vscroll.value) },
             "UDemo 2" to { UDemo2(udemo2size.value.dp.square, hscroll.value, vscroll.value) },
@@ -57,7 +58,6 @@ fun UDemo() = UAllStretch {
 
 @Composable fun UDemo0() = UAllStretch {
     UColumn {
-        UDemoTemp()
         var switch1 by remember { mutableStateOf(USTART) }
         var switch2 by remember { mutableStateOf(USTART) }
         var switch3 by remember { mutableStateOf(USTART) }

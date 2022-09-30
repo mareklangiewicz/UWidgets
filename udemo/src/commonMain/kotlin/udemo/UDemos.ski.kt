@@ -36,7 +36,7 @@ import androidx.compose.ui.Modifier as Mod
     URow {
         MyExaminedLayout(
             type = typeS.value,
-            size = size,
+            contentSize = size,
             withSon1Cyan = son1S.value,
             withSon2Red = son2S.value,
             withSon3Green = son3S.value,
