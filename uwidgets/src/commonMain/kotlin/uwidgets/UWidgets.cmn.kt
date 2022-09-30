@@ -84,13 +84,9 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
 @Composable fun URow(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
     UBin(UROW, mod, selected, content)
 
-@Composable fun UBoxedText(text: String, mod: Mod = Mod, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) =
-    UBox(mod = mod) {
-        UAlign(
-            if (center) UCENTER else UTheme.alignments.horizontal,
-            if (center) UCENTER else UTheme.alignments.vertical,
-        ) { UText(text, bold, mono) } // UText uses another UBasicBin(BOX). It's intentional. (to make sure all U*Text respect UAlign etc)
-    }
+/** It's always wrapped in UBox. Use Mode.ustyleBlank(..) if you want to remove default style (borders etc..). */
+@Composable fun UText(text: String, mod: Mod = Mod, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) =
+    UBox(mod.ualign(UCENTER.takeIf { center }, UCENTER.takeIf { center })) { URawText(text, mod, bold, mono) }
 
 // Renaming tab -> _ breaks layout inspector in AS!!
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
@@ -106,7 +102,7 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
 internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) = UAllStartRow {
     var selectedTabIndex by remember { mutableStateOf(0) }
     tabs.forEachIndexed { index, title ->
-        UBoxedText(
+        UText(
             text = title,
             mod = Mod.onUClick { selectedTabIndex = index; onSelected(index, title) },
             center = true,
@@ -120,7 +116,7 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
 @Composable fun <T> ustates(vararg inits: T): List<MutableState<T>> = inits.map { ustate(it) }
 
 @Composable fun USwitch(state: MutableState<Boolean>, labelOn: String = " on  ", labelOff: String = " off ") = UAllStart {
-    UBoxedText(
+    UText(
         text = if (state.value) labelOn else labelOff,
         mod = Mod.onUClick { state.value = !state.value },
         center = true,
@@ -136,7 +132,7 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
 ) = UAllStartRow { for (s in states) USwitch(s, labelOn, labelOff) }
 
 @Composable fun <T> USwitch(state: MutableState<T>, vararg options: Pair<String, T>) = UAllStartRow {
-    for ((label, value) in options) UBoxedText(
+    for ((label, value) in options) UText(
         text = label,
         mod = Mod.onUClick { state.value = value },
         center = true,
@@ -160,11 +156,11 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
     val w2 = gapwidth - w1
     UAllCenter {
         URow {
-            UText(min.ustr, bold = bold, mono = true)
+            URawText(min.ustr, bold = bold, mono = true)
             UCoreBin(UBOX, mod = Mod.ustyleBlank(backgroundColor = Color.Blue, padding = 2.dp).usize(w1.dp, 4.dp)) {}
-            UText(pos.ustr, bold = bold, mono = true)
+            URawText(pos.ustr, bold = bold, mono = true)
             UCoreBin(UBOX, mod = Mod.ustyleBlank(backgroundColor = Color.White, padding = 2.dp).usize(w2.dp, 4.dp)) {}
-            UText(max.ustr, bold = bold, mono = true)
+            URawText(max.ustr, bold = bold, mono = true)
         }
     }
 }

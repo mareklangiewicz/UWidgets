@@ -22,14 +22,14 @@ fun UMenuTree(tree: UCallbackTree, dispatcher: CoroutineDispatcher) {
     val subt = tree.subtrees
     require(subt.isEmpty() || tree.callback == null) { "Tree with sub trees and callback" }
     when {
-        subt.isEmpty() -> UBoxedText(
+        subt.isEmpty() -> UText(
             text = tree.label!!,
             mod = Mod.onUClick { scope.launch(dispatcher) { tree.callback?.invoke() } },
             mono = true
         )
 
         else -> UColumn {
-            tree.label?.let { UBox { UBoxedText(it, center = true, bold = true, mono = true) } }
+            tree.label?.let { UText(it, center = true, bold = true, mono = true) }
             for (t in subt) UMenuTree(t, dispatcher)
         }
     }

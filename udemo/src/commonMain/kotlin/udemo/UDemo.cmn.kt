@@ -100,18 +100,15 @@ fun UDemo() = UAllStretch {
 
 @Composable fun UDemoTexts(
     count: Int = 20,
-    boxed: Boolean = true,
     center: Boolean = true,
     bold: Boolean = true,
     mono: Boolean = true,
     growFactor: Int = 1,
 ) {
-    require(boxed || !center)
     repeat(count) { i ->
         val c = 'A' + i
         val s = "$c".repeat(1 + i * growFactor)
-        if (boxed) UBoxedText(s, center = center, bold = bold, mono = mono)
-        else UText(s, bold, mono)
+        UText(s, center = center, bold = bold, mono = mono)
     }
 }
 

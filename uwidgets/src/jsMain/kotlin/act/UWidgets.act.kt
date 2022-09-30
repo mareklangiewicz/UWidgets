@@ -10,13 +10,9 @@ import androidx.compose.ui.Modifier as Mod
 @Composable internal actual fun UCoreBinAct(type: UBinType, mod: Mod, content: @Composable () -> Unit) =
     if (currentCompositionIsDom) UCoreBinImplDom(type, mod, content) else UCoreBinImplSki(type, mod, content)
 
-@Composable internal actual fun UBasicBinAct(type: UBinType, content: @Composable () -> Unit) =
-    if (currentCompositionIsDom) UBasicBinImplDom(type, content)
-    else UBasicBinImplSki(type, content)
-
-@Composable internal actual fun UTextAct(text: String, bold: Boolean, mono: Boolean, maxLines: Int) =
-    if (currentCompositionIsDom) UTextImplDom(text, bold, mono, maxLines)
-    else UTextImplSki(text, bold, mono, maxLines)
+@Composable internal actual fun URawTextAct(text: String, mod: Mod, bold: Boolean, mono: Boolean, maxLines: Int) =
+    if (currentCompositionIsDom) URawTextImplDom(text, mod, bold, mono, maxLines)
+    else URawTextImplSki(text, mod, bold, mono, maxLines)
 
 @Composable internal actual fun UTabsAct(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     if (currentCompositionIsDom) UTabsImplDom(*tabs, onSelected = onSelected)

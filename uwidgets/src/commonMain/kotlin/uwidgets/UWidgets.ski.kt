@@ -16,9 +16,6 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
 import androidx.compose.ui.Modifier as Mod
 
-@Composable internal fun UBasicBinImplSki(type: UBinType, content: @Composable () -> Unit) =
-    UBasicBinSki(type, content = content)
-
 @Composable internal fun UCoreBinImplSki(type: UBinType, mod: Mod = Mod, content: @Composable () -> Unit) {
     // TODO_later: make sure .materialize here is ok (Layout does it internally again later)
     val m = currentComposer.materialize(mod)
@@ -26,7 +23,7 @@ import androidx.compose.ui.Modifier as Mod
     conf.foldInFrom(m)
     val hScrollS = if (conf.uscrollHoriz) rememberScrollState() else null
     val vScrollS = if (conf.uscrollVerti) rememberScrollState() else null
-    UBasicBinSki(
+    URawBinSki(
         type = type,
         mod = m
             .padding(conf.marginOrT)
@@ -36,21 +33,20 @@ import androidx.compose.ui.Modifier as Mod
             .border(conf.borderWidthOrT, conf.borderColorOrT)
             .padding(conf.borderWidthOrT + conf.paddingOrT)
             .scroll(hScrollS, vScrollS),
+        parentAlignMod = UAlignDataMod(conf.ualignHorizOrT, conf.ualignVertiOrT),
         onUReport = conf.onUReport,
     ) { CompositionLocalProvider(LocalContentColor provides conf.contentColorOrT) { content() } }
 }
 
-@Composable fun UBasicBinSki(
+@Composable private fun URawBinSki(
     type: UBinType,
     mod: Mod = Mod,
+    parentAlignMod: UAlignDataMod,
     onUReport: OnUReport? = null,
     content: @Composable () -> Unit = {},
 ) {
     onUReport?.invoke("compose" to type)
-    val phorizontal = UTheme.alignments.horizontal
-    val pvertical = UTheme.alignments.vertical
-    val m = mod.then(UChildData(phorizontal, pvertical))
-    Layout(content = content, modifier = m) { measurables, parentConstraints ->
+    Layout(content = content, modifier = mod.then(parentAlignMod)) { measurables, parentConstraints ->
         onUReport?.invoke("measure in" to parentConstraints)
         var maxChildWidth = 0
         var maxChildHeight = 0
@@ -59,7 +55,7 @@ import androidx.compose.ui.Modifier as Mod
                 val placeables = mutableListOfNulls<Placeable?>(measurables.size)
 
                 measurables.forEachIndexed { idx, measurable ->
-                    val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
+                    val (uhorizontal, uvertical) = measurable.ualignMod ?: parentAlignMod
                     // skip measuring stretched items (when NOT bounded size) (will measure it later)
                     uhorizontal == USTRETCH && !parentConstraints.hasBoundedWidth && return@forEachIndexed
                     uvertical == USTRETCH && !parentConstraints.hasBoundedHeight && return@forEachIndexed
@@ -77,7 +73,7 @@ import androidx.compose.ui.Modifier as Mod
                 // measure no matter horizontally, but still not stretched vertically (or stretched but with bounded height)
                 measurables.forEachIndexed { idx, measurable ->
                     placeables[idx] == null || return@forEachIndexed
-                    val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
+                    val (uhorizontal, uvertical) = measurable.ualignMod ?: parentAlignMod
                     uvertical == USTRETCH && !parentConstraints.hasBoundedHeight && return@forEachIndexed
                     placeables[idx] = measurable.measure(
                         parentConstraints.copy(
@@ -96,7 +92,7 @@ import androidx.compose.ui.Modifier as Mod
                 // measure stretched vertically (and unbounded), all other should be placed already
                 measurables.forEachIndexed { idx, measurable ->
                     placeables[idx] == null || return@forEachIndexed
-                    val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
+                    val (uhorizontal, uvertical) = measurable.ualignMod ?: parentAlignMod
                     check(uvertical == USTRETCH && !parentConstraints.hasBoundedHeight)
                     placeables[idx] = measurable.measure(
                         parentConstraints.copy(
@@ -112,13 +108,13 @@ import androidx.compose.ui.Modifier as Mod
                     }
                 }
 
-                val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
-                val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical, parentConstraints)
+                val parentWidth = placeables.stretchOrMaxWidthWithin(parentAlignMod.horizontal, parentConstraints)
+                val parentHeight = placeables.stretchOrMaxHeightWithin(parentAlignMod.vertical, parentConstraints)
                 layout(parentWidth, parentHeight) {
                     onUReport?.invoke("place in" to IntSize(parentWidth, parentHeight))
                     for (p in placeables) {
                         p ?: error("All children should be measured already.")
-                        val (uhorizontal, uvertical) = p.uChildData(phorizontal, pvertical)
+                        val (uhorizontal, uvertical) = p.ualignMod ?: parentAlignMod
                         p.placeRelative(
                             uhorizontal.startPositionFor(p.width, parentWidth),
                             uvertical.startPositionFor(p.height, parentHeight)
@@ -134,7 +130,7 @@ import androidx.compose.ui.Modifier as Mod
             UROW -> {
                 val placeables = mutableListOfNulls<Placeable?>(measurables.size)
                 measurables.forEachIndexed { idx, measurable ->
-                    val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
+                    val (uhorizontal, uvertical) = measurable.ualignMod ?: parentAlignMod
                     // skip measuring stretched items (when normal bounded row width) (will measure it later)
                     uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth && return@forEachIndexed
                     placeables[idx] = measurable.measure(
@@ -147,14 +143,14 @@ import androidx.compose.ui.Modifier as Mod
                 val fixedWidthTaken = placeables.sumOf { it?.width ?: 0 }
                 val itemStretchedCount = placeables.count { it == null }
                 val parentWidth =
-                    if ((phorizontal == USTRETCH || itemStretchedCount > 0) && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth
+                    if ((parentAlignMod.horizontal == USTRETCH || itemStretchedCount > 0) && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth
                     else parentConstraints.constrainWidth(fixedWidthTaken)
                 val parentWidthLeft = parentWidth - fixedWidthTaken
                 if (parentWidthLeft > 0 && itemStretchedCount > 0) {
                     val itemWidth = parentWidthLeft / itemStretchedCount
                     measurables.forEachIndexed { idx, measurable ->
                         placeables[idx] == null || return@forEachIndexed
-                        val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
+                        val (uhorizontal, uvertical) = measurable.ualignMod ?: parentAlignMod
                         check(uhorizontal == USTRETCH)
                         placeables[idx] = measurable.measure(
                             parentConstraints.copy(
@@ -164,15 +160,15 @@ import androidx.compose.ui.Modifier as Mod
                         )
                     }
                 }
-                val parentHeight = placeables.stretchOrMaxHeightWithin(pvertical, parentConstraints)
+                val parentHeight = placeables.stretchOrMaxHeightWithin(parentAlignMod.vertical, parentConstraints)
                 layout(parentWidth, parentHeight) {
                     onUReport?.invoke("place in" to IntSize(parentWidth, parentHeight))
                     // I do filterNotNull, because some stretched items can be skipped totally when no place left after measuring fixed items
                     val p =
                         if (itemStretchedCount > 0) placeables.filterNotNull()
                         else placeables.map { it ?: error("placeable not measured") }
-                    if (itemStretchedCount > 0) placeAllAsHorizontalStartToEnd(p, phorizontal, pvertical, parentHeight)
-                    else placeAllAsHorizontalGroupsStartCenterEnd(p, phorizontal, pvertical, parentWidth, parentHeight, fixedWidthTaken)
+                    if (itemStretchedCount > 0) placeAllAsHorizontalStartToEnd(p, parentAlignMod, parentHeight)
+                    else placeAllAsHorizontalGroupsStartCenterEnd(p, parentAlignMod, parentWidth, parentHeight, fixedWidthTaken)
                     onUReport?.invoke("placed count" to p.size)
                 }
             }
@@ -180,7 +176,7 @@ import androidx.compose.ui.Modifier as Mod
             UCOLUMN -> {
                 val placeables = mutableListOfNulls<Placeable?>(measurables.size)
                 measurables.forEachIndexed { idx, measurable ->
-                    val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
+                    val (uhorizontal, uvertical) = measurable.ualignMod ?: parentAlignMod
                     // skip measuring stretched items (when normal bounded column height) (will measure it later)
                     uvertical == USTRETCH && parentConstraints.hasBoundedHeight && return@forEachIndexed
                     placeables[idx] = measurable.measure(
@@ -193,14 +189,14 @@ import androidx.compose.ui.Modifier as Mod
                 val fixedHeightTaken = placeables.sumOf { it?.height ?: 0 }
                 val itemStretchedCount = placeables.count { it == null }
                 val parentHeight =
-                    if ((pvertical == USTRETCH || itemStretchedCount > 0) && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight
+                    if ((parentAlignMod.vertical == USTRETCH || itemStretchedCount > 0) && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight
                     else parentConstraints.constrainHeight(fixedHeightTaken)
                 val parentHeightLeft = parentHeight - fixedHeightTaken
                 if (parentHeightLeft > 0 && itemStretchedCount > 0) {
                     val itemHeight = parentHeightLeft / itemStretchedCount
                     measurables.forEachIndexed { idx, measurable ->
                         placeables[idx] == null || return@forEachIndexed
-                        val (uhorizontal, uvertical) = measurable.uChildData(phorizontal, pvertical)
+                        val (uhorizontal, uvertical) = measurable.ualignMod ?: parentAlignMod
                         check(uvertical == USTRETCH)
                         placeables[idx] = measurable.measure(
                             parentConstraints.copy(
@@ -210,15 +206,15 @@ import androidx.compose.ui.Modifier as Mod
                         )
                     }
                 }
-                val parentWidth = placeables.stretchOrMaxWidthWithin(phorizontal, parentConstraints)
+                val parentWidth = placeables.stretchOrMaxWidthWithin(parentAlignMod.horizontal, parentConstraints)
                 layout(parentWidth, parentHeight) {
                     onUReport?.invoke("place in" to IntSize(parentWidth, parentHeight))
                     // I do filterNotNull, because some stretched items can be skipped totally when no place left after measuring fixed items
                     val p =
                         if (itemStretchedCount > 0) placeables.filterNotNull()
                         else placeables.map { it ?: error("placeable not measured") }
-                    if (itemStretchedCount > 0) placeAllAsVerticalTopToDown(p, phorizontal, pvertical, parentWidth)
-                    else placeAllAsVerticalGroupsTopCenterBottom(p, phorizontal, pvertical, parentWidth, parentHeight, fixedHeightTaken)
+                    if (itemStretchedCount > 0) placeAllAsVerticalTopToDown(p, parentAlignMod, parentWidth)
+                    else placeAllAsVerticalGroupsTopCenterBottom(p, parentAlignMod, parentWidth, parentHeight, fixedHeightTaken)
                     onUReport?.invoke("placed count" to p.size)
                 }
             }
@@ -228,13 +224,12 @@ import androidx.compose.ui.Modifier as Mod
 
 private fun Placeable.PlacementScope.placeAllAsHorizontalStartToEnd(
     placeables: List<Placeable>,
-    parentHorizontal: UAlignmentType,
-    parentVertical: UAlignmentType,
+    parentAlign: UAlignDataMod,
     parentHeight: Int,
 ) {
     var x = 0
     for (p in placeables) {
-        val (_, uvertical) = p.uChildData(parentHorizontal, parentVertical)
+        val (_, uvertical) = p.ualignMod ?: parentAlign
         p.placeRelative(x, uvertical.startPositionFor(p.height, parentHeight))
         x += p.width
     }
@@ -242,13 +237,12 @@ private fun Placeable.PlacementScope.placeAllAsHorizontalStartToEnd(
 
 private fun Placeable.PlacementScope.placeAllAsVerticalTopToDown(
     placeables: List<Placeable>,
-    parentHorizontal: UAlignmentType,
-    parentVertical: UAlignmentType,
+    parentAlign: UAlignDataMod,
     parentWidth: Int,
 ) {
     var y = 0
     for (p in placeables) {
-        val (uhorizontal, _) = p.uChildData(parentHorizontal, parentVertical)
+        val (uhorizontal, _) = p.ualignMod ?: parentAlign
         p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), y)
         y += p.height
     }
@@ -257,8 +251,7 @@ private fun Placeable.PlacementScope.placeAllAsVerticalTopToDown(
 // Any USTRETCH items are treated as belonging to current group (start or center or end)
 private fun Placeable.PlacementScope.placeAllAsHorizontalGroupsStartCenterEnd(
     placeables: List<Placeable>,
-    parentHorizontal: UAlignmentType,
-    parentVertical: UAlignmentType,
+    parentAlign: UAlignDataMod,
     parentWidth: Int,
     parentHeight: Int,
     fixedWidthTaken: Int,
@@ -267,7 +260,7 @@ private fun Placeable.PlacementScope.placeAllAsHorizontalGroupsStartCenterEnd(
     var idx = 0
     while (idx < placeables.size) { // loop through USTART arranged placeables first
         val p = placeables[idx]
-        val (uhorizontal, uvertical) = p.uChildData(parentHorizontal, parentVertical)
+        val (uhorizontal, uvertical) = p.ualignMod ?: parentAlign
         uhorizontal == USTART || uhorizontal == USTRETCH || break
         p.placeRelative(x, uvertical.startPositionFor(p.height, parentHeight))
         x += p.width
@@ -276,7 +269,7 @@ private fun Placeable.PlacementScope.placeAllAsHorizontalGroupsStartCenterEnd(
     x += UCENTER.startPositionFor(fixedWidthTaken, parentWidth) // hack to offset to centered part.
     while (idx < placeables.size) { // loop through UCENTER (and USTART treated same as UCENTER) arranged placeables
         val p = placeables[idx]
-        val (uhorizontal, uvertical) = p.uChildData(parentHorizontal, parentVertical)
+        val (uhorizontal, uvertical) = p.ualignMod ?: parentAlign
         uhorizontal == UEND && break
         p.placeRelative(x, uvertical.startPositionFor(p.height, parentHeight))
         x += p.width
@@ -285,7 +278,7 @@ private fun Placeable.PlacementScope.placeAllAsHorizontalGroupsStartCenterEnd(
     x += UCENTER.startPositionFor(fixedWidthTaken, parentWidth) // hack to offset to end part.
     while (idx < placeables.size) { // loop through UEND (and all left treated as UEND) arranged placeables
         val p = placeables[idx]
-        val (_, uvertical) = p.uChildData(parentHorizontal, parentVertical)
+        val (_, uvertical) = p.ualignMod ?: parentAlign
         p.placeRelative(x, uvertical.startPositionFor(p.height, parentHeight))
         x += p.width
         idx++
@@ -295,8 +288,7 @@ private fun Placeable.PlacementScope.placeAllAsHorizontalGroupsStartCenterEnd(
 // Any USTRETCH items are treated as belonging to current group (top or center or bottom)
 private fun Placeable.PlacementScope.placeAllAsVerticalGroupsTopCenterBottom(
     placeables: List<Placeable>,
-    parentHorizontal: UAlignmentType,
-    parentVertical: UAlignmentType,
+    parentAlign: UAlignDataMod,
     parentWidth: Int,
     parentHeight: Int,
     fixedHeightTaken: Int,
@@ -305,7 +297,7 @@ private fun Placeable.PlacementScope.placeAllAsVerticalGroupsTopCenterBottom(
     var idx = 0
     while (idx < placeables.size) { // loop through USTART arranged placeables first
         val p = placeables[idx]
-        val (uhorizontal, uvertical) = p.uChildData(parentHorizontal, parentVertical)
+        val (uhorizontal, uvertical) = p.ualignMod ?: parentAlign
         uvertical == USTART || uvertical == USTRETCH || break
         p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), y)
         y += p.height
@@ -314,7 +306,7 @@ private fun Placeable.PlacementScope.placeAllAsVerticalGroupsTopCenterBottom(
     y += UCENTER.startPositionFor(fixedHeightTaken, parentHeight) // hack to offset to centered part.
     while (idx < placeables.size) { // loop through UCENTER (and USTART treated same as UCENTER) arranged placeables
         val p = placeables[idx]
-        val (uhorizontal, uvertical) = p.uChildData(parentHorizontal, parentVertical)
+        val (uhorizontal, uvertical) = p.ualignMod ?: parentAlign
         uvertical == UEND && break
         p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), y)
         y += p.height
@@ -323,7 +315,7 @@ private fun Placeable.PlacementScope.placeAllAsVerticalGroupsTopCenterBottom(
     y += UCENTER.startPositionFor(fixedHeightTaken, parentHeight) // hack to offset to end part.
     while (idx < placeables.size) { // loop through UEND (and all left treated as UEND) arranged placeables
         val p = placeables[idx]
-        val (uhorizontal, _) = p.uChildData(parentHorizontal, parentVertical)
+        val (uhorizontal, _) = p.ualignMod ?: parentAlign
         p.placeRelative(uhorizontal.startPositionFor(p.width, parentWidth), y)
         y += p.height
         idx++
@@ -340,15 +332,12 @@ private fun Iterable<Placeable?>.stretchOrMaxWidthWithin(uhorizontal: UAlignment
 private fun Iterable<Placeable?>.stretchOrMaxHeightWithin(uvertical: UAlignmentType, constraints: Constraints) =
     if (uvertical == USTRETCH && constraints.hasBoundedHeight) constraints.maxHeight else maxHeightWithin(constraints)
 
-private data class UChildData(val horizontal: UAlignmentType, val vertical: UAlignmentType) : ParentDataModifier {
-    override fun Density.modifyParentData(parentData: Any?): Any = this@UChildData
+private data class UAlignDataMod(val horizontal: UAlignmentType, val vertical: UAlignmentType) : ParentDataModifier {
+    override fun Density.modifyParentData(parentData: Any?): Any = this@UAlignDataMod
 }
 
-private fun IntrinsicMeasurable.uChildData(defaultHorizontal: UAlignmentType, defaultVertical: UAlignmentType) =
-    parentData as? UChildData ?: UChildData(defaultHorizontal, defaultVertical)
-
-private fun Measured.uChildData(defaultHorizontal: UAlignmentType, defaultVertical: UAlignmentType) =
-    parentData as? UChildData ?: UChildData(defaultHorizontal, defaultVertical)
+private val IntrinsicMeasurable.ualignMod get() = parentData as? UAlignDataMod
+private val Measured.ualignMod get() = parentData as? UAlignDataMod
 
 private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = when (this) {
     USTART, USTRETCH -> 0
@@ -356,13 +345,12 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
     UEND -> parentSize - childSize
 }
 
-// all U*Text has to be wrapped in some of U*Bin to make sure all out public text flavors respect UAlign etc.
-@Composable internal fun UTextImplSki(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) {
+@Composable internal fun URawTextImplSki(text: String, mod: Mod, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) {
     val style = LocalTextStyle.current.copy(
         fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
         fontFamily = if (mono) FontFamily.Monospace else FontFamily.Default
     )
-    UBasicBinSki(UBOX) { Text(text, maxLines = maxLines, style = style) }
+    Text(text, mod, maxLines = maxLines, style = style)
 }
 
 @Composable internal fun UTabsImplSki(vararg tabs: String, useM3TabRow: Boolean = false, onSelected: (index: Int, tab: String) -> Unit) {
@@ -388,4 +376,4 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
 
 /** No need to start new compose window - we are already in skiko based composition */
 @Composable internal fun UFakeSkikoBoxImplSki(size: DpSize? = null, content: @Composable () -> Unit) =
-    UBasicBinSki(UBOX, Mod.andIfNotNull(size) { requiredSize(it) }, content = content)
+    UBox(Mod.andIfNotNull(size) { usize(it) }, content = content)

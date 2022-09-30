@@ -8,9 +8,7 @@ import androidx.compose.ui.Modifier as Mod
 
 @Composable internal expect fun UCoreBinAct(type: UBinType, mod: Mod, content: @Composable () -> Unit)
 
-@Composable internal expect fun UBasicBinAct(type: UBinType, content: @Composable () -> Unit)
-
-@Composable internal expect fun UTextAct(text: String, bold: Boolean, mono: Boolean, maxLines: Int)
+@Composable internal expect fun URawTextAct(text: String, mod: Mod, bold: Boolean, mono: Boolean, maxLines: Int)
 
 @Composable internal expect fun UTabsAct(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit)
 
@@ -20,12 +18,12 @@ import androidx.compose.ui.Modifier as Mod
 @Composable fun UCoreBin(type: UBinType, mod: Mod = Mod, content: @Composable () -> Unit) =
     UCoreBinAct(type, mod, content)
 
-@Composable fun UBasicBin(type: UBinType, content: @Composable () -> Unit) =
-    UBasicBinAct(type, content)
-
-// FIXME_NOW: it also probably should take mod..
-@Composable fun UText(text: String, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) =
-    UTextAct(text, bold, mono, maxLines)
+/**
+ * The mod: Mod is only passed to platform implementation. Mod.u* modifiers are ignored.
+ * Use UText instead of URawText to add Mod.u* modifiers.
+ */
+@Composable internal fun URawText(text: String, mod: Mod = Mod, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) =
+    URawTextAct(text, mod, bold, mono, maxLines)
 
 @Composable fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     UTabsAct(*tabs, onSelected = onSelected)

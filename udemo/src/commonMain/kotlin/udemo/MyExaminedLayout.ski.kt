@@ -2,9 +2,7 @@ package pl.mareklangiewicz.udemo
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
@@ -58,17 +56,19 @@ import androidx.compose.ui.Modifier as Mod
     size: DpSize = 400.dp.square,
     onUReport: OnUReport? = null,
     content: @Composable () -> Unit,
-) {
-    val m = Mod
-        .wrapContentSize()
-        .background(Color.LightGray)
-        .border(4.dp, Color.Blue)
-        .padding(4.dp)
-        .requiredSize(size)
-    // FIXME NOW: use high level bin (in sons too, then hide some lowlevel Basic/Raw..stuff)
-    //  Then I can try to use UDebug in MyExaminedLayout
-    UBasicBinSki(type, m, onUReport?.withKeyPrefix("rigid father "), content)
-}
+) = UBin(
+    type = type,
+    mod = Mod
+        .usize(size)
+        .ustyleBlank(
+            backgroundColor = Color.LightGray,
+            borderColor = Color.Blue,
+            borderWidth = 4.dp,
+            padding = 4.dp
+        )
+        .onUReport(onUReport, "rigid father "),
+    content = content,
+)
 
 @Composable fun ColoredSon(
     tag: String,
@@ -76,13 +76,12 @@ import androidx.compose.ui.Modifier as Mod
     size: DpSize = 100.dp.square,
     sizeRequired: Boolean = false,
     onUReport: OnUReport? = null,
-) {
-    val m = Mod
-        .andIfNotNull(onUReport) { reportMeasuringAndPlacement(it.withKeyPrefix("$tag outer ")) }
-        .background(color.copy(alpha = color.alpha * .8f), RoundedCornerShape(4.dp))
-        .run { if (sizeRequired) requiredSize(size) else size(size) }
-    UBasicBinSki(UBOX, m, onUReport?.withKeyPrefix("$tag inner "))
-}
+) = UBox(Mod
+    .ustyleBlank(backgroundColor = color.copy(alpha = color.alpha * .8f))
+    .onUReport(onUReport, "$tag inner ")
+    .andIfNotNull(onUReport) { reportMeasuringAndPlacement(it.withKeyPrefix("$tag outer ")) }
+    .run { if (sizeRequired) requiredSize(size) else size(size) }
+) {}
 
 
 @OptIn(ExperimentalAnimationApi::class)

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.foundation.*
@@ -37,6 +39,8 @@ internal class UBinConf {
     var padding: Dp? by mutableStateOf(null)
     var onUClick: OnUClick? by mutableStateOf(null)
     var onUReport: OnUReport? by mutableStateOf(null)
+    var ualignHoriz: UAlignmentType? by mutableStateOf(null)
+    var ualignVerti: UAlignmentType? by mutableStateOf(null)
     var uscrollHoriz: Boolean by mutableStateOf(false)
     var uscrollVerti: Boolean by mutableStateOf(false)
     var uscrollStyle: UScrollStyle by mutableStateOf(UBASIC)
@@ -48,6 +52,8 @@ internal class UBinConf {
     val borderColorOrT: Color @Composable get() = borderColor ?: UTheme.colors.ubinBorder(/*FIXME*/)
     val borderWidthOrT: Dp @Composable get() = borderWidth ?: UTheme.sizes.ubinBorder
     val paddingOrT: Dp @Composable get() = padding ?: UTheme.sizes.ubinPadding
+    val ualignHorizOrT: UAlignmentType @Composable get() = ualignHoriz ?: UTheme.alignments.horizontal
+    val ualignVertiOrT: UAlignmentType @Composable get() = ualignVerti ?: UTheme.alignments.vertical
 
     /** mod should be already materialized by user */
     fun foldInFrom(mod: Mod) = mod.foldIn(Unit) { _, e ->
@@ -67,6 +73,7 @@ internal class UBinConf {
             //  So I had some nasty issues with sometimes not working onUClicks in UDemo1
             //  So I resigned and chose simple replacing (inner most modifier wins).
             //  still it would be cool to have this accumulation for example for UDebug
+            is UAlignMod -> { ualignHoriz = e.horizontal; ualignVerti = e.vertical }
             is UScrollMod -> { uscrollHoriz = e.horizontal; uscrollVerti = e.vertical; uscrollStyle = e.style }
         }
     }
@@ -81,10 +88,11 @@ internal class UBorderWidthMod(val borderWidth: Dp) : Element
 internal class UPaddingMod(val padding: Dp) : Element
 internal class OnUClickMod(val onUClick: OnUClick?) : Element
 internal class OnUReportMod(val onUReport: OnUReport?) : Element
+internal class UAlignMod(val horizontal: UAlignmentType?, val vertical: UAlignmentType?) : Element
 internal class UScrollMod(val horizontal: Boolean, val vertical: Boolean, val style: UScrollStyle) : Element
 
 fun Mod.usize(width: Dp? = null, height: Dp? = null) = then(USizeMod(width, height))
-fun Mod.usize(size: DpSize) = usize(size.width, size.height)
+fun Mod.usize(size: DpSize?) = usize(size?.width, size?.height)
 fun Mod.uwidth(width: Dp?) = then(USizeMod(width, null))
 fun Mod.uheight(height: Dp?) = then(USizeMod(null, height))
 
@@ -94,6 +102,9 @@ fun Mod.ubackgroundColor(backgroundColor: Color) = then(UBackgroundColorMod(back
 fun Mod.uborderColor(borderColor: Color) = then(UBorderColorMod(borderColor))
 fun Mod.uborderWidth(borderWidth: Dp) = then(UBorderWidthMod(borderWidth))
 fun Mod.upadding(padding: Dp) = then(UPaddingMod(padding))
+/** null resets to default, and default is always taken from UTheme */
+fun Mod.ualign(horizontal: UAlignmentType? = null, vertical: UAlignmentType? = null) =
+    then(UAlignMod(horizontal, vertical))
 fun Mod.uscroll(horizontal: Boolean = false, vertical: Boolean = false, style: UScrollStyle = UBASIC) =
     then(UScrollMod(horizontal, vertical, style))
 

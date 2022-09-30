@@ -15,9 +15,6 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
 import androidx.compose.ui.Modifier as Mod
 
-@Composable internal fun UBasicBinImplDom(type: UBinType, content: @Composable () -> Unit) =
-    UBasicBinDom(type) { content() }
-
 @Composable internal fun UCoreBinImplDom(
     type: UBinType,
     mod: Mod = Mod,
@@ -31,7 +28,7 @@ import androidx.compose.ui.Modifier as Mod
     val uborderWidth = conf.borderWidthOrT
     val uborderColor = conf.borderColorOrT
     val upadding = conf.paddingOrT
-    UBasicBinDom(
+    URawBinDom(
         type = type,
         addStyle = {
             conf.width?.let { width(it.value.px) }
@@ -62,7 +59,7 @@ import androidx.compose.ui.Modifier as Mod
 var leakyDomReportsEnabled: Boolean = false
 
 /** @param inline false -> div; true -> span (and if type != null: css display: inline-grid instead of grid) */
-@Composable fun UBasicBinDom(
+@Composable internal fun URawBinDom(
     type: UBinType? = null,
     inline: Boolean = false,
     addStyle: (StyleScope.() -> Unit)? = null,
@@ -97,9 +94,8 @@ private val LocalUBinType = staticCompositionLocalOf<UBinType?> { null }
 
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
-// all U*Text has to be wrapped in some of U*Bin to make sure all out public text flavors respect UAlign etc.
-@Composable internal fun UTextImplDom(text: String, bold: Boolean, mono: Boolean, maxLines: Int) =
-    UBasicBinDom(inline = true, addStyle = {
+@Composable internal fun URawTextImplDom(text: String, mod: Mod, bold: Boolean, mono: Boolean, maxLines: Int) =
+    URawBinDom(inline = true, addStyle = {
         if (maxLines == 1) property("text-overflow", "clip") // TODO: better support for maxLines > 1 on JS
         if (bold) fontWeight("bold")
         if (mono) fontFamily("monospace")

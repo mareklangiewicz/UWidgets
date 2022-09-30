@@ -33,7 +33,12 @@ import androidx.compose.ui.Modifier as Mod
 // https://twitter.com/Ajumplakdibampa/status/1555828578667085824
 // (maybe also more classic ones)
 
+
 /**
+ * Note to users:
+ * UAl* composables are just sugar to change UTheme.alignments easily. So it's for changing "defaults" in subtree.
+ * It's not needed at all if we just want to set alignment for particular element. Just use Mod.ualign(..).
+ * Note to devs:
  * Default values are read from outer theme mutable states. It can probably be very inefficient
  * (recomposing whole subtree when any inherited alignment type changes), but let's not care about that.
  * For now let's assume compose machinery is clever enough to optimize such cases.
@@ -58,6 +63,7 @@ import androidx.compose.ui.Modifier as Mod
 
 @Composable fun UAllStartColumn(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
     UAllStart { UColumn(mod, selected, content) }
+
 
 object UTheme {
 

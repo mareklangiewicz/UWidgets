@@ -20,7 +20,7 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
 // (maybe all locals? - see global prop: currentCompositionLocalContext)
 @Composable fun USkikoBoxDom(size: DpSize? = null, content: @Composable () -> Unit) {
     var currentSize by remember { mutableStateOf(DpSize.Zero) }
-    UBasicBinDom(UBOX,
+    URawBinDom(UBOX,
         addStyle = {
             size?.let {
                 width(it.width.value.px)
