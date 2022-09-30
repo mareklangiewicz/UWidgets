@@ -91,7 +91,7 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
 // Renaming tab -> _ breaks layout inspector in AS!!
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 @Composable fun UTabs(vararg contents: Pair<String, @Composable () -> Unit>) {
-    var selectedTabIndex by remember { mutableStateOf(0) }
+    var selectedTabIndex by ustate(0)
     UColumn {
         UTabs(*contents.map { it.first }.toTypedArray()) { idx, tab -> selectedTabIndex = idx }
         contents[selectedTabIndex].second()
@@ -100,7 +100,7 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
 
 @Composable
 internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) = UAllStartRow {
-    var selectedTabIndex by remember { mutableStateOf(0) }
+    var selectedTabIndex by ustate(0)
     tabs.forEachIndexed { index, title ->
         UText(
             text = title,
@@ -111,9 +111,6 @@ internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -
         )
     }
 }
-
-@Composable fun <T> ustate(init: T): MutableState<T> = remember { mutableStateOf(init) }
-@Composable fun <T> ustates(vararg inits: T): List<MutableState<T>> = inits.map { ustate(it) }
 
 @Composable fun USwitch(state: MutableState<Boolean>, labelOn: String = " on  ", labelOff: String = " off ") = UAllStart {
     UText(

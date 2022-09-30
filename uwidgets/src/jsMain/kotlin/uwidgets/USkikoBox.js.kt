@@ -19,7 +19,7 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
 // TODO_maybe: copy UAlign composition locals, and other settings to embedded skiko composition
 // (maybe all locals? - see global prop: currentCompositionLocalContext)
 @Composable fun USkikoBoxDom(size: DpSize? = null, content: @Composable () -> Unit) {
-    var currentSize by remember { mutableStateOf(DpSize.Zero) }
+    var currentSize by ustate(DpSize.Zero)
     URawBinDom(UBOX,
         addStyle = {
             size?.let {

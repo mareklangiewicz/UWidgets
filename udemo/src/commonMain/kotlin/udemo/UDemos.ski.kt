@@ -53,7 +53,7 @@ import androidx.compose.ui.Modifier as Mod
 }
 
 @Composable fun UDemoMoveStuffSki() {
-    var count by remember { mutableStateOf(0) }
+    var count by ustate(0)
     LaunchedEffect(Unit) {
         while (isActive) {
             delay(300)

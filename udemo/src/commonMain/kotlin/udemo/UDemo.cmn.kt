@@ -58,11 +58,11 @@ fun UDemo() = UAllStretch {
 
 @Composable fun UDemo0() = UAllStretch {
     UColumn {
-        var switch1 by remember { mutableStateOf(USTART) }
-        var switch2 by remember { mutableStateOf(USTART) }
-        var switch3 by remember { mutableStateOf(USTART) }
-        var switch4 by remember { mutableStateOf(USTART) }
-        var rendering by remember { mutableStateOf("DOM") }
+        var switch1 by ustate(USTART)
+        var switch2 by ustate(USTART)
+        var switch3 by ustate(USTART)
+        var switch4 by ustate(USTART)
+        var rendering by ustate("DOM")
         UAllStartColumn {
             UText("Align switches:")
             val options = UAlignmentType.values().map { it.css }.toTypedArray()
