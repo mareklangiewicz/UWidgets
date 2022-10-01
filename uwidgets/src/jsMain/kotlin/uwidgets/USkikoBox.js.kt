@@ -24,7 +24,7 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
         addStyle = {
             size?.let {
                 width(it.width.value.px)
-                height(it.width.value.px)
+                height(it.height.value.px)
             }
         },
         addAttrs = {
