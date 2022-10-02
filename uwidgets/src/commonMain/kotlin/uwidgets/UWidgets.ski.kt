@@ -19,23 +19,22 @@ import androidx.compose.ui.Modifier as Mod
 @Composable internal fun UCoreBinImplSki(type: UBinType, mod: Mod = Mod, content: @Composable () -> Unit) {
     // TODO_later: make sure .materialize here is ok (Layout does it internally again later)
     val m = currentComposer.materialize(mod)
-    val conf = remember { UBinConf() }
-    conf.foldInFrom(m)
-    val hScrollS = if (conf.uscrollHoriz) rememberScrollState() else null
-    val vScrollS = if (conf.uscrollVerti) rememberScrollState() else null
+    val props = UProps.install(m)
+    val hScrollS = if (props.uscrollHoriz) rememberScrollState() else null
+    val vScrollS = if (props.uscrollVerti) rememberScrollState() else null
     URawBinSki(
         type = type,
         mod = m
-            .padding(conf.marginOrT)
-            .andUSize(conf.width, conf.height)
-            .andIfNotNull(conf.onUClick) { clickable { it(Unit) } }
-            .background(conf.backgroundColorOrT)
-            .border(conf.borderWidthOrT, conf.borderColorOrT)
-            .padding(conf.borderWidthOrT + conf.paddingOrT)
-            .scroll(hScrollS, vScrollS),
-        parentAlignMod = UAlignDataMod(conf.ualignHorizOrT, conf.ualignVertiOrT),
-        onUReport = conf.onUReport,
-    ) { CompositionLocalProvider(LocalContentColor provides conf.contentColorOrT) { content() } }
+            .padding(props.margin)
+            .andUSize(props.width, props.height)
+            .andIfNotNull(props.onUClick) { clickable { it(Unit) } }
+            .background(props.backgroundColor)
+            .border(props.borderWidth, props.borderColor)
+            .padding(props.borderWidth + props.padding)
+            .scroll(hScrollS, vScrollS, props.uscrollStyle),
+        parentAlignMod = UAlignDataMod(props.ualignHoriz, props.ualignVerti),
+        onUReport = props.onUReport,
+    ) { CompositionLocalProvider(LocalContentColor provides props.contentColor) { content() } }
 }
 
 @Composable private fun URawBinSki(

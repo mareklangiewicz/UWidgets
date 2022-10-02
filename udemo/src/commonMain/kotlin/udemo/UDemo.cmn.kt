@@ -1,6 +1,7 @@
 package pl.mareklangiewicz.udemo
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
 import pl.mareklangiewicz.udata.*
@@ -31,25 +32,48 @@ fun UDemo() = UAllStretch {
 }
 
 // FIXME NOW: remove this temporary code
-@Composable fun UDemoTemp() {
+@Composable fun UDemoTemp() = UAllStartColumn {
+    var rendering by ustate("DOM and Canvas")
+    UTabs("DOM and Canvas", "DOM", "Canvas") { idx, tab -> rendering = tab }
+    URow {
+        ulogd("out depth: ${UDepth.depth}")
+        if ("DOM" in rendering) UBox(Mod.ustyleBlank().usize(160.dp, 320.dp)) {
+            ulogd("in dom depth: ${UDepth.depth}")
+            UDemoTempContent()
+        }
+        if ("Canvas" in rendering) USkikoBox(DpSize(160.dp, 320.dp)) {
+            ulogd("in skikobox depth: ${UDepth.depth}")
+            UDemoTempContent() }
+    }
+}
+
+@Composable fun UDemoTempContent() {
     UBox(Mod
-        .usize(400.dp.square)
+        .ualignVerti(USTART) // FIXME NOW: doesn't work on JS??
+        .ustyleBlank(
+            margin = 4.dp,
+            backgroundColor = Color.Blue,
+            borderColor = Color.Red,
+            borderWidth = 4.dp,
+            padding = 4.dp,
+        )
+        .usize(130.dp, 300.dp)
         .onUClick { println("out box onuclick1") }
         .onUClick { println("out box onuclick2") }
     ) {
         UColumn {
             UChildrenMod({ onUClick { println("children") } }) {
-                UBox(Mod.usize(200.dp.square)) {
-                    UChildrenMod({ onUClick { println("nb 1 children") } }) {
-                        UBox(Mod.usize(100.dp.square).onUClick { println("newborn 1") }) {
-                            UText("jklfjdkal")
-                        }
-                    }
+                UBox(Mod.usize(100.dp.square)) {
+//                    UChildrenMod({ onUClick { println("nb 1 children") } }) {
+//                        UBox(Mod.usize(90.dp.square).onUClick { println("newborn 1") }) {
+//                            UText("jkl", mono = true)
+//                        }
+//                    }
                 }
-                UBox(Mod.usize(200.dp.square)) {
-                    UBox(Mod.usize(100.dp.square).onUClick { println("newborn 2") }) {
-                        UText("jklfjdkal")
-                    }
+                UBox(Mod.usize(100.dp.square)) {
+//                    UBox(Mod.usize(90.dp.square).onUClick { println("newborn 2") }) {
+//                        UText("jkl")
+//                    }
                 }
             }
         }

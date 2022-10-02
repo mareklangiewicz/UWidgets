@@ -20,28 +20,27 @@ import androidx.compose.ui.Modifier as Mod
     mod: Mod = Mod,
     content: @Composable () -> Unit,
 ) {
-    val conf = remember { UBinConf() }
-    conf.foldInFrom(currentComposer.materialize(mod))
-    val umargin = conf.marginOrT
-    val ucontentColor = conf.contentColorOrT
-    val ubackgroundColor = conf.backgroundColorOrT
-    val uborderWidth = conf.borderWidthOrT
-    val uborderColor = conf.borderColorOrT
-    val upadding = conf.paddingOrT
+    val props = UProps.install(currentComposer.materialize(mod))
+    val umargin = props.margin
+    val ucontentColor = props.contentColor
+    val ubackgroundColor = props.backgroundColor
+    val uborderWidth = props.borderWidth
+    val uborderColor = props.borderColor
+    val upadding = props.padding
     URawBinDom(
         type = type,
         addStyle = {
-            conf.width?.let { width(it.value.px) }
-            conf.height?.let { height(it.value.px) }
+            props.width?.let { width(it.value.px) }
+            props.height?.let { height(it.value.px) }
             color(ucontentColor.cssRgba)
             margin(umargin.value.px)
             backgroundColor(ubackgroundColor.cssRgba)
             border(uborderWidth.value.px, LineStyle.Solid, uborderColor.cssRgba) // in css .px is kinda .dp
             padding(upadding.value.px)
-            overflowX(if (conf.uscrollHoriz) "auto" else "clip") // TODO later: make sure we clip the similarly on both platforms
-            overflowY(if (conf.uscrollVerti) "auto" else "clip")
+            overflowX(if (props.uscrollHoriz) "auto" else "clip") // TODO later: make sure we clip the similarly on both platforms
+            overflowY(if (props.uscrollVerti) "auto" else "clip")
         },
-        addAttrs = conf.onUClick?.let { click ->
+        addAttrs = props.onUClick?.let { click ->
             {
                 addEventListener("click") { event ->
                     event.preventDefault()
@@ -50,7 +49,7 @@ import androidx.compose.ui.Modifier as Mod
                 }
             }
         },
-        onUReport = conf.onUReport,
+        onUReport = props.onUReport,
         content = content
     )
 }
