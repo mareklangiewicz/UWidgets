@@ -23,9 +23,9 @@ inline fun <V : Any> Mod.andIfNotNull(value: V?, add: Mod.(V) -> Mod): Mod =
     if (value != null) add(value) else this
 
 internal fun Mod.andUSize(width: Dp? = null, height: Dp? = null): Mod = when {
-    width == null -> andIfNotNull(height) { requiredHeight(it) }
-    height == null -> andIfNotNull(width) { requiredWidth(it) }
-    else -> requiredSize(width, height)
+    width == null -> andIfNotNull(height) { height(it) }
+    height == null -> andIfNotNull(width) { width(it) }
+    else -> size(width, height)
 }
 
 
