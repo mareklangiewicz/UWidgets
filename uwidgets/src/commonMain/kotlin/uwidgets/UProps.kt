@@ -79,6 +79,7 @@ internal class UProps private constructor() {
             uprops.updateFromMod(mod) // on every recomposition
             return uprops
         }
+        @Composable fun installMaterialized(mod: Mod) = install(currentComposer.materialize(mod))
     }
 }
 

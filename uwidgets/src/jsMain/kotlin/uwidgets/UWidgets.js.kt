@@ -10,7 +10,7 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.*
-import pl.mareklangiewicz.utheme.*
+import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
 import androidx.compose.ui.Modifier as Mod
@@ -20,27 +20,26 @@ import androidx.compose.ui.Modifier as Mod
     mod: Mod = Mod,
     content: @Composable () -> Unit,
 ) {
-    val props = UProps.install(currentComposer.materialize(mod))
-    val umargin = props.margin
-    val ucontentColor = props.contentColor
-    val ubackgroundColor = props.backgroundColor
-    val uborderWidth = props.borderWidth
-    val uborderColor = props.borderColor
-    val upadding = props.padding
-    URawBinDom(
-        type = type,
+    val p = UProps.installMaterialized(mod)
+    val pmargin = p.margin
+    val pcontentColor = p.contentColor
+    val pbackgroundColor = p.backgroundColor
+    val pborderWidth = p.borderWidth
+    val pborderColor = p.borderColor
+    val ppadding = p.padding
+    URawBinDom(type, p.ualignHoriz, p.ualignVerti,
         addStyle = {
-            props.width?.let { width(it.value.px) }
-            props.height?.let { height(it.value.px) }
-            color(ucontentColor.cssRgba)
-            margin(umargin.value.px)
-            backgroundColor(ubackgroundColor.cssRgba)
-            border(uborderWidth.value.px, LineStyle.Solid, uborderColor.cssRgba) // in css .px is kinda .dp
-            padding(upadding.value.px)
-            overflowX(if (props.uscrollHoriz) "auto" else "clip") // TODO later: make sure we clip the similarly on both platforms
-            overflowY(if (props.uscrollVerti) "auto" else "clip")
+            p.width?.let { width(it.value.px) }
+            p.height?.let { height(it.value.px) }
+            color(pcontentColor.cssRgba)
+            margin(pmargin.value.px)
+            backgroundColor(pbackgroundColor.cssRgba)
+            border(pborderWidth.value.px, LineStyle.Solid, pborderColor.cssRgba) // in css .px is kinda .dp
+            padding(ppadding.value.px)
+            overflowX(if (p.uscrollHoriz) "auto" else "clip") // TODO_later: make sure we clip the similarly on both platforms
+            overflowY(if (p.uscrollVerti) "auto" else "clip")
         },
-        addAttrs = props.onUClick?.let { click ->
+        addAttrs = p.onUClick?.let { click ->
             {
                 addEventListener("click") { event ->
                     event.preventDefault()
@@ -49,17 +48,16 @@ import androidx.compose.ui.Modifier as Mod
                 }
             }
         },
-        onUReport = props.onUReport,
+        onUReport = p.onUReport,
         content = content
     )
 }
 
-// TODO_later: rethink. it can be useful, but holds dom elements in memory (when used with UReportsUi or sth)
-var leakyDomReportsEnabled: Boolean = false
-
-/** @param inline false -> div; true -> span (and if type != null: css display: inline-grid instead of grid) */
+/** @param inline false -> div; true -> span and css display: inline-grid instead of grid */
 @Composable internal fun URawBinDom(
-    type: UBinType? = null,
+    type: UBinType,
+    alignHoriz: UAlignmentType,
+    alignVerti: UAlignmentType,
     inline: Boolean = false,
     addStyle: (StyleScope.() -> Unit)? = null,
     addAttrs: (AttrsScope<HTMLElement>.() -> Unit)? = null,
@@ -68,16 +66,15 @@ var leakyDomReportsEnabled: Boolean = false
 ) {
     onUReport?.invoke("ubin" to type)
     val parentType = LocalUBinType.current
-    val horizontal = UTheme.alignments.horizontal
-    val vertical = UTheme.alignments.vertical
     val attrs: AttrsScope<HTMLElement>.() -> Unit = {
         style {
-            type?.let { ustyleFor(it, horizontal, vertical, inline) }
-            parentType?.let { ustyleChildFor(it, horizontal, vertical) }
+            ustyleFor(type, alignHoriz, alignVerti, inline)
+            parentType?.let { ustyleChildFor(it, alignHoriz, alignVerti) }
             addStyle?.let { it() }
         }
         addAttrs?.let { it() }
-        if (leakyDomReportsEnabled && onUReport != null) {
+        if (ULeakyDataEnabledDom && onUReport != null) {
+            // TODO_later: rethink. it can be useful, but holds dom elements in memory (when used with UReportsUi or sth)
             ref {
                 onUReport("dom enter" to it)
                 onDispose { onUReport("dom exit" to it) }
@@ -94,7 +91,7 @@ private val LocalUBinType = staticCompositionLocalOf<UBinType?> { null }
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
 @Composable internal fun URawTextImplDom(text: String, mod: Mod, bold: Boolean, mono: Boolean, maxLines: Int) =
-    URawBinDom(inline = true, addStyle = {
+    URawBinDom(UBOX, USTART, USTART, inline = true, addStyle = {
         if (maxLines == 1) property("text-overflow", "clip") // TODO: better support for maxLines > 1 on JS
         if (bold) fontWeight("bold")
         if (mono) fontFamily("monospace")

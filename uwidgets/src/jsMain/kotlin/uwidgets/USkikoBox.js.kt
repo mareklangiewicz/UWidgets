@@ -14,13 +14,12 @@ import org.jetbrains.compose.web.dom.*
 import org.jetbrains.skiko.wasm.*
 import org.w3c.dom.*
 import pl.mareklangiewicz.udata.*
+import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
 
-// TODO_maybe: copy UAlign composition locals, and other settings to embedded skiko composition
-// (maybe all locals? - see global prop: currentCompositionLocalContext)
 @Composable fun USkikoBoxDom(size: DpSize? = null, content: @Composable () -> Unit) {
     var currentSize by ustate(DpSize.Zero)
-    URawBinDom(UBOX,
+    URawBinDom(UBOX, USTRETCH, USTRETCH,
         addStyle = {
             size?.let {
                 width(it.width.value.px)
@@ -34,7 +33,10 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
             }
         }) {
         key(currentSize) { // make sure we have totally new canvas for different sizes
-            if (currentSize.area != 0.dp) USkikoCanvasDom(currentSize, content = content)
+            if (currentSize.area != 0.dp) {
+                val locals by rememberUpdatedState(currentCompositionLocalContext)
+                USkikoCanvasDom(currentSize) { CompositionLocalProvider(locals, content) }
+            }
         }
     }
 }
