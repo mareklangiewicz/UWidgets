@@ -9,6 +9,7 @@ import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
+import pl.mareklangiewicz.uwidgets.UBinType.*
 import androidx.compose.ui.Modifier as Mod
 
 @Composable
@@ -37,7 +38,7 @@ fun UDemo() = UAllStretch {
     UTabs("DOM and Canvas", "DOM", "Canvas") { idx, tab -> rendering = tab }
     URow {
         ulogd("out depth: ${UDepth.depth}")
-        if ("DOM" in rendering) UBox(Mod.ustyleBlank().usize(160.dp, 320.dp)) {
+        if ("DOM" in rendering) UCoreBin(UBOX, Mod.ustyleBlank().usize(160.dp, 320.dp)) {
             ulogd("in dom depth: ${UDepth.depth}")
             UDemoTempContent()
         }
