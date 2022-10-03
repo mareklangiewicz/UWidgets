@@ -119,14 +119,20 @@ private fun StyleScope.ugridChildFor(parentType: UBinType, horizontal: UAlignmen
     // We can then just additionally wrap these children in UAlign(..) { .. }
 }
 
+// We need "align-self" to override parent alignment to be more consistent with JVM,
+// so I disabled alignContent (it can't be overridden by child align-self)
+// TODO_someday: rethink/experiment more with better simple uspeks..
+// Generally I want behavior more similar to typical android Row/Column/Box alignments/arrangements
+// but somewhat consistent between platforms.
+// Also I probably want to keep invariant: default uprops are taken from UTheme.
 private fun StyleScope.ugridFor(type: UBinType, horizontal: UAlignmentType, vertical: UAlignmentType, inline: Boolean = false) {
     display(if (inline) DisplayStyle.LegacyInlineGrid else DisplayStyle.Grid)
     horizontal.css.let {
-        justifyContent(JustifyContent(it))
+        // justifyContent(JustifyContent(it))
         justifyItems(it)
     }
     vertical.css.let {
-        alignContent(AlignContent(it))
+        // alignContent(AlignContent(it))
         alignItems(it)
     }
     if (type == UBOX || type == UROW) gridTemplateRows("[UROW] auto")
@@ -157,18 +163,18 @@ private fun StyleScope.uflexFor(type: UBinType, horizontal: UAlignmentType, vert
         UBOX -> error("flex ubins are not supported")
         UCOLUMN -> {
             horizontal.css.let {
-                alignContent(AlignContent(it))
+                // alignContent(AlignContent(it))
                 alignItems(it)
             }
-            justifyContent(JustifyContent(vertical.css))
+            // justifyContent(JustifyContent(vertical.css))
         }
 
         UROW -> {
             vertical.css.let {
-                alignContent(AlignContent(it))
+                // alignContent(AlignContent(it))
                 alignItems(it)
             }
-            justifyContent(JustifyContent(horizontal.css))
+            // justifyContent(JustifyContent(horizontal.css))
         }
     }
 }
