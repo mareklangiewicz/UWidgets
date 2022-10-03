@@ -375,4 +375,5 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
 
 /** No need to start new compose window - we are already in skiko based composition */
 @Composable internal fun UFakeSkikoBoxImplSki(size: DpSize? = null, content: @Composable () -> Unit) =
-    UBox(Mod.ustyleBlank().usize(size), content = content)
+    // UCoreBin and not UBox, because we don't want to increase depth
+    UCoreBin(UBOX, Mod.ustyleBlank().usize(size), content = content)
