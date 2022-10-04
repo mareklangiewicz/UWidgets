@@ -51,7 +51,6 @@ fun UDemo() = UAllStretch {
 
 @Composable fun UDemoTempContent() {
     UBox(Mod
-        .ualignVerti(USTART) // FIXME NOW: doesn't work on JS??
         .ustyleBlank(
             margin = 4.dp,
             backgroundColor = Color.Blue,
@@ -63,6 +62,8 @@ fun UDemo() = UAllStretch {
         .onUClick { println("out box onuclick1") }
         .onUClick { println("out box onuclick2") }
     ) {
+        UBox(Mod.usize(10.dp, 80.dp).uborder(width = 4.dp)) {}
+        return@UBox
         UColumn {
             UChildrenMod({ onUClick { println("children") } }) {
                 UBox(Mod.usize(100.dp.square)) {

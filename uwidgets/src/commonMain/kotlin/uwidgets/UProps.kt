@@ -111,9 +111,9 @@ fun Mod.uscroll(horiz: Boolean = false, verti: Boolean = false, style: UScrollSt
 ) = ucontentColor(contentColor).ubackgroundColor(backgroundColor).uborderColor(borderColor)
 
 @Composable fun Mod.uborder(
-    borderColor: Color = UTheme.colors.ubinBorder(/*FIXME*/),
-    borderWidth: Dp = UTheme.sizes.ubinBorder,
-) = uborderColor(borderColor).uborderWidth(borderWidth)
+    color: Color = UTheme.colors.ubinBorder(/*FIXME*/),
+    width: Dp = UTheme.sizes.ubinBorder,
+) = uborderColor(color).uborderWidth(width)
 
 @Composable fun Mod.ustyle(
     margin: Dp = UTheme.sizes.ubinMargin,

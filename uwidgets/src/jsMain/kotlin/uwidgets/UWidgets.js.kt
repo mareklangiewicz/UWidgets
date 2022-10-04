@@ -29,8 +29,8 @@ import androidx.compose.ui.Modifier as Mod
     val ppadding = p.padding
     URawBinDom(type, p.ualignHoriz, p.ualignVerti,
         addStyle = {
-            p.width?.let { width(it.value.px) }
-            p.height?.let { height(it.value.px) }
+            p.width?.let { width((it-pborderWidth*2-ppadding*2).value.px) }
+            p.height?.let { height((it-pborderWidth*2-ppadding*2).value.px) }
             color(pcontentColor.cssRgba)
             margin(pmargin.value.px)
             backgroundColor(pbackgroundColor.cssRgba)
