@@ -16,8 +16,14 @@ import org.w3c.dom.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
+import androidx.compose.ui.Modifier as Mod
 
-@Composable fun USkikoBoxDom(size: DpSize? = null, content: @Composable () -> Unit) {
+/** @param withBackgroundBox without it the background of the "scene" will be white */
+@Composable fun USkikoBoxDom(
+    size: DpSize? = null,
+    withBackgroundBox: Boolean = true,
+    content: @Composable () -> Unit
+) {
     var currentSize by ustate(DpSize.Zero)
     URawBinDom(UBOX, USTRETCH, USTRETCH,
         addStyle = {
@@ -35,7 +41,11 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
         key(currentSize) { // make sure we have totally new canvas for different sizes
             if (currentSize.area != 0.dp) {
                 val locals by rememberUpdatedState(currentCompositionLocalContext)
-                USkikoCanvasDom(currentSize) { CompositionLocalProvider(locals, content) }
+                USkikoCanvasDom(currentSize) { CompositionLocalProvider(locals) {
+                    if (withBackgroundBox)
+                        UCoreBin(UBOX, Mod.ualign(USTRETCH, USTRETCH).ustyleBlank(backgroundColor = null)) { content() }
+                    else content()
+                } }
             }
         }
     }

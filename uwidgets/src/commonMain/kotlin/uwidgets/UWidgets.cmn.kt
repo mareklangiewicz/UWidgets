@@ -63,15 +63,15 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
 @Composable fun UBox(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
     UBin(UBOX, mod, selected, content)
 
+/**
+ * UBox that only sets background and stretches. Doesn't change depth, doesn't have any borders, margins, paddings.
+ * @param color null means default which means taken from UTheme */
+@Composable fun UBackgroundBox(mod: Mod = Mod, color: Color? = null, content: @Composable () -> Unit = {}) =
+    UCoreBin(UBOX, mod.ustyleBlank(backgroundColor = color).ualign(USTRETCH, USTRETCH), content)
+
 @Composable fun UBoxEnabledIf(enabled: Boolean, content: @Composable () -> Unit) = UBox {
     content()
-    if (!enabled) UAllStretch {
-        UCoreBin(
-            UBOX, mod = Mod.ustyleBlank(
-                backgroundColor = UTheme.colors.ubinBackground.copy(alpha = .4f)
-            )
-        ) {}
-    }
+    if (!enabled) UBackgroundBox(color = UTheme.colors.ubinBackground.copy(alpha = .4f))
 }
 // FIXME_later: think more about how to visually disable bin (another color in theme for overlay?)
 
