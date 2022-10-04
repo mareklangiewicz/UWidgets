@@ -55,20 +55,19 @@ fun UDemo() = UAllStretch {
         .onUClick { println("out box onuclick1") }
         .onUClick { println("out box onuclick2") }
     ) {
-        UBox(Mod.usize(10.dp, 80.dp).uborder(width = 4.dp)) {}
         UColumn {
             UChildrenMod({ onUClick { println("children") } }) {
                 UBox(Mod.usize(100.dp.square)) {
-//                    UChildrenMod({ onUClick { println("nb 1 children") } }) {
-//                        UBox(Mod.usize(90.dp.square).onUClick { println("newborn 1") }) {
-//                            UText("jkl", mono = true)
-//                        }
-//                    }
+                    UChildrenMod({ onUClick { println("nb 1 children") } }) {
+                        UBox(Mod.usize(90.dp.square).onUClick { println("newborn 1") }) {
+                            UText("jkl", mono = true)
+                        }
+                    }
                 }
                 UBox(Mod.usize(100.dp.square)) {
-//                    UBox(Mod.usize(90.dp.square).onUClick { println("newborn 2") }) {
-//                        UText("jkl")
-//                    }
+                    UBox(Mod.usize(90.dp.square).onUClick { println("newborn 2") }) {
+                        UText("jkl")
+                    }
                 }
             }
         }
