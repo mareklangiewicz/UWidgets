@@ -39,7 +39,7 @@ fun UDemo() = UAllStretch {
     URow {
         ulogd("out depth: ${UDepth.depth}")
         // UCoreBin and not UBox, because we don't want to increase depth
-        if ("DOM" in rendering) UCoreBin(UBOX, Mod.ustyleBlank().usize(160.dp, 320.dp)) {
+        if ("DOM" in rendering) UCoreBin(UBOX, Mod.ustyleBlank(backgroundColor = null).usize(160.dp, 320.dp)) {
             ulogd("in dom depth: ${UDepth.depth}")
             UDemoTempContent()
         }

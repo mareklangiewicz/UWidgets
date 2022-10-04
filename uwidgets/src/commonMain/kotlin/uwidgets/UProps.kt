@@ -105,30 +105,30 @@ fun Mod.uscroll(horiz: Boolean = false, verti: Boolean = false, style: UScrollSt
 
 
 @Composable fun Mod.ucolors(
-    contentColor: Color = UTheme.colors.ubinContent,
-    backgroundColor: Color = UTheme.colors.ubinBackground,
-    borderColor: Color = UTheme.colors.ubinBorder(/*FIXME*/),
+    contentColor: Color? = null,
+    backgroundColor: Color? = null,
+    borderColor: Color? = null,
 ) = ucontentColor(contentColor).ubackgroundColor(backgroundColor).uborderColor(borderColor)
 
 @Composable fun Mod.uborder(
-    color: Color = UTheme.colors.ubinBorder(/*FIXME*/),
-    width: Dp = UTheme.sizes.ubinBorder,
+    color: Color? = null,
+    width: Dp? = null,
 ) = uborderColor(color).uborderWidth(width)
 
 @Composable fun Mod.ustyle(
-    margin: Dp = UTheme.sizes.ubinMargin,
-    contentColor: Color = UTheme.colors.ubinContent,
-    backgroundColor: Color = UTheme.colors.ubinBackground,
-    borderColor: Color = UTheme.colors.ubinBorder(/*FIXME*/),
+    margin: Dp? = null,
+    contentColor: Color? = null,
+    backgroundColor: Color? = null,
+    borderColor: Color? = null,
 ) = ucontentColor(contentColor).ubackgroundColor(backgroundColor).uborderColor(borderColor)
 
 @Composable fun Mod.ustyle(
-    margin: Dp = UTheme.sizes.ubinMargin,
-    contentColor: Color = UTheme.colors.ubinContent,
-    backgroundColor: Color = UTheme.colors.ubinBackground,
-    borderColor: Color = UTheme.colors.ubinBorder(/*FIXME*/),
-    borderWidth: Dp = UTheme.sizes.ubinBorder,
-    padding: Dp = UTheme.sizes.ubinPadding,
+    margin: Dp? = null,
+    contentColor: Color? = null,
+    backgroundColor: Color? = null,
+    borderColor: Color? = null,
+    borderWidth: Dp? = null,
+    padding: Dp? = null,
 ) = this
     .umargin(margin)
     .ucontentColor(contentColor)
@@ -137,13 +137,17 @@ fun Mod.uscroll(horiz: Boolean = false, verti: Boolean = false, style: UScrollSt
     .uborderWidth(borderWidth)
     .upadding(padding)
 
+/**
+ * Concrete white style without borders, margins, paddings.
+ * Set some param to null, to make UBin use default setting from UTheme.
+ */
 fun Mod.ustyleBlank(
-    margin: Dp = 0.dp,
-    contentColor: Color = Color.Black,
-    backgroundColor: Color = Color.Transparent,
-    borderColor: Color = Color.Transparent,
-    borderWidth: Dp = 0.dp,
-    padding: Dp = 0.dp,
+    margin: Dp? = 0.dp,
+    contentColor: Color? = Color.Black,
+    backgroundColor: Color? = Color.White,
+    borderColor: Color? = Color.White,
+    borderWidth: Dp? = 0.dp,
+    padding: Dp? = 0.dp,
 ) = this
     .umargin(margin)
     .ucontentColor(contentColor)
