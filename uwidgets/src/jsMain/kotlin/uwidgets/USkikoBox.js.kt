@@ -42,8 +42,7 @@ import androidx.compose.ui.Modifier as Mod
             if (currentSize.area != 0.dp) {
                 val locals by rememberUpdatedState(currentCompositionLocalContext)
                 USkikoCanvasDom(currentSize) { CompositionLocalProvider(locals) {
-                    if (withBackgroundBox)
-                        UCoreBin(UBOX, Mod.ualign(USTRETCH, USTRETCH).ustyleBlank(backgroundColor = null)) { content() }
+                    if (withBackgroundBox) UBackgroundBox(content = content)
                     else content()
                 } }
             }

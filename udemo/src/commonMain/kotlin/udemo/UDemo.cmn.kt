@@ -37,11 +37,8 @@ fun UDemo() = UAllStretch {
     var rendering by ustate("DOM and Canvas")
     UTabs("DOM and Canvas", "DOM", "Canvas") { idx, tab -> rendering = tab }
     URow {
-        if ("DOM" in rendering)
-            UCoreBin(UBOX, Mod.ustyleBlank(backgroundColor = null).usize(160.dp, 320.dp)) { UDemoTempContent() }
-            // UCoreBin and not UBox, because we don't want to increase depth
-        if ("Canvas" in rendering)
-            USkikoBox(DpSize(160.dp, 320.dp)) { UDemoTempContent() }
+        if ("DOM" in rendering) UBackgroundBox(Mod.usize(160.dp, 320.dp)) { UDemoTempContent() }
+        if ("Canvas" in rendering) USkikoBox(DpSize(160.dp, 320.dp)) { UDemoTempContent() }
     }
 }
 
@@ -97,11 +94,8 @@ fun UDemo() = UAllStretch {
             UTabs("DOM", "Canvas", "DOM and Canvas") { idx, tab -> rendering = tab }
         }
         URow {
-            if ("DOM" in rendering)
-                UCoreBin(UBOX, Mod.ustyleBlank(backgroundColor = null)) { UDemo0Content(switch1, switch2, switch3, switch4) }
-                // UCoreBin and not UBox, because we don't want to increase depth
-            if ("Canvas" in rendering)
-                USkikoBox { UDemo0Content(switch1, switch2, switch3, switch4) }
+            if ("DOM" in rendering) UBackgroundBox { UDemo0Content(switch1, switch2, switch3, switch4) }
+            if ("Canvas" in rendering) USkikoBox { UDemo0Content(switch1, switch2, switch3, switch4) }
         }
     }
 }
