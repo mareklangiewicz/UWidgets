@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier as Mod
 @Composable fun UCoreBin(type: UBinType, mod: Mod = Mod, content: @Composable () -> Unit) =
     UCoreBinImplSki(type, mod, content)
 
-@Composable fun URawText(text: String, mod: Mod, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) =
+@Composable fun URawText(text: String, mod: Mod = Mod, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) =
     URawTextImplSki(text, mod, bold, mono, maxLines)
 
 @Composable fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
