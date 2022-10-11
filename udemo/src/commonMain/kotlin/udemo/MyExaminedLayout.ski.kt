@@ -66,8 +66,9 @@ import androidx.compose.ui.Modifier as Mod
             borderColor = Color.Blue,
             borderWidth = 4.dp,
         )
-//        .onUReport(onUReport, "rigid father "),
-        .onUReportWithDebug(onUReport, "rigid father "),
+        .onUReport(onUReport, "rigid father "),
+//        .onUReportWithDebug(onUReport, "rigid father "),
+        // FIXME NOW: onUReportWithDebug enters infinite loop when user changes size on "Examined layout ski" tab
     content = content,
 )
 
