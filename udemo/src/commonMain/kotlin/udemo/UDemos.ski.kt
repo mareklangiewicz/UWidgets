@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier as Mod
 
 
 @Composable fun UDemo3TabsSki(size: DpSize, withHorizontalScroll: Boolean, withVerticalScroll: Boolean) = UTabs(
-    "Simple debug ski" to { UDemoSimpleDebugSki() },
+    "Simple debug ski" to { UDemoSimpleDebugSki(size) },
     "Examined layout ski" to { UDemoExaminedLayoutSki(size, withHorizontalScroll, withVerticalScroll) },
     "Examined layout uspek ski" to { UDemoExaminedLayoutUSpekSki() },
     "Move stuff ski" to { UDemoMoveStuffSki() },
@@ -70,10 +70,10 @@ import androidx.compose.ui.Modifier as Mod
 }
 
 @Composable
-fun UDemoSimpleDebugSki() {
+fun UDemoSimpleDebugSki(size: DpSize) {
     UColumn {
-        RigidFather {
-            UBox(Mod.ualign(UEND, UEND).usize(200.dp, 100.dp).udebug()) {}
+        RigidFather(contentSize = size) {
+            // UBox(Mod.ualign(UEND, UEND).usize(200.dp, 100.dp).udebug()) {}
         }
         // UBox(Mod.ualign(UCENTER, UCENTER).usize(200.dp, 50.dp)) {}
         // UBox(Mod.usize(200.dp, 80.dp)) {}

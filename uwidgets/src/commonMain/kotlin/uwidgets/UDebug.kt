@@ -8,6 +8,7 @@ import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.text.*
 import pl.mareklangiewicz.udata.*
+import pl.mareklangiewicz.usystem.*
 import androidx.compose.ui.Modifier as Mod
 
 @Composable fun UChildrenDebug(keyPrefix: String = "", content: @Composable () -> Unit) =
@@ -31,7 +32,8 @@ fun Mod.drawUReports(measurer: TextMeasurer, ureports: UReports): Mod =
 
 @OptIn(ExperimentalTextApi::class)
 fun DrawScope.drawUReports(measurer: TextMeasurer, ureports: UReports) {
-    val text = ureports.joinToString(separator = "\n") { entry -> entry.timeUStr + ": " + entry.key + " " + entry.data.ustr }
+    val summary = "summary: draw time: ${nowTimeMs().asTimeUStr()} ureports.size: ${ureports.size}\n"
+    val text = summary + ureports.joinToString(separator = "\n") { entry -> entry.timeUStr + ": " + entry.key + " " + entry.data.ustr }
     drawText(measurer, text)
 }
 
