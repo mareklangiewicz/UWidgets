@@ -52,6 +52,7 @@ enum class UAlignmentType(val css: String) {
     CompositionLocalProvider(LocalUChildrenMod provides new, content = content)
 }
 
+@Suppress("UnnecessaryComposedModifier") // Android Studio issue: complaining on composed {..}
 @Composable fun UChildrenComposedMod(
     factory: @Composable Mod.() -> Mod,
     content: @Composable () -> Unit,

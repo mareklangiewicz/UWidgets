@@ -23,11 +23,11 @@ fun UDemo() = UAllStretch {
             USwitch(vscroll, "vscroll on", "vscroll off")
         }
         UTabs(
+            "UDemo 3 USkikoBox" to { UDemo3(udemo2size.value.dp.square, hscroll.value, vscroll.value) },
             "UDemo Temp" to { UDemoTemp() },
             "UDemo 0" to { UDemo0() },
             "UDemo 1" to { UDemo1(hscroll.value, vscroll.value) },
             "UDemo 2" to { UDemo2(udemo2size.value.dp.square, hscroll.value, vscroll.value) },
-            "UDemo 3 USkikoBox" to { UDemo3(udemo2size.value.dp.square, hscroll.value, vscroll.value) },
         )
     }
 }

@@ -1,24 +1,31 @@
+@file:OptIn(ExperimentalTextApi::class)
+
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.*
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.text.*
 import pl.mareklangiewicz.udata.*
 import androidx.compose.ui.Modifier as Mod
 
-/** Warning: it replaces upstream Mod.onUReport - see comment at UBin.foldInFrom */
-@OptIn(ExperimentalTextApi::class)
-@Composable fun UDebug(keyPrefix: String = "", content: @Composable () -> Unit) = UChildrenComposedMod(
-    factory = {
-        val measurer = rememberTextMeasurer()
-        val ureports = rememberUReports {}
-        onUReport(ureports::invoke, keyPrefix).drawUReports(measurer, ureports)
-    },
-    content = content
-)
+@Composable fun UChildrenDebug(keyPrefix: String = "", content: @Composable () -> Unit) =
+    UChildrenMod(mod = { udebug(keyPrefix) }, content = content)
+
+fun Mod.udebug(keyPrefix: String = "") = onUReportWithDebug(null, keyPrefix)
 
 @OptIn(ExperimentalTextApi::class)
+fun Mod.onUReportWithDebug(onUReport: OnUReport?, keyPrefix: String = "") = composed {
+    val measurer = rememberTextMeasurer()
+    val ureports = rememberUReports {}
+    val on = remember(onUReport) {
+        if (onUReport == null) ureports::invoke
+        else { { r -> onUReport(r); ureports(r) } }
+    }
+    onUReport(on, keyPrefix).drawUReports(measurer, ureports)
+}
+
 fun Mod.drawUReports(measurer: TextMeasurer, ureports: UReports): Mod =
     drawWithContent { drawContent(); drawUReports(measurer, ureports) }
 

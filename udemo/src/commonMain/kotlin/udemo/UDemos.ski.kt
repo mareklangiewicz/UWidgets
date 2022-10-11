@@ -10,6 +10,7 @@ import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.uspek.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
+import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
 import androidx.compose.ui.Modifier as Mod
 
@@ -71,15 +72,11 @@ import androidx.compose.ui.Modifier as Mod
 @Composable
 fun UDemoSimpleDebugSki() {
     UColumn {
-        UDebug {
-            RigidFather {
-                // FIXME NOW: RigidFather private reports don't report private stuff (because onReport=null), but report child UBox instead..
-                // (child UBox consumes LocalUOnBinReport instead of RigidFather itself)
-                UBox(Mod.usize(200.dp, 100.dp)) {}
-            }
-            UBox(Mod.usize(200.dp, 50.dp)) {}
-            UBox(Mod.usize(200.dp, 80.dp)) {}
+        RigidFather {
+            UBox(Mod.ualign(UEND, UEND).usize(200.dp, 100.dp).udebug()) {}
         }
+        // UBox(Mod.ualign(UCENTER, UCENTER).usize(200.dp, 50.dp)) {}
+        // UBox(Mod.usize(200.dp, 80.dp)) {}
     }
 }
 
