@@ -15,6 +15,7 @@ defaultBuildTemplateForComposeMppApp(
     appMainPackage = "pl.mareklangiewicz.udemo",
     appMainClass = "UDemoApp_jvmKt",
     details = libs.UWidgets,
+    withJs = false, // TODO: reenable webpack-cli workaround below when enabling JS again (if webpack bug still not fixed)
     withComposeCompilerFix = true,
 ) {
     implementation(deps.uspekx)
@@ -26,11 +27,11 @@ defaultBuildTemplateForComposeMppApp(
 // https://github.com/mipastgt/JavaForumStuttgartTalk2022/blob/1bdec6884c89def8ca461c084f6cb08553cffaa5/PolySpiralMpp/build.gradle.kts#L169
 compose.experimental.web.application {} // needed for onWasmReady etc.
 
-// Fixes webpack-cli incompatibility by pinning the newest version.
-// https://youtrack.jetbrains.com/issue/KT-52776/KJS-Gradle-Webpack-version-update-despite-yarnlock-breaks-KotlinJS-build
-rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
-    versions.webpackCli.version = "4.10.0"
-}
+//// Fixes webpack-cli incompatibility by pinning the newest version.
+//// https://youtrack.jetbrains.com/issue/KT-52776/KJS-Gradle-Webpack-version-update-despite-yarnlock-breaks-KotlinJS-build
+//rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
+//    versions.webpackCli.version = "4.10.0"
+//}
 
 // region [Kotlin Module Build Template]
 
@@ -372,37 +373,41 @@ fun Project.defaultBuildTemplateForComposeMppLib(
                     if (withComposeMaterial3) implementation(compose.material3)
                 }
             }
-            val jvmMain by getting {
-                dependencies {
-                    if (withComposeUi) {
-                        implementation(compose.uiTooling)
-                        implementation(compose.preview)
+            if (withJvm) {
+                val jvmMain by getting {
+                    dependencies {
+                        if (withComposeUi) {
+                            implementation(compose.uiTooling)
+                            implementation(compose.preview)
+                        }
+                        if (withComposeMaterialIconsExtended) implementation(compose.materialIconsExtended)
+                        if (withComposeDesktop) {
+                            implementation(compose.desktop.common)
+                            implementation(compose.desktop.currentOs)
+                        }
+                        if (withComposeDesktopComponents) {
+                            implementation(compose.desktop.components.splitPane)
+                        }
                     }
-                    if (withComposeMaterialIconsExtended) implementation(compose.materialIconsExtended)
-                    if (withComposeDesktop) {
-                        implementation(compose.desktop.common)
-                        implementation(compose.desktop.currentOs)
-                    }
-                    if (withComposeDesktopComponents) {
-                        implementation(compose.desktop.components.splitPane)
+                }
+                val jvmTest by getting {
+                    dependencies {
+                        if (withComposeTestUiJUnit4) implementation(compose.uiTestJUnit4)
                     }
                 }
             }
-            val jsMain by getting {
-                dependencies {
-                    implementation(compose.runtime)
-                    if (withComposeWebCore) implementation(compose.web.core)
-                    if (withComposeWebSvg) implementation(compose.web.svg)
+            if (withJs) {
+                val jsMain by getting {
+                    dependencies {
+                        implementation(compose.runtime)
+                        if (withComposeWebCore) implementation(compose.web.core)
+                        if (withComposeWebSvg) implementation(compose.web.svg)
+                    }
                 }
-            }
-            val jvmTest by getting {
-                dependencies {
-                    if (withComposeTestUiJUnit4) implementation(compose.uiTestJUnit4)
-                }
-            }
-            val jsTest by getting {
-                dependencies {
-                    if (withComposeTestWebUtils) implementation(compose.web.testUtils)
+                val jsTest by getting {
+                    dependencies {
+                        if (withComposeTestWebUtils) implementation(compose.web.testUtils)
+                    }
                 }
             }
         }
