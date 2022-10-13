@@ -11,22 +11,27 @@ import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.usystem.*
 import androidx.compose.ui.Modifier as Mod
 
-@Composable fun UChildrenDebug(keyPrefix: String = "", content: @Composable () -> Unit) =
-    UChildrenMod(mod = { udebug(keyPrefix) }, content = content)
+@Deprecated("I had some strange issues with Mod.composed {..} and with lambdas")
+// See comment at: UChildrenComposedMod
+@Composable fun UChildrenComposedDebug(keyPrefix: String = "", content: @Composable () -> Unit) =
+    UChildrenComposedMod(factory = { udebug(keyPrefix) }, content = content)
 
-fun Mod.udebug(keyPrefix: String = "") = onUReportWithDebug(null, keyPrefix)
 
+@Composable fun Mod.udebug(keyPrefix: String = "") = onUReportWithDebug(null, keyPrefix)
+
+@Suppress("ComposableModifierFactory")
 @OptIn(ExperimentalTextApi::class)
-fun Mod.onUReportWithDebug(onUReport: OnUReport?, keyPrefix: String = "") = composed {
+@Composable fun Mod.onUReportWithDebug(onUReport: OnUReport?, keyPrefix: String = ""): Mod {
     val measurer = rememberTextMeasurer()
     val ureports = rememberUReports {}
     val on = remember(onUReport) {
         if (onUReport == null) ureports::invoke
         else { { r -> onUReport(r); ureports(r) } }
     }
-    onUReport(on, keyPrefix).drawUReports(measurer, ureports)
+    return onUReport(on, keyPrefix).drawUReports(measurer, ureports)
 }
 
+@OptIn(ExperimentalTextApi::class)
 fun Mod.drawUReports(measurer: TextMeasurer, ureports: UReports): Mod =
     drawWithContent { drawContent(); drawUReports(measurer, ureports) }
 

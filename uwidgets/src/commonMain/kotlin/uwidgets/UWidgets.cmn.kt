@@ -53,6 +53,10 @@ enum class UAlignmentType(val css: String) {
 }
 
 @Suppress("UnnecessaryComposedModifier") // Android Studio issue: complaining on composed {..}
+@Deprecated("I had some strange issues with Mod.composed {..} and with lambdas")
+// (like repeated nondeterministic recompositions - observable in MyStolenPlaygrounds in layout inspector)
+// TODO_later: track when new Leland api is public and maybe Mod.composed will become deprecated.
+// https://github.com/androidx/androidx/commit/e9095137fe875403ec911f6469b996658250322a
 @Composable fun UChildrenComposedMod(
     factory: @Composable Mod.() -> Mod,
     content: @Composable () -> Unit,
