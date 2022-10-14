@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier as Mod
     UChildrenComposedMod(factory = { udebug(keyPrefix) }, content = content)
 
 
+@Suppress("ComposableModifierFactory")
 @Composable fun Mod.udebug(keyPrefix: String = "") = onUReportWithDebug(null, keyPrefix)
 
 @Suppress("ComposableModifierFactory")
