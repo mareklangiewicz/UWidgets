@@ -8,6 +8,7 @@ import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.text.*
 import pl.mareklangiewicz.udata.*
+import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.usystem.*
 import androidx.compose.ui.Modifier as Mod
 
@@ -22,9 +23,9 @@ import androidx.compose.ui.Modifier as Mod
 
 @Suppress("ComposableModifierFactory")
 @OptIn(ExperimentalTextApi::class)
-@Composable fun Mod.onUReportWithDebug(onUReport: OnUReport?, keyPrefix: String = ""): Mod {
+@Composable fun Mod.onUReportWithDebug(onUReport: OnUReport?, keyPrefix: String = "", log: (Any?) -> Unit = { ulogd(it.ustr) }): Mod {
     val measurer = rememberTextMeasurer()
-    val ureports = rememberUReports {}
+    val ureports = rememberUReports(log)
     val on = remember(onUReport) {
         if (onUReport == null) ureports::invoke
         else { { r -> onUReport(r); ureports(r) } }
