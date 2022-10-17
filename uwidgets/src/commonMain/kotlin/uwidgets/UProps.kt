@@ -80,23 +80,25 @@ internal class UProps private constructor() {
     }
 }
 
-fun Mod.uwidth(width: Dp?) = then(UPropMod(EWidth, width))
-fun Mod.uheight(height: Dp?) = then(UPropMod(EHeight, height))
+@Suppress("NOTHING_TO_INLINE")
+private inline fun Mod.uprop(key: UPropKey, value: Any?) = then(UPropMod(key, value))
+fun Mod.uwidth(width: Dp?) = uprop(EWidth, width)
+fun Mod.uheight(height: Dp?) = uprop(EHeight, height)
 fun Mod.usize(width: Dp? = null, height: Dp? = null) = uwidth(width).uheight(height)
 fun Mod.usize(size: DpSize?) = usize(size?.width, size?.height)
 
-fun Mod.umargin(margin: Dp?) = then(UPropMod(EMargin, margin))
-fun Mod.ucontentColor(contentColor: Color?) = then(UPropMod(EContentColor, contentColor))
-fun Mod.ubackgroundColor(backgroundColor: Color?) = then(UPropMod(EBackgroundColor, backgroundColor))
-fun Mod.uborderColor(borderColor: Color?) = then(UPropMod(EBorderColor, borderColor))
-fun Mod.uborderWidth(borderWidth: Dp?) = then(UPropMod(EBorderWidth, borderWidth))
-fun Mod.upadding(padding: Dp?) = then(UPropMod(EPadding, padding))
-fun Mod.ualignHoriz(horiz: UAlignmentType?) = then(UPropMod(EUAlignHoriz, horiz))
-fun Mod.ualignVerti(verti: UAlignmentType?) = then(UPropMod(EUAlignVerti, verti))
+fun Mod.umargin(margin: Dp?) = uprop(EMargin, margin)
+fun Mod.ucontentColor(contentColor: Color?) = uprop(EContentColor, contentColor)
+fun Mod.ubackgroundColor(backgroundColor: Color?) = uprop(EBackgroundColor, backgroundColor)
+fun Mod.uborderColor(borderColor: Color?) = uprop(EBorderColor, borderColor)
+fun Mod.uborderWidth(borderWidth: Dp?) = uprop(EBorderWidth, borderWidth)
+fun Mod.upadding(padding: Dp?) = uprop(EPadding, padding)
+fun Mod.ualignHoriz(horiz: UAlignmentType?) = uprop(EUAlignHoriz, horiz)
+fun Mod.ualignVerti(verti: UAlignmentType?) = uprop(EUAlignVerti, verti)
 fun Mod.ualign(horiz: UAlignmentType? = null, verti: UAlignmentType? = null) = ualignHoriz(horiz).ualignVerti(verti)
-fun Mod.uscrollHoriz(horiz: Boolean) = then(UPropMod(EUScrollHoriz, horiz))
-fun Mod.uscrollVerti(verti: Boolean) = then(UPropMod(EUScrollVerti, verti))
-fun Mod.uscrollStyle(style: UScrollStyle) = then(UPropMod(EUScrollStyle, style))
+fun Mod.uscrollHoriz(horiz: Boolean) = uprop(EUScrollHoriz, horiz)
+fun Mod.uscrollVerti(verti: Boolean) = uprop(EUScrollVerti, verti)
+fun Mod.uscrollStyle(style: UScrollStyle) = uprop(EUScrollStyle, style)
 fun Mod.uscroll(horiz: Boolean = false, verti: Boolean = false, style: UScrollStyle = UBASIC) =
     uscrollHoriz(horiz).uscrollVerti(verti).uscrollStyle(style)
 
@@ -155,10 +157,10 @@ fun Mod.ustyleBlank(
 
 /** Warning: it replaces upstream Mod.onUClick - see comment at UProps.toCache */
 // It would be better if non-null mods were accumulated (all called in outside in order)
-fun Mod.onUClick(onUClick: OnUClick?) = then(UPropMod(EOnUClick, onUClick))
+fun Mod.onUClick(onUClick: OnUClick?) = uprop(EOnUClick, onUClick)
 
 /** Warning: it replaces upstream Mod.onUReport - see comment at UProps.toCache */
 // It would be better if non-null mods were accumulated (all called in outside in order)
 fun Mod.onUReport(onUReport: OnUReport?, keyPrefix: String = "") =
-    then(UPropMod(EOnUReport, onUReport?.withKeyPrefix(keyPrefix)))
+    uprop(EOnUReport, onUReport?.withKeyPrefix(keyPrefix))
 
