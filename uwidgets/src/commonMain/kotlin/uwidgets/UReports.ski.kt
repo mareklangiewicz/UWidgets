@@ -8,6 +8,8 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import pl.mareklangiewicz.udata.*
 import androidx.compose.ui.Modifier as Mod
 
@@ -16,6 +18,8 @@ import androidx.compose.ui.Modifier as Mod
     CompositionLocalProvider(LocalDensity provides Density(1f)) {
         val vScrollS = rememberScrollState()
         Column(mod.scroll(verticalS = vScrollS)) {
+            debounceState(null, timeoutMs = 100) { reports.latest }
+                .value // just to subscribe recomposition (100ms after last change)
             val range = 0 until reports.size
             for (idx in if (reversed) range.reversed() else range) {
                 val entry = reports[idx]
@@ -31,6 +35,12 @@ import androidx.compose.ui.Modifier as Mod
             }
         }
     }
+}
+
+// TODO_later: Implement this kind of stuff directly with snapshot system (better performance + great exercise).
+@OptIn(FlowPreview::class)
+@Composable fun <T> debounceState(initialValue: T, timeoutMs: Long = 100, calculation: () -> T): State<T> = produceState(initialValue) {
+    snapshotFlow(calculation).debounce(timeoutMs).collect { value = it }
 }
 
 fun Mod.reportMeasuring(onUReport: OnUReport): Mod = layout { measurable, constraints ->

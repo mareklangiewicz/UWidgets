@@ -27,22 +27,25 @@ inline fun OnUReport.withKeyPrefix(keyPrefix: String): OnUReport =
 
 class UReports(val log: (Any?) -> Unit = { ulogd(it.ustr) }) : Iterable<Entry> {
 
-    private val entries = mutableStateListOf<Entry>()
+    /** Read latest to automatically refresh some reports ui - it's backed by mutableStateOf (unlike actual entries list) */
+    var latest by mutableStateOf<Entry?>(null)
+        private set
+
+    private val entries = mutableListOf<Entry>()
 
     operator fun get(idx: Int) = entries[idx]
 
     val size: Int get() = entries.size
 
-    // separate so it's not tracked by snapshot system; FIXME_later: why using size is causing MyExaminedLayoutUSpek to loop infinitely??
-    private var sizeShadow: Int = 0
-
     override operator fun iterator() = entries.iterator()
 
-    fun clear() = entries.clear().also { sizeShadow = 0 }
+    fun clear() = entries.clear()
 
     operator fun invoke(r: UReport) {
-        log(sizeShadow++ to r)
-        entries.add(Entry(r))
+        log(size to r)
+        val e = Entry(r)
+        entries.add(e)
+        latest = e
     }
 
     data class Entry(private val report: UReport, val timeMS: Long = nowTimeMs()) {
