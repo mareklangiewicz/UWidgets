@@ -26,35 +26,31 @@ private class UPropMod(val key: UPropKey, val value: Any?) : Mod.Element
 @Suppress("UNCHECKED_CAST")
 internal class UProps private constructor() {
 
-    private val size = UPropKey.values().size
-    private val cache = arrayOfNulls<Any>(size)
-    private val state = mutableStateListOf(*cache)
+    private val state = arrayOfNulls<Any>(UPropKey.values().size)
 
     // Invariant: No allocations during UProps lifecycle
 
-    private fun updateState() { for (i in 0 until size) state[i] = cache[i] }
-    private fun nullifyCache() { for (i in 0 until size) cache[i] = null }
     private fun updateFromMod(mod: Mod) {
-        nullifyCache()
-        mod.foldIn(Unit) { _, elem -> (elem as? UPropMod)?.toCache() }
-        updateState()
+        for (i in state.indices) state[i] = null
+        mod.foldIn(Unit) { _, elem -> (elem as? UPropMod)?.updateState() }
     }
 
-    private fun UPropMod.toCache() {
+    private fun UPropMod.updateState() {
         // TODO: configurable behavior when not null (mostly for easier debugging)
-        if (cache[key.ordinal] != null) ulogw("Overwriting UProp.$key: ${cache[key.ordinal]} -> $value")
-        // require(cache[key.ordinal] == null) { "Can't set UProp: $key to $value. It's already set to ${cache[key.ordinal]}" }
+        if (state[key.ordinal] != null) ulogw("Overwriting UProp.$key: ${state[key.ordinal]} -> $value")
+        // require(state[key.ordinal] == null) { "Can't set UProp: $key to $value. It's already set to ${state[key.ordinal]}" }
 
-        cache[key.ordinal] = value
+        state[key.ordinal] = value
+        // UPDATE: TODO: Try again stuff like in comment below - after making UProps NOT snapshot-based anymore
         // FIXME: For onUReport and onUClick: I experimented with calling both lambdas (when not null)
         //  sth like: onUClick = { onUClick(it); e.onUClick(it) }
-        //  (moments of reading/writing state probably play important role)
+        //  (moments of reading/writing state probably play important role) UPDATE: it shouldn't anymore
         //  So I had some nasty issues with sometimes not working onUClicks in UDemo1
         //  So I resigned and chose simple replacing (inner most modifier wins).
         //  still it would be cool to have this accumulation for example for UDebug
     }
 
-    private inline infix fun <reified T: Any> UPropKey.readOr(default: () -> T) = state[ordinal] as? T ?: default()
+    private inline infix fun <reified T : Any> UPropKey.readOr(default: () -> T) = state[ordinal] as? T ?: default()
 
     val width: Dp? get() = state[EWidth.ordinal] as? Dp
     val height: Dp? get() = state[EHeight.ordinal] as? Dp
@@ -79,6 +75,7 @@ internal class UProps private constructor() {
             uprops.updateFromMod(mod) // on every recomposition
             return uprops
         }
+
         @Composable fun installMaterialized(mod: Mod) = install(currentComposer.materialize(mod))
     }
 }
