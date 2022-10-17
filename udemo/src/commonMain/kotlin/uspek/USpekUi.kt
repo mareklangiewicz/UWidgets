@@ -15,11 +15,11 @@ import pl.mareklangiewicz.uwidgets.*
     }
     UAllStretch {
         URow {
+            UBox { composition() }
             UColumn {
-                UBox { composition() }
                 UBox { UReportsUi(composition.ureports, reversed = false) }
+                UBox { UReportsUi(uspekLogReports, reversed = false) }
             }
-            UBox { UReportsUi(uspekLogReports, reversed = false) }
         }
     }
 }
