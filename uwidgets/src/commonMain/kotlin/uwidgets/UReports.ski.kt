@@ -18,8 +18,6 @@ import androidx.compose.ui.Modifier as Mod
     CompositionLocalProvider(LocalDensity provides Density(1f)) {
         val vScrollS = rememberScrollState()
         Column(mod.scroll(verticalS = vScrollS)) {
-            debounceState(null, timeoutMs = 100) { reports.latest }
-                .value // just to subscribe recomposition (100ms after last change)
             val range = 0 until reports.size
             for (idx in if (reversed) range.reversed() else range) {
                 val entry = reports[idx]

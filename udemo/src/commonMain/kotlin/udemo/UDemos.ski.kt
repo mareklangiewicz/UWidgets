@@ -73,7 +73,7 @@ import androidx.compose.ui.Modifier as Mod
 fun UDemoSimpleDebugSki(size: DpSize) {
     UColumn {
         RigidFather(contentSize = size) {
-             UBox(Mod.ualign(UEND, UEND).usize(200.dp, 100.dp).udebug("baby ")) {}
+             UBox(Mod.ustyleBlank().ualign(UEND, UEND).usize(200.dp, 100.dp).udebug("baby ")) {}
         }
         // UBox(Mod.ualign(UCENTER, UCENTER).usize(200.dp, 50.dp)) {}
         // UBox(Mod.usize(200.dp, 80.dp)) {}
