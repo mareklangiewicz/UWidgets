@@ -1,6 +1,7 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.usystem.*
@@ -33,15 +34,13 @@ class UReports(val log: (Any?) -> Unit = { ulogd(it.ustr) }) : Iterable<Entry> {
 
     val size: Int get() = entries.size
 
-    // separate so it's not tracked by snapshot system (reading size in invoke could invalidate some scopes in loop)
-    private var sizeShadow: Int = 0
-
     override operator fun iterator() = entries.iterator()
 
-    fun clear() = entries.clear().also { sizeShadow = 0 }
+    fun clear() = entries.clear()
 
     operator fun invoke(r: UReport) {
-        log(sizeShadow++ to r)
+        val s = Snapshot.withoutReadObservation { size }
+        log(s to r)
         entries.add(Entry(r))
     }
 
