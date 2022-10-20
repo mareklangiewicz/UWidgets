@@ -32,11 +32,7 @@ private const val isSlowStateDebounced: Boolean = true // false means delayed bu
             val r by slowStateOf(emptyList()) { reports.toList() }
             for (idx in if (reversed) r.indices.reversed() else r.indices) {
                 val entry = r[idx]
-                Row(
-                    Mod
-                        .background(Color.White.darken(.06f * (idx % 4)))
-                        .padding(2.dp)
-                ) {
+                Row(Mod.background(Color.White.darken(.06f * (idx % 4))).padding(2.dp)) {
                     Box(Mod.width(60.dp)) { Text(entry.timeUStr) }
                     Box(Mod.width(200.dp)) { Text(entry.key) }
                     Box(Mod.weight(1f)) { Text(entry.data.ustr) }
