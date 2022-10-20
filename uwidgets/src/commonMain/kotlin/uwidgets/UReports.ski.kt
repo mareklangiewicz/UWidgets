@@ -1,26 +1,36 @@
 package pl.mareklangiewicz.uwidgets
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.flow.*
 import pl.mareklangiewicz.udata.*
+import pl.mareklangiewicz.ulog.*
+import kotlin.coroutines.*
 import androidx.compose.ui.Modifier as Mod
 
+private const val isUiDebounced: Boolean = true // false means delayed but not debounced
+
 // TODO_later: move it to "more common" code using other uwidgets, so it can be used with DOM "backend" too
+@OptIn(ExperimentalComposeApi::class)
 @Composable fun UReportsUi(reports: UReports, mod: Mod = Mod, reversed: Boolean = false) {
     CompositionLocalProvider(LocalDensity provides Density(1f)) {
         val vScrollS = rememberScrollState()
         Column(mod.scroll(verticalS = vScrollS)) {
-            val range = 0 until reports.size
-            for (idx in if (reversed) range.reversed() else range) {
-                val entry = reports[idx]
+            val r by
+            if (isUiDebounced) debouncedStateOf(emptyList()) { reports.toList() }
+            else delayedStateOf(emptyList()) { reports.toList() }
+            for (idx in if (reversed) r.indices.reversed() else r.indices) {
+                val entry = r[idx]
                 Row(
                     Mod
                         .background(Color.White.darken(.06f * (idx % 4)))
@@ -33,12 +43,6 @@ import androidx.compose.ui.Modifier as Mod
             }
         }
     }
-}
-
-// TODO_later: Implement this kind of stuff directly with snapshot system (better performance + great exercise).
-@OptIn(FlowPreview::class)
-@Composable fun <T> debounceState(initialValue: T, timeoutMs: Long = 100, calculation: () -> T): State<T> = produceState(initialValue) {
-    snapshotFlow(calculation).debounce(timeoutMs).collect { value = it }
 }
 
 fun Mod.reportMeasuring(onUReport: OnUReport): Mod = layout { measurable, constraints ->
