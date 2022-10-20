@@ -18,17 +18,18 @@ import pl.mareklangiewicz.ulog.*
 import kotlin.coroutines.*
 import androidx.compose.ui.Modifier as Mod
 
-private const val isUiDebounced: Boolean = true // false means delayed but not debounced
+private const val isSlowStateDebounced: Boolean = true // false means delayed but not debounced
+
+@OptIn(ExperimentalComposeApi::class)
+@Composable private fun <T> slowStateOf(init: T, delayMs: Long = 200, calculation: () -> T) =
+    if (isSlowStateDebounced) debouncedStateOf(init, delayMs, calculation) else delayedStateOf(init, delayMs, calculation)
 
 // TODO_later: move it to "more common" code using other uwidgets, so it can be used with DOM "backend" too
-@OptIn(ExperimentalComposeApi::class)
 @Composable fun UReportsUi(reports: UReports, mod: Mod = Mod, reversed: Boolean = false) {
     CompositionLocalProvider(LocalDensity provides Density(1f)) {
         val vScrollS = rememberScrollState()
         Column(mod.scroll(verticalS = vScrollS)) {
-            val r by
-            if (isUiDebounced) debouncedStateOf(emptyList()) { reports.toList() }
-            else delayedStateOf(emptyList()) { reports.toList() }
+            val r by slowStateOf(emptyList()) { reports.toList() }
             for (idx in if (reversed) r.indices.reversed() else r.indices) {
                 val entry = r[idx]
                 Row(
