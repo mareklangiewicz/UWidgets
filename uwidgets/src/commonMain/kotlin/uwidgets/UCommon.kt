@@ -21,10 +21,9 @@ fun Color.lighten(fraction: Float = 0.1f) = lerp(this, Color.White, fraction.coe
 fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coerceIn(0f, 1f))
 
 
-@ExperimentalComposeApi
-// FIXME: Something is probably broken here.. (strange behaviors when experimenting on "Examined layout uspek ski" tab)
-//  Needs tests, and more thinking about concurrency
+@ExperimentalComposeApi // FIXME: Needs tests, and more thinking about concurrency
 @Composable fun DelayedUpdateEffectBroken(delayMs: Long = 200, update: () -> Unit) = LaunchedEffect(delayMs, update) {
+    ulogw("Something is probably broken in this fun. (strange behaviors when experimenting on 'Examined layout uspek ski' tab)")
     val observer = SnapshotStateObserver { it() }
     val gate = Channel<Unit>(CONFLATED)
     val open: (Unit) -> Unit = {
