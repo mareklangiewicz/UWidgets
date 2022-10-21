@@ -22,7 +22,7 @@ private const val isSlowStateDebounced: Boolean = true // false means delayed bu
 
 @OptIn(ExperimentalComposeApi::class)
 @Composable private fun <T> slowStateOf(init: T, delayMs: Long = 200, calculation: () -> T) =
-    if (isSlowStateDebounced) debouncedStateOf(init, delayMs, calculation) else delayedStateOf(init, delayMs, calculation)
+    if (isSlowStateDebounced) debouncedStateOf(init, delayMs, calculation) else delayedStateOfBroken(init, delayMs, calculation)
 
 // TODO_later: move it to "more common" code using other uwidgets, so it can be used with DOM "backend" too
 @Composable fun UReportsUi(reports: UReports, mod: Mod = Mod, reversed: Boolean = false) {
