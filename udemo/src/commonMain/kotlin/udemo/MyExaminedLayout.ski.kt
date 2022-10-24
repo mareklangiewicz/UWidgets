@@ -67,7 +67,7 @@ import androidx.compose.ui.Modifier as Mod
             borderWidth = 4.dp,
         )
 //        .onUReport(onUReport, "rigid father "),
-        .onUReportWithDebug(onUReport, "rigid father "),
+        .onUReportWithDebug(onUReport, "rigid father ", interactive = true),
     content = content,
 )
 
@@ -79,8 +79,8 @@ import androidx.compose.ui.Modifier as Mod
     onUReport: OnUReport? = null,
 ) = UBox(Mod
     .ustyleBlank(backgroundColor = color.copy(alpha = color.alpha * .8f))
-    .onUReport(onUReport, "$tag inner ")
-//    .onUReportWithDebug(onUReport, "$tag inner ")
+    // .onUReport(onUReport, "$tag inner ")
+    .onUReportWithDebug(onUReport, "$tag inner ", interactive = true)
     .andIfNotNull(onUReport) { reportMeasuringAndPlacement(it.withKeyPrefix("$tag outer ")) }
     .run { if (sizeRequired) requiredSize(size) else size(size) }
 ) {}
