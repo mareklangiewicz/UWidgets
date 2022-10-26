@@ -49,9 +49,16 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
     return state
 }
 
+// @Composable fun <T> delayedStateOfBetterTODO(init: T, delayMs: Long = 200, calculation: () -> T): State<T> {
+//     TODO("Try to use drivedStateOf that conditionally uses cache if last calculation happened < delayMs, or does new calculation otherwise")
+// }
+// Not sure if it's possible to do it correctly, because I have to conditionally decide what exactly is read (subscribed) in derivedStateOf
+// (And not sure if derivedStateOf is prepared to handle different subscriptions at following invocations)
+// (And not sure how to correctly update some "cached" value - so hacky side effect inside derivedStateOf needed?)
+
+
 // TODO_later: Implement this kind of stuff directly with snapshot system (better performance + great exercise).
-@OptIn(FlowPreview::class)
 @Composable fun <T> debouncedStateOf(init: T, delayMs: Long = 200, calculation: () -> T): State<T> = produceState(init) {
-    snapshotFlow(calculation).debounce(delayMs).collect { value = it }
+    snapshotFlow(calculation).collectLatest { delay(delayMs); value = it }
 }
 
