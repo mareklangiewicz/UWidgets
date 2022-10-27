@@ -60,6 +60,8 @@ fun DrawScope.drawUReports(measurer: TextMeasurer, ureports: UReports) {
     drawText(measurer, text)
 }
 
+fun UReports.summaryUStr() = UBinReportsSummary(this).toString()
+
 private class UBinReportsSummary(ureports: UReports) {
     val binName: String
     var binType: UBinType
@@ -113,5 +115,3 @@ private class UBinReportsSummary(ureports: UReports) {
         }
     }  c:$composeCount m:$measureCount p:$placeCount"
 }
-
-private fun UReports.summaryUStr() = UBinReportsSummary(this).toString()
