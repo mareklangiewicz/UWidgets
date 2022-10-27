@@ -6,9 +6,11 @@ import androidx.compose.foundation.gestures.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.*
+import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.text.*
+import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
@@ -54,10 +56,13 @@ fun Mod.drawWithUReports(measurer: TextMeasurer, ureports: UReports, interactive
     }
 
 @OptIn(ExperimentalTextApi::class)
-fun DrawScope.drawUReports(measurer: TextMeasurer, ureports: UReports) {
+fun DrawScope.drawUReports(measurer: TextMeasurer, ureports: UReports, scale: Float = .5f) {
     val summary = ureports.summaryUStr()
     val text = ureports.joinToString(separator = "\n", prefix = "$summary\n") { entry -> entry.timeUStr + ": " + entry.key + " " + entry.data.ustr }
-    drawText(measurer, text)
+    scale(scale, Offset.Zero) {
+        drawContext.size = size * 1f / scale
+        drawText(measurer, text, Offset(12f, 4f), TextStyle.Default.copy(fontFamily = FontFamily.Monospace))
+    }
 }
 
 fun UReports.summaryUStr() = UBinReportsSummary(this).toString()
