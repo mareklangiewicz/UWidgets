@@ -60,7 +60,7 @@ fun DrawScope.drawUReports(measurer: TextMeasurer, ureports: UReports) {
     drawText(measurer, text)
 }
 
-private class UBinReportsSummary {
+private class UBinReportsSummary(ureports: UReports) {
     val binName: String
     var binType: UBinType
         private set
@@ -75,13 +75,12 @@ private class UBinReportsSummary {
     val reportsSize: Int
     val summaryTimeMs: Long = nowTimeMs()
 
-    constructor(ureports: UReports) {
+    init {
         reportsSize = ureports.size
         // For now, I assume (and check) that all reports here are about one element.
         check(ureports[0].key.endsWith(" compose"))
         binName = ureports[0].key.removeSuffix(" compose")
         binType = ureports[0].data as UBinType
-
         var lastConstraints: Constraints? = null
         for (r in ureports) {
             check(r.key.startsWith("$binName "))
