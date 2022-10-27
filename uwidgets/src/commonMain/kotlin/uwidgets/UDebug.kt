@@ -47,7 +47,7 @@ fun Mod.drawWithUReports(measurer: TextMeasurer, ureports: UReports, interactive
             // TODO NOW: more cool gestures changing what drawUReports shows
             detectTapGestures {
                 ulogd("")
-                ulogd(ureports.summary())
+                ulogd(ureports.summaryUStr())
                 ureports.forEachIndexed { idx, (report, timeMs) -> ulogd("$idx ${timeMs.asTimeUStr()} ${report.ustr}") }
             }
         }
@@ -55,64 +55,64 @@ fun Mod.drawWithUReports(measurer: TextMeasurer, ureports: UReports, interactive
 
 @OptIn(ExperimentalTextApi::class)
 fun DrawScope.drawUReports(measurer: TextMeasurer, ureports: UReports) {
-    val summary = ureports.summary()
+    val summary = ureports.summaryUStr()
     val text = ureports.joinToString(separator = "\n", prefix = "$summary\n") { entry -> entry.timeUStr + ": " + entry.key + " " + entry.data.ustr }
     drawText(measurer, text)
 }
 
-private class UBinReportsSummary(
-    val name: String,
-    val type: UBinType,
-    val composeCount: Int,
-    val measureCount: Int,
-    val placeCount : Int,
-    val lastMeasuring: Pair<Constraints, IntSize>?,
-    val reportsSize: Int,
-    val summaryTimeMs: Long = nowTimeMs(),
-) {
-    override fun toString(): String {
-        val ms = lastMeasuring?.run {
+private class UBinReportsSummary {
+    val binName: String
+    var binType: UBinType
+        private set
+    var composeCount: Int = 0
+        private set
+    var measureCount: Int = 0
+        private set
+    var placeCount : Int = 0
+        private set
+    var lastMeasuring: Pair<Constraints, IntSize>? = null
+        private set
+    val reportsSize: Int
+    val summaryTimeMs: Long = nowTimeMs()
+
+    constructor(ureports: UReports) {
+        reportsSize = ureports.size
+        // For now, I assume (and check) that all reports here are about one element.
+        check(ureports[0].key.endsWith(" compose"))
+        binName = ureports[0].key.removeSuffix(" compose")
+        binType = ureports[0].data as UBinType
+
+        var lastConstraints: Constraints? = null
+        for (r in ureports) {
+            check(r.key.startsWith("$binName "))
+            when {
+                r.key.endsWith(" compose") -> {
+                    composeCount ++
+                    binType = r.data as UBinType
+                }
+                r.key.endsWith(" measure in") -> {
+                    measureCount ++
+                    // TODO_someday: think about cases when measuring could be interrupted when state changes.
+                    check(lastConstraints == null)
+                    lastConstraints = r.data as Constraints
+                }
+                r.key.endsWith(" measured") -> {
+                    lastMeasuring = lastConstraints!! to r.data as IntSize
+                    lastConstraints = null
+                }
+                r.key.endsWith(" place in") -> {
+                    placeCount ++
+                    // TODO_someday: endsWith(" placed") and generally collect and show more data about placing
+                }
+            }
+        }
+    }
+
+    override fun toString() = "* ${summaryTimeMs.asTimeUStr()} $binName summary:$reportsSize $binType ${
+        lastMeasuring?.run {
             "${first.minWidth}..${first.maxWidth}->${second.width} x ${first.minHeight}..${first.maxHeight}->${second.height}"
         }
-        return "* ${summaryTimeMs.asTimeUStr()} $name summary[$reportsSize] $type $ms; c:$composeCount; m:$measureCount; p:$placeCount"
-    }
+    }  c:$composeCount m:$measureCount p:$placeCount"
 }
 
-private fun UReports.summary(): UBinReportsSummary {
-    // For now, I assume (and check) that all reports here are about one element.
-    check(this[0].key.endsWith(" compose"))
-    val binName = this[0].key.removeSuffix(" compose")
-    var binType = this[0].data as UBinType
-    var composeCount = 1
-    var measureCount = 0
-    var placeCount = 0
-    var lastConstraints: Constraints? = null
-    var lastMeasuring: Pair<Constraints, IntSize>? = null
-
-    for (r in this.drop(1)) {
-        check(r.key.startsWith("$binName "))
-        when {
-            r.key.endsWith(" compose") -> {
-                composeCount ++
-                binType = r.data as UBinType
-            }
-            r.key.endsWith(" measure in") -> {
-                measureCount ++
-                check(lastConstraints == null) // TODO_someday: think about cases when measuring could be interrupted when state changes.
-                lastConstraints = r.data as Constraints
-            }
-            r.key.endsWith(" measured") -> {
-                lastMeasuring = lastConstraints!! to r.data as IntSize
-                lastConstraints = null
-            }
-            r.key.endsWith(" place in") -> {
-                placeCount ++
-            }
-            // TODO_someday: endsWith(" placed") and generally collect and show more data about placing
-        }
-    }
-
-    return UBinReportsSummary(binName, binType, composeCount, measureCount, placeCount, lastMeasuring, size)
-}
-
-
+private fun UReports.summaryUStr() = UBinReportsSummary(this).toString()
