@@ -43,29 +43,41 @@ import androidx.compose.ui.Modifier as Mod
     return onUReport(on, keyPrefix).drawWithUReports(measurer, ureports, interactive)
 }
 
-fun Mod.drawWithUReports(measurer: TextMeasurer, ureports: UReports, interactive: Boolean = false): Mod =
-    drawWithContent { drawContent(); drawUReports(measurer, ureports) }.andIf(interactive) {
-        pointerInput(measurer, ureports) {
-            // TODO NOW: more cool gestures changing what drawUReports shows
-            detectTapGestures {
-                ulogd("")
-                ulogd(ureports.summaryUStr())
-                ureports.forEachIndexed { idx, (report, timeMs) -> ulogd("$idx ${timeMs.asTimeUStr()} ${report.ustr}") }
+fun Mod.drawWithUReports(measurer: TextMeasurer, ureports: UReports, interactive: Boolean = false): Mod = composed {
+    var scale by ustate(.5f)
+    var start by ustate(Offset(10f, 10f))
+    this
+        .andIf(interactive) {
+            pointerInput(measurer, ureports) {
+                // TODO NOW: more cool gestures changing what drawUReports shows
+                // detectTransformGestures { centroid, pan, zoom, rotation ->
+                //     scale *= zoom
+                //     start += pan
+                // }
+                detectTapGestures {
+                    ureports.allUStr().forEach { ulogd(it) }
+                }
             }
         }
-    }
+        .drawWithContent { drawContent(); drawUReports(measurer, ureports, scale, start) }
+}
 
 @OptIn(ExperimentalTextApi::class)
-fun DrawScope.drawUReports(measurer: TextMeasurer, ureports: UReports, scale: Float = .5f) {
-    val summary = ureports.summaryUStr()
-    val text = ureports.joinToString(separator = "\n", prefix = "$summary\n") { entry -> entry.timeUStr + ": " + entry.key + " " + entry.data.ustr }
+fun DrawScope.drawUReports(measurer: TextMeasurer, ureports: UReports, scale: Float = .5f, start: Offset = Offset.Zero) {
+    val text = ureports.allUStr().joinToString(separator = "\n")
     scale(scale, Offset.Zero) {
         drawContext.size = size * 1f / scale
-        drawText(measurer, text, Offset(12f, 4f), TextStyle.Default.copy(fontFamily = FontFamily.Monospace))
+        drawText(measurer, text, start, TextStyle.Default.copy(fontFamily = FontFamily.Monospace))
     }
 }
 
+fun UReports.linesUStr() = reversed().mapIndexed { idx, entry ->
+    idx.toString().padStart(3) + " ${entry.timeUStr} ${entry.key} ${entry.data.ustr}"
+}
+
 fun UReports.summaryUStr() = UBinReportsSummary(this).toString()
+
+fun UReports.allUStr() = (listOf("*** " + summaryUStr()) + linesUStr())
 
 private class UBinReportsSummary(ureports: UReports) {
     val binName: String
@@ -114,7 +126,7 @@ private class UBinReportsSummary(ureports: UReports) {
         }
     }
 
-    override fun toString() = "* ${summaryTimeMs.asTimeUStr()} $binName summary:$reportsSize $binType ${
+    override fun toString() = "${summaryTimeMs.asTimeUStr()} $binName summary $reportsSize $binType ${
         lastMeasuring?.run {
             "${first.minWidth}..${first.maxWidth}->${second.width} x ${first.minHeight}..${first.maxHeight}->${second.height}"
         }
