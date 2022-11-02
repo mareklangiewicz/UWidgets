@@ -50,12 +50,11 @@ fun Mod.drawWithUReports(measurer: TextMeasurer, ureports: UReports, interactive
         .andIf(interactive) {
             pointerInput(measurer, ureports) {
                 // TODO NOW: more cool gestures changing what drawUReports shows
-                // detectTransformGestures { centroid, pan, zoom, rotation ->
-                //     scale *= zoom
-                //     start += pan
-                // }
-                detectTapGestures {
-                    ureports.allUStr().forEach { ulogd(it) }
+                detectTransformGestures { centroid, pan, zoom, rotation ->
+                    scale *= zoom
+                    start += pan
+                    if (pan.y > 40f)
+                        ureports.allUStr().forEach { ulogd(it) }
                 }
             }
         }
