@@ -15,6 +15,8 @@ fun rememberTextMeasurer() = remember { "FakeTextMeasurer" }
 fun DrawScope.drawText(
     textMeasurer: TextMeasurer,
     text: String,
+    start: Offset = Offset.Zero,
+    style: TextStyle = TextStyle.Default,
 ) {
     check(textMeasurer == "FakeTextMeasurer")
     if (text.isEmpty()) {
