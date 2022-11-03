@@ -9,9 +9,11 @@ import androidx.compose.ui.draw.*
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.input.pointer.*
+import androidx.compose.ui.input.pointer.PointerEventType.*
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
+import kotlinx.coroutines.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.usystem.*
@@ -43,20 +45,22 @@ import androidx.compose.ui.Modifier as Mod
     return onUReport(on, keyPrefix).drawWithUReports(measurer, ureports, interactive)
 }
 
+@OptIn(ExperimentalTextApi::class)
 fun Mod.drawWithUReports(measurer: TextMeasurer, ureports: UReports, interactive: Boolean = false): Mod = composed {
     var scale by ustate(.5f)
     var start by ustate(Offset(10f, 10f))
     this
         .andIf(interactive) {
-            pointerInput(measurer, ureports) {
+            pointerInput(measurer, ureports) { coroutineScope {
                 // TODO NOW: more cool gestures changing what drawUReports shows
-                detectTransformGestures { centroid, pan, zoom, rotation ->
+                launch { detectTapGestures {
+                    ureports.allUStr().forEach { ulogd(it) }
+                } }
+                launch { detectTransformGestures { centroid, pan, zoom, rotation ->
                     scale *= zoom
                     start += pan
-                    if (pan.y > 40f)
-                        ureports.allUStr().forEach { ulogd(it) }
-                }
-            }
+                } }
+            } }
         }
         .drawWithContent { drawContent(); drawUReports(measurer, ureports, scale, start) }
 }
