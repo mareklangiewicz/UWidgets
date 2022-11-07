@@ -9,25 +9,26 @@ import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
-import pl.mareklangiewicz.uwidgets.UBinType.*
 import androidx.compose.ui.Modifier as Mod
 
 @Composable
 fun UDemo() = UAllStretch {
-    UColumn {
-        val udemo2size = ustate(100)
-        val (hscroll, vscroll) = ustates(true, true)
+    val udemo2sizeS = ustate(100)
+    val (hscrollS, vscrollS) = ustates(true, true)
+    val ulensZoomS = ustate(1f) // 1f disables ulens
+    UColumn(Mod.ulens(ulensZoomS.value)) {
         UAllStartRow {
-            USwitch(udemo2size, "100" to 100, "200" to 200, "400" to 400, "800" to 800)
-            USwitch(hscroll, "hscroll on", "hscroll off")
-            USwitch(vscroll, "vscroll on", "vscroll off")
+            USwitch(udemo2sizeS, "100" to 100, "200" to 200, "400" to 400, "800" to 800)
+            USwitch(hscrollS, "hscroll on", "hscroll off")
+            USwitch(vscrollS, "vscroll on", "vscroll off")
+            USwitch(ulensZoomS, "lens off" to 1f, "2x" to 2f, "3x" to 3f, "4x" to 4f)
         }
         UTabs(
-            "UDemo 3 USkikoBox" to { UDemo3(udemo2size.value.dp.square, hscroll.value, vscroll.value) },
+            "UDemo 3 USkikoBox" to { UDemo3(udemo2sizeS.value.dp.square, hscrollS.value, vscrollS.value) },
             "UDemo Temp" to { UDemoTemp() },
             "UDemo 0" to { UDemo0() },
-            "UDemo 1" to { UDemo1(hscroll.value, vscroll.value) },
-            "UDemo 2" to { UDemo2(udemo2size.value.dp.square, hscroll.value, vscroll.value) },
+            "UDemo 1" to { UDemo1(hscrollS.value, vscrollS.value) },
+            "UDemo 2" to { UDemo2(udemo2sizeS.value.dp.square, hscrollS.value, vscrollS.value) },
         )
     }
 }
