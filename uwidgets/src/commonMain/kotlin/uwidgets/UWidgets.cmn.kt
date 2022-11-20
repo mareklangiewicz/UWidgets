@@ -100,19 +100,19 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
     }
 }
 
-@Composable
-internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) = UAllStartRow {
-    var selectedTabIndex by ustate(0)
-    tabs.forEachIndexed { index, title ->
-        UText(
-            text = title,
-            mod = Mod.onUClick { selectedTabIndex = index; onSelected(index, title) },
-            center = true,
-            bold = index == selectedTabIndex,
-            mono = true
-        )
+@Composable internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
+    URow(Mod.ualign(USTRETCH, USTART).uscrollHoriz(true)) {
+        var selectedTabIndex by ustate(0)
+        tabs.forEachIndexed { index, title ->
+            UText(
+                text = title,
+                mod = Mod.onUClick { selectedTabIndex = index; onSelected(index, title) },
+                center = true,
+                bold = index == selectedTabIndex,
+                mono = true
+            )
+        }
     }
-}
 
 @Composable fun USwitch(state: MutableState<Boolean>, labelOn: String = " on  ", labelOff: String = " off ") = UAllStart {
     UText(
