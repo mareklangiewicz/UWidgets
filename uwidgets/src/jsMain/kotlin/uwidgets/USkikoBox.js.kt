@@ -4,13 +4,9 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.focus.*
 import androidx.compose.ui.geometry.*
-import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.native.*
-import androidx.compose.ui.node.*
 import androidx.compose.ui.platform.*
-import androidx.compose.ui.semantics.*
 import androidx.compose.ui.unit.*
 import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.*
@@ -20,7 +16,6 @@ import org.w3c.dom.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
-import androidx.compose.ui.Modifier as Mod
 
 /** @param withBackgroundBox without it the background of the "scene" will be white */
 @Composable fun USkikoBoxDom(
@@ -79,49 +74,11 @@ private val Element.clientSizeDp get() = DpSize(clientWidth.dp, clientHeight.dp)
 /** @see androidx.compose.ui.window.ComposeWindow */
 private class USkikoComposeWindow(canvas: HTMLCanvasElement) {
 
-    private val density: Density = Density(1f) //todo get and update density from Browser platform
     private val jsTextInputService = JSTextInputService()
-    private val platform = object : Platform by Platform.Empty {
-        override val windowInfo = WindowInfoImpl().apply {
-            // true is a better default if platform doesn't provide WindowInfo.
-            // otherwise UI will be rendered always in unfocused mode
-            // (hidden textfield cursor, gray titlebar, etc)
-            isWindowFocused = true
-        }
-        override val focusManager = object : FocusManager {
-            override fun clearFocus(force: Boolean) = Unit
-            override fun moveFocus(focusDirection: FocusDirection) = false
-        }
-        override val layoutDirection: LayoutDirection get() = LayoutDirection.Ltr
-        override val textInputService = jsTextInputService
-        override fun accessibilityController(owner: SemanticsOwner) = object : AccessibilityController {
-            override fun onSemanticsChange() = Unit
-            override fun onLayoutChange(layoutNode: LayoutNode) = Unit
-            override suspend fun syncLoop() = Unit
-        }
-        override fun setPointerIcon(pointerIcon: PointerIcon) = Unit
-        override val viewConfiguration = object : ViewConfiguration {
-            override val longPressTimeoutMillis: Long = 500
-            override val doubleTapTimeoutMillis: Long = 300
-            override val doubleTapMinTimeMillis: Long = 40
-            override val touchSlop: Float get() = with(density) { 18.dp.toPx() }
-        }
-        override val textToolbar: TextToolbar = object : TextToolbar {
-            override fun hide() = Unit
-            override val status: TextToolbarStatus = TextToolbarStatus.Hidden
-            override fun showMenu(
-                rect: Rect,
-                onCopyRequested: (() -> Unit)?,
-                onPasteRequested: (() -> Unit)?,
-                onCutRequested: (() -> Unit)?,
-                onSelectAllRequested: (() -> Unit)?
-            ) = Unit
-        }
-    }
 
     private val layer = ComposeLayer(
         layer = createSkiaLayer(),
-        platform = platform,
+        platform = Platform.Empty,
         getTopLeftOffset = { Offset.Zero },
         input = jsTextInputService.input
     )
