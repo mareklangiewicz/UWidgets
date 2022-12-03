@@ -15,7 +15,7 @@ defaultBuildTemplateForComposeMppApp(
     appMainPackage = "pl.mareklangiewicz.udemo",
     appMainClass = "UDemoApp_jvmKt",
     details = libs.UWidgets,
-    withJs = false, // TODO: reenable webpack-cli workaround below when enabling JS again (if webpack bug still not fixed)
+    withJs = true,
 ) {
     implementation(deps.uspekx)
     implementation(project(":uwidgets"))
@@ -26,7 +26,7 @@ defaultBuildTemplateForComposeMppApp(
 // https://github.com/mipastgt/JavaForumStuttgartTalk2022/blob/1bdec6884c89def8ca461c084f6cb08553cffaa5/PolySpiralMpp/build.gradle.kts#L169
 compose.experimental.web.application {} // needed for onWasmReady etc.
 
-//// Fixes webpack-cli incompatibility by pinning the newest version.
+//// Fixes webpack-cli incompatibility by pinning the newest version. TODO_later: works for me now. But remove comment only when bug is closed.
 //// https://youtrack.jetbrains.com/issue/KT-52776/KJS-Gradle-Webpack-version-update-despite-yarnlock-breaks-KotlinJS-build
 //rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
 //    versions.webpackCli.version = "4.10.0"

@@ -16,7 +16,7 @@ plugins {
 
 defaultBuildTemplateForComposeMppLib(
     details = libs.UWidgets,
-    withJs = false,
+    withJs = true,
 )
 
 kotlin {
