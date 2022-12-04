@@ -22,6 +22,7 @@ fun UDemo() = UAllStretch {
             USwitch(hscrollS, "hscroll on", "hscroll off")
             USwitch(vscrollS, "vscroll on", "vscroll off")
             USwitch(ulensZoomS, "lens off" to 1f, "2x" to 2f, "3x" to 3f, "4x" to 4f)
+            UText(text = "kotlin:${KotlinVersion.CURRENT}")
         }
         UTabs(
             "UDemo 3 USkikoBox" to { UDemo3(udemo2sizeS.value.dp.square, hscrollS.value, vscrollS.value) },
@@ -60,13 +61,19 @@ fun UDemo() = UAllStretch {
             UChildrenMod({ onUClick { println("children") } }) {
                 UBox(Mod.usize(100.dp.square)) {
                     UChildrenMod({ onUClick { println("nb 1 children") } }) {
-                        UBox(Mod.usize(90.dp.square).onUClick { println("newborn 1") }) {
+                        UBox(
+                            Mod
+                                .usize(90.dp.square)
+                                .onUClick { println("newborn 1") }) {
                             UText("jkl", mono = true)
                         }
                     }
                 }
                 UBox(Mod.usize(100.dp.square)) {
-                    UBox(Mod.usize(90.dp.square).onUClick { println("newborn 2") }) {
+                    UBox(
+                        Mod
+                            .usize(90.dp.square)
+                            .onUClick { println("newborn 2") }) {
                         UText("jkl")
                     }
                 }
@@ -148,7 +155,10 @@ fun UDemo() = UAllStretch {
     }
 
 @Composable fun UDemo2(size: DpSize, withHorizontalScroll: Boolean = true, withVerticalScroll: Boolean = true) =
-    UColumn(Mod.usize(size).uscroll(withHorizontalScroll, withVerticalScroll)) {
+    UColumn(
+        Mod
+            .usize(size)
+            .uscroll(withHorizontalScroll, withVerticalScroll)) {
         UDemoTexts(growFactor = 4)
     }
 
