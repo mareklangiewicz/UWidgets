@@ -17,6 +17,7 @@ plugins {
 defaultBuildTemplateForComposeMppLib(
     details = libs.UWidgets,
     withJs = true,
+    withComposeCompilerAndroidxDev = deps.composeCompilerAndroidxDev,
 )
 
 // region [Kotlin Module Build Template]
