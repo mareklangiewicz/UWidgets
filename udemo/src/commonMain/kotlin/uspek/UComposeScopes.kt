@@ -2,6 +2,7 @@ package pl.mareklangiewicz.uspek
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
@@ -15,11 +16,11 @@ class UNomadicComposeScope(
     override val density: Density,
     log: (Any?) -> Unit = { ulogd(it.ustr) },
 ) : UComposeScope {
-    private var content by mutableStateOf<@Composable () -> Unit>({})
+    private var acontent by mutableStateOf<@Composable () -> Unit>({})
     private var isComposing by mutableStateOf(false)
     override fun setContent(content: @Composable () -> Unit) {
         isComposing = true
-        this.content = content
+        this.acontent = content
     }
 
     // FIXME_later: correct implementation of awaitIdle
@@ -27,7 +28,7 @@ class UNomadicComposeScope(
 
     @Composable operator fun invoke() {
         isComposing = true
-        content()
+        acontent()
         SideEffect { isComposing = false }
     }
 
@@ -43,5 +44,6 @@ class UComposeSceneScope(
     override suspend fun awaitIdle() { do delay(20) while(scene.hasInvalidations()) }
     override val density: Density get() = scene.density
     override val ureports: UReports = UReports(log)
+    fun render(canvas: Canvas, nanoTime: Long) = scene.render(canvas.nativeCanvas, nanoTime)
 }
 
