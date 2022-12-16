@@ -7,17 +7,17 @@ import pl.mareklangiewicz.uwidgets.*
 
 
 @Composable fun USpekUi(suspekContent: suspend UComposeScope.() -> Unit) {
-    val composition = rememberUNomadicComposition()
+    val composeScope = rememberUNomadicComposeScope()
     val uspekLogReports = rememberUReports()
     LaunchedEffect(Unit) {
         uspekLog = { uspekLogReports("rspek" to it.status) }
-        withContext(USpekContext()) { suspek { composition.suspekContent() } }
+        withContext(USpekContext()) { suspek { composeScope.suspekContent() } }
     }
     UAllStretch {
         URow {
-            UBox { composition() }
+            UBox { composeScope() }
             UColumn {
-                UBox { UReportsUi(composition.ureports, reversed = false) }
+                UBox { UReportsUi(composeScope.ureports, reversed = false) }
                 UBox { UReportsUi(uspekLogReports, reversed = false) }
             }
         }

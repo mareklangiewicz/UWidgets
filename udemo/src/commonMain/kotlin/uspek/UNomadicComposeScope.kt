@@ -8,17 +8,17 @@ import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.uwidgets.*
 
-@Composable fun rememberUNomadicComposition(density: Density = LocalDensity.current) = remember { UNomadicComposition(density) }
+@Composable fun rememberUNomadicComposeScope(density: Density = LocalDensity.current) = remember { UNomadicComposeScope(density) }
 
-class UNomadicComposition(
+class UNomadicComposeScope(
     override val density: Density,
     log: (Any?) -> Unit = { ulogd(it.ustr) },
 ) : UComposeScope {
-    private var composition by mutableStateOf<@Composable () -> Unit>({})
+    private var content by mutableStateOf<@Composable () -> Unit>({})
     private var isComposing by mutableStateOf(false)
-    override fun setContent(composable: @Composable () -> Unit) {
+    override fun setContent(content: @Composable () -> Unit) {
         isComposing = true
-        composition = composable
+        this.content = content
     }
 
     // FIXME_later: correct implementation of awaitIdle
@@ -28,7 +28,7 @@ class UNomadicComposition(
 
     @Composable operator fun invoke() {
         isComposing = true
-        composition()
+        content()
         SideEffect { isComposing = false }
     }
 

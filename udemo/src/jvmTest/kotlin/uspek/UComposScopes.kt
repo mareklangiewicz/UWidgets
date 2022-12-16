@@ -24,7 +24,7 @@ class UComposeRuleScope(
     private val rule: ComposeContentTestRule,
     log: (Any?) -> Unit = { ulogd(it.ustr) },
 ) : UComposeScope {
-    override fun setContent(composable: @Composable () -> Unit) = rule.setContent(composable)
+    override fun setContent(content: @Composable () -> Unit) = rule.setContent(content)
     override suspend fun awaitIdle() = rule.awaitIdle()
     override val density: Density get() = rule.density
     override val ureports: UReports = UReports(log)
@@ -35,7 +35,7 @@ class UComposeUiTestScope(
     private val uitest: ComposeUiTest,
     log: (Any?) -> Unit = { ulogd(it.ustr) },
 ) : UComposeScope {
-    override fun setContent(composable: @Composable () -> Unit) = uitest.setContent(composable)
+    override fun setContent(content: @Composable () -> Unit) = uitest.setContent(content)
     override suspend fun awaitIdle() = uitest.awaitIdle()
     override val density: Density get() = uitest.density
     override val ureports: UReports = UReports(log)
