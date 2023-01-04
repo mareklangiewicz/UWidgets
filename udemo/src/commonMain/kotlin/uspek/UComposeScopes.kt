@@ -35,6 +35,7 @@ class UNomadicComposeScope(
     override val ureports = UReports(log)
 }
 
+/*
 class UComposeSceneScope(
     private val scene: ComposeScene = ComposeScene(),
     log: (Any?) -> Unit = { ulogd(it.ustr) },
@@ -46,4 +47,5 @@ class UComposeSceneScope(
     override val ureports: UReports = UReports(log)
     fun render(canvas: Canvas, nanoTime: Long) = scene.render(canvas.nativeCanvas, nanoTime)
 }
+*/
 
