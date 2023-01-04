@@ -78,7 +78,9 @@ fun UReports.linesUStr() = reversed().mapIndexed { idx, entry ->
     idx.toString().padStart(3) + " ${entry.timeUStr} ${entry.key} ${entry.data.ustr}"
 }
 
-fun UReports.summaryUStr() = UBinReportsSummary(this).toString()
+fun UReports.summaryUStr() =
+    if (size > 0 && get(0).key.endsWith(" compose")) UBinReportsSummary(this).toString()
+    else nowTimeMs().asTimeUStr() + " ureports size " + size
 
 fun UReports.allUStr() = (listOf("*** " + summaryUStr()) + linesUStr())
 

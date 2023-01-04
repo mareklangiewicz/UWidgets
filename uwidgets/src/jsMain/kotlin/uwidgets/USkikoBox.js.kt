@@ -8,6 +8,7 @@ import androidx.compose.ui.geometry.*
 import androidx.compose.ui.native.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
+import kotlinx.coroutines.*
 import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
