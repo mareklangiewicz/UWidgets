@@ -19,6 +19,15 @@ enum class ULogLevel(val symbol: Char) {
     ASSERT('A'),
 }
 
+// TODO LATER: probably functions below should be defined with context(ULog) ??
+// fun interface ULog {
+//     fun ulog(level: ULogLevel, data: Any?)
+// }
+// then remove hacky manipulation of srcDirs to switch between implementations??
+// especially that maybe composite builds are already fixed in multiplatform
+// https://youtrack.jetbrains.com/issue/KT-52172/Multiplatform-Support-composite-builds
+// https://youtrack.jetbrains.com/issue/KTIJ-20857/Full-context-receivers-IDE-support
+
 fun ulogd(data: Any?) = ulog(DEBUG, data)
 fun ulogi(data: Any?) = ulog(INFO, data)
 fun ulogw(data: Any?) = ulog(WARN, data)
