@@ -60,7 +60,7 @@ internal class UProps private constructor() {
     val margin: Dp @Composable get() = EMargin readOr { UTheme.sizes.ubinMargin }
     val contentColor: Color @Composable get() = EContentColor readOr { UTheme.colors.ubinContent }
     val backgroundColor: Color @Composable get() = EBackgroundColor readOr { UTheme.colors.ubinBackground }
-    val borderColor: Color @Composable get() = EBorderColor readOr { UTheme.colors.ubinBorder(/*FIXME*/) }
+    val borderColor: Color @Composable get() = EBorderColor readOr { UTheme.colors.ubinBorder(/*FIXME*/clickable = onUClick != null) }
     val borderWidth: Dp @Composable get() = EBorderWidth readOr { UTheme.sizes.ubinBorder }
     val padding: Dp @Composable get() = EPadding readOr { UTheme.sizes.ubinPadding }
     val onUClick: OnUClick? @Composable get() = state[EOnUClick.ordinal] as? OnUClick
