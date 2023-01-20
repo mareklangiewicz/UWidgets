@@ -17,9 +17,6 @@ typealias UReport = Pair<String, Any?>
 // No actual new type here because I want easier composability with any random code with callbacks.
 // Stringly-typed style is justified in UReports. Reflection/when/is<type> constructs are encouraged here.
 
-typealias OnUClick = (Unit) -> Unit
-typealias OnUReport = (UReport) -> Unit
-
 @Suppress("NOTHING_TO_INLINE")
 inline fun OnUReport.withKeyPrefix(keyPrefix: String): OnUReport =
     if (keyPrefix.isEmpty()) this else { ureport -> this(keyPrefix + ureport.first to ureport.second) }

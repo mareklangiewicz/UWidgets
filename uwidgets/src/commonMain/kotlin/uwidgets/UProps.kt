@@ -15,6 +15,9 @@ private enum class UPropKey {
     EOnUClick, EOnUReport, EUAlignHoriz, EUAlignVerti, EUScrollHoriz, EUScrollVerti, EUScrollStyle,
 }
 
+typealias OnUClick = (Unit) -> Unit
+typealias OnUReport = (UReport) -> Unit
+
 private class UPropMod(val key: UPropKey, val value: Any?) : Mod.Element
 
 /**

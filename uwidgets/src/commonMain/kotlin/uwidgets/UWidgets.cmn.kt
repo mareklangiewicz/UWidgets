@@ -90,6 +90,10 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
 @Composable fun UText(text: String, mod: Mod = Mod, center: Boolean = false, bold: Boolean = false, mono: Boolean = false) =
     UBox(mod.ualign(UCENTER.takeIf { center }, UCENTER.takeIf { center })) { URawText(text, mod, bold, mono) }
 
+// For now just minimal abstraction - TODO_someday maybe: sth more like button (but still in some sense "micro")
+@Composable fun UBtn(text: String, mod: Mod = Mod, center: Boolean = true, bold: Boolean = false, mono: Boolean = true, onUClick: OnUClick) =
+    UText(text, mod.onUClick(onUClick), center, bold, mono)
+
 // Renaming tab -> _ breaks layout inspector in AS!!
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 @Composable fun UTabs(vararg contents: Pair<String, @Composable () -> Unit>) {
