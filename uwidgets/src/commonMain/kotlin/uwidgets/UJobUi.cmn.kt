@@ -2,14 +2,16 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.graphics.*
 import kotlinx.coroutines.*
 import pl.mareklangiewicz.utheme.*
 import kotlin.coroutines.*
+import androidx.compose.ui.Modifier as Mod
 
 
 @Composable
 fun UJobUi(
-    mod: Modifier = Modifier,
+    mod: Mod = Mod,
     job: Job,
     jobTitle: String? = null,
 ) = UAllStartColumn(mod) {
@@ -27,11 +29,11 @@ fun UJobUi(
         if (job is CompletableJob) UBtn("Complete") { job.complete() }
     }
     URow {
-        UText("isActive: $isActive")
-        UText("isCompleted: $isCompleted")
-        UText("isCancelled: $isCancelled")
+        UText("isActive: $isActive", bold = isActive)
+        UText("isCompleted: $isCompleted", bold = isCompleted)
+        UText("isCancelled: $isCancelled", bold = isCancelled)
     }
-    if (completionCause != null) UText("Completion cause: $completionCause")
+    if (completionCause != null) UText("Completion cause: $completionCause", Mod.uborderColor(Color.Red))
     DisposableEffect(job) {
         val handle = job.invokeOnCompletion { refresh(); completionCause = it }
         onDispose { handle.dispose() }
@@ -40,7 +42,7 @@ fun UJobUi(
 
 @Composable
 fun UJobUi(
-    mod: Modifier = Modifier,
+    mod: Mod = Mod,
     jobTitle: String? = null,
     jobContext: CoroutineContext = EmptyCoroutineContext,
     jobStart: CoroutineStart = CoroutineStart.LAZY, // it's intentionally different than launch(..) default
@@ -53,7 +55,7 @@ fun UJobUi(
 
 @Composable
 fun UJobUi(
-    mod: Modifier = Modifier,
+    mod: Mod = Mod,
     jobTitle: String? = null,
     jobContext: CoroutineContext = EmptyCoroutineContext,
     jobStart: CoroutineStart = CoroutineStart.LAZY, // it's intentionally different than launch(..) default
@@ -62,6 +64,6 @@ fun UJobUi(
     val ureports = rememberUReports()
     val log: (Any?) -> Unit = { ureports("log" to it) }
     val block: suspend CoroutineScope.() -> Unit = { jobBlock(log) }
-    UJobUi(Modifier, jobTitle, jobContext, jobStart, block)
+    UJobUi(Mod, jobTitle, jobContext, jobStart, block)
     UReportsUi(ureports)
 }
