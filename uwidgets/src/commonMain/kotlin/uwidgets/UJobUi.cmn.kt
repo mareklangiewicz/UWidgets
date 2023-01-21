@@ -25,7 +25,7 @@ fun UJobUi(
     UText(jobTitle ?: "Job:${job.hashCode()}")
     URow {
         UBtn("Start") { job.start(); refresh() }
-        UBtn("Cancel") { job.cancel("Cancelled by UBoxForJob user"); refresh() }
+        UBtn("Cancel") { job.cancel("Cancelled by UJobUi"); refresh() }
         if (job is CompletableJob) UBtn("Complete") { job.complete() }
     }
     URow {
