@@ -96,13 +96,16 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
 
 // Renaming tab -> _ breaks layout inspector in AS!!
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
-@Composable fun UTabs(vararg contents: Pair<String, @Composable () -> Unit>) {
+@Composable fun UTabs(mod: Mod, vararg contents: Pair<String, @Composable () -> Unit>) {
     var selectedTabIndex by ustate(0)
-    UColumn {
+    UColumn(mod) {
         UTabs(*contents.map { it.first }.toTypedArray()) { idx, tab -> selectedTabIndex = idx }
         contents[selectedTabIndex].second()
     }
 }
+@Composable fun UTabs(vararg contents: Pair<String, @Composable () -> Unit>) = UTabs(Mod, *contents)
+
+// TODO: add Mod parameter to all uwidgets
 
 @Composable internal fun UTabsCmn(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
     URow(Mod.ualign(USTRETCH, USTART).uscrollHoriz(true)) {
