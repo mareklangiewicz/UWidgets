@@ -8,6 +8,11 @@ import pl.mareklangiewicz.utheme.*
 import kotlin.coroutines.*
 import androidx.compose.ui.Modifier as Mod
 
+// TODO UFancyJobUi where we have more fancy controls, with restarting, pausing etc..
+//  Have to have some fun jobProvider: () -> Job, because single job can be run only once
+//  Probably define first some wrapper: UFancyJob with job inside (no inheritance but composition)
+//  UFancyJob should also be thread safe as Job is
+//  Later also some mechanism using rememberSaveable?? so I can pause and continue some fancy file copying next day???
 
 @Composable
 fun UJobUi(

@@ -31,3 +31,9 @@ import androidx.compose.ui.Modifier as Mod
 
 @Composable fun USkikoBox(size: DpSize? = null, content: @Composable () -> Unit) =
     USkikoBoxAct(size, content)
+
+
+@Composable fun UWindow(onCloseRequest: () -> Unit, title: String, content: @Composable () -> Unit) =
+    UWindowAct(onCloseRequest, title, content)
+
+@Composable internal expect fun UWindowAct(onCloseRequest: () -> Unit, title: String, content: @Composable () -> Unit)

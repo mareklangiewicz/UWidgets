@@ -21,3 +21,7 @@ import androidx.compose.ui.Modifier as Mod
 @Composable internal actual fun USkikoBoxAct(size: DpSize?, content: @Composable () -> Unit) =
     if (currentCompositionIsDom) USkikoBoxDom(size, content = content)
     else UFakeSkikoBoxImplSki(size, content)
+
+@Composable internal actual fun UWindowAct(onCloseRequest: () -> Unit, title: String, content: @Composable () -> Unit) {
+    TODO()
+}

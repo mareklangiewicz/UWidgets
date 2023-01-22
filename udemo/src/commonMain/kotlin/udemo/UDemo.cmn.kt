@@ -9,6 +9,7 @@ import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
+import kotlin.random.*
 import androidx.compose.ui.Modifier as Mod
 
 @Composable
@@ -26,6 +27,7 @@ fun UDemo() = UAllStretch {
         }
         UTabs(
             "UDemo 3 USkikoBox" to { UDemo3(udemo2sizeS.value.dp.square, hscrollS.value, vscrollS.value) },
+            "UWindowsDemo" to { UWindowsDemo() },
             "UDemo Temp" to { UDemoTemp() },
             "UDemo 0" to { UDemo0() },
             "UDemo 1" to { UDemo1(hscrollS.value, vscrollS.value) },
@@ -33,6 +35,18 @@ fun UDemo() = UAllStretch {
         )
     }
 }
+
+@Composable fun UWindowsDemo() { UAllStartColumn {
+    val windows = remember { mutableStateMapOf<Long, String>() }
+    UBtn("Create new UWindow") {
+        val key = Random.nextLong()
+        windows[key] = "W:$key"
+    }
+    for ((key, title) in windows) {
+        UText(title)
+        UWindow({ windows.remove(key) }, title) { UDemo() }
+    }
+} }
 
 // FIXME NOW: remove this temporary code
 @Composable fun UDemoTemp() = UAllStartColumn {
