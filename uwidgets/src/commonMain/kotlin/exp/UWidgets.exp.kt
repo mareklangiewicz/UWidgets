@@ -4,6 +4,7 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
+import pl.mareklangiewicz.uwindow.*
 import androidx.compose.ui.Modifier as Mod
 
 @Composable internal expect fun UCoreBinAct(type: UBinType, mod: Mod, content: @Composable () -> Unit)
@@ -12,7 +13,12 @@ import androidx.compose.ui.Modifier as Mod
 
 @Composable internal expect fun UTabsAct(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit)
 
-@Composable internal expect fun USkikoBoxAct(size: DpSize? = null, content: @Composable () -> Unit)
+@Composable internal expect fun USkikoBoxAct(size: DpSize?, content: @Composable () -> Unit)
+
+@Composable internal expect fun UWindowAct(onClose: (UWindowState) -> Unit, state: UWindowState, content: @Composable () -> Unit)
+
+// Warning: I had cryptic issues with compiler when expect fun had some default values.
+
 
 
 @Composable fun UCoreBin(type: UBinType, mod: Mod = Mod, content: @Composable () -> Unit) =
@@ -33,7 +39,8 @@ import androidx.compose.ui.Modifier as Mod
     USkikoBoxAct(size, content)
 
 
-@Composable fun UWindow(onCloseRequest: () -> Unit, title: String, content: @Composable () -> Unit) =
-    UWindowAct(onCloseRequest, title, content)
-
-@Composable internal expect fun UWindowAct(onCloseRequest: () -> Unit, title: String, content: @Composable () -> Unit)
+@Composable fun UWindow(
+    onClose: (UWindowState) -> Unit,
+    state: UWindowState = rememberUWindowState(),
+    content: @Composable () -> Unit,
+) = UWindowAct(onClose, state, content)

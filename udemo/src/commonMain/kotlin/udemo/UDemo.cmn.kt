@@ -9,6 +9,8 @@ import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
+import pl.mareklangiewicz.uwindow.*
+import kotlin.math.*
 import kotlin.random.*
 import androidx.compose.ui.Modifier as Mod
 
@@ -37,14 +39,11 @@ fun UDemo() = UAllStretch {
 }
 
 @Composable fun UWindowsDemo() { UAllStartColumn {
-    val windows = remember { mutableStateMapOf<Long, String>() }
-    UBtn("Create new UWindow") {
-        val key = Random.nextLong()
-        windows[key] = "W:$key"
-    }
-    for ((key, title) in windows) {
-        UText(title)
-        UWindow({ windows.remove(key) }, title) { UDemo() }
+    val windows = remember { mutableStateListOf<UWindowState>() }
+    UBtn("Create new UWindow") { windows.add(UWindowState(title = "W:${Random.nextLong().absoluteValue}")) }
+    for (ustate in windows) {
+        UText(ustate.ustr)
+        UWindow(onClose = { windows.remove(it) }, ustate) { UDemo() }
     }
 } }
 

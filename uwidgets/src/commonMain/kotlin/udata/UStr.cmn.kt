@@ -6,6 +6,7 @@ import androidx.compose.ui.geometry.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.usystem.*
+import pl.mareklangiewicz.uwindow.*
 
 // TODO_later: more multi-platform formatting options
 
@@ -27,6 +28,7 @@ val Any?.ustr: String
         is DpSize -> "size: ${width.ustr} x ${height.ustr}"
         is Pair<*, *> -> "${first.ustr} to ${second.ustr}"
         is Triple<*, *, *> -> "${first.ustr} to ${second.ustr} tre ${third.ustr}"
+        is UWindowState -> ustr
         is Rect -> "rect: ${topLeft.ustr} - ${bottomRight.ustr}"
         is Placeable -> "placeable: $width x $height, measured = $measuredWidth x $measuredHeight"
         is Constraints -> "constraints: min = $minWidth x $minHeight, max = $maxWidth x $maxHeight"

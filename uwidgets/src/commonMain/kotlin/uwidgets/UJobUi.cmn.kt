@@ -14,6 +14,11 @@ import androidx.compose.ui.Modifier as Mod
 //  UFancyJob should also be thread safe as Job is
 //  Later also some mechanism using rememberSaveable?? so I can pause and continue some fancy file copying next day???
 
+//  TODO: rememberSaveable is very promising!! Use also in UWindow etc.
+//   But first have to understand how to save on only on android on system reconfig, but:
+//   - also when normally ending composition (I guess it work like that on android with wrapping in SaveableStateProvider - see SimpleNavigationWithSaveableStateSample)
+//   - also on other platforms (Looks like saving in memory should work out of the box, but didn't when I experimented with SaveableStateHolder - understand it better!!)
+
 @Composable
 fun UJobUi(
     mod: Mod = Mod,

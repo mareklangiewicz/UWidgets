@@ -18,3 +18,11 @@ import androidx.compose.ui.Modifier as Mod
 
 @Composable fun USkikoBox(size: DpSize? = null, content: @Composable () -> Unit) =
     UFakeSkikoBoxImplSki(size, content)
+
+@Composable fun UWindow(
+    onClose: () -> Unit,
+    state: UWindowState = rememberUWindowState(),
+    visible: Boolean = true,
+    title: String = "Untitled",
+    content: @Composable () -> Unit,
+) = UWindowSki(onClose, state, visible, title, content)

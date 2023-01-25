@@ -11,4 +11,6 @@ fun nowTimeMs(): Long = nowTimeMsImpl()
 
 fun <R> syncMaybe(lock: Any, block: () -> R): R = syncMaybeImpl(lock, block)
 
-val currentCompositionIsDom: Boolean @Composable get() = currentCompositionIsDomImpl
+val Composer.isDom: Boolean @Composable get() = isDomImpl
+val Composer.isSki: Boolean @Composable get() = isSkiImpl
+val Composer.isAwt: Boolean @Composable get() = isAwtImpl
