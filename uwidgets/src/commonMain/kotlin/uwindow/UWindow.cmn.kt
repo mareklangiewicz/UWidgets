@@ -3,6 +3,7 @@ package pl.mareklangiewicz.uwindow
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.unit.*
+import pl.mareklangiewicz.udata.*
 
 @Stable interface UWindowState {
 
@@ -25,13 +26,11 @@ import androidx.compose.ui.unit.*
     /** DpSize.Unspecified encourages platform to specify some default size (and maybe to update this state) */
     var size: DpSize
 
-    val ustr: String get() = "uwindow:$title position:$position size:$size " +
-        nameOrNotName("visible ", isVisible) +
-        nameOrNotName("decorated ", isDecorated) +
-        nameOrNotName("minimized ", isMinimized) +
-        nameOrNotName("maximized ", isMaximized)
+    val ustr: String get() = "uwindow:${title.ustr} ${position.ustr} ${size.ustr} $flags"
 
-    private fun nameOrNotName(name: String, enabled: Boolean) = if (enabled) name else "not-$name"
+    private val flags: String get() = "${isVisible f "vis"} ${isDecorated f "dec"} ${isMinimized f "min"} ${isMaximized f "max"}"
+
+    private infix fun Boolean.f(name: String) = if (this) name else "not$name"
 }
 
 
@@ -76,8 +75,8 @@ private class UWindowStateImpl(
 
 
 @Composable fun UWindowSki(
-    onClose: (UWindowState) -> Unit = {},
     state: UWindowState = rememberUWindowState(),
+    onClose: (UWindowState) -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     TODO()

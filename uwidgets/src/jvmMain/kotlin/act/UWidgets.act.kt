@@ -20,9 +20,9 @@ import androidx.compose.ui.Modifier as Mod
 @Composable internal actual fun USkikoBoxAct(size: DpSize?, content: @Composable () -> Unit) =
     UFakeSkikoBoxImplSki(size, content)
 
-@Composable internal actual fun UWindowAct(onClose: (UWindowState) -> Unit, state: UWindowState, content: @Composable () -> Unit) =
+@Composable internal actual fun UWindowAct(state: UWindowState, onClose: (UWindowState) -> Unit, content: @Composable () -> Unit) =
     when {
-        currentComposer.isAwt -> UWindowAwt(onClose, state, content)
-        currentComposer.isSki -> UWindowSki(onClose, state, content)
+        currentComposer.isAwt -> UWindowAwt(state, onClose, content)
+        currentComposer.isSki -> UWindowSki(state, onClose, content)
         else -> error("UWindow unsupported in this composition")
     }

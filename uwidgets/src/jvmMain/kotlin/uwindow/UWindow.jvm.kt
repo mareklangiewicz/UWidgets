@@ -28,8 +28,8 @@ private class UWindowAwtState(val ustate: UWindowState): WindowState {
 }
 
 @Composable fun UWindowAwt(
-    onClose: (UWindowState) -> Unit,
     ustate: UWindowState = rememberUWindowState(),
+    onClose: (UWindowState) -> Unit,
     content: @Composable () -> Unit,
 ) {
     val awtstate = remember(ustate) { UWindowAwtState(ustate) }

@@ -23,6 +23,6 @@ import androidx.compose.ui.Modifier as Mod
     if (currentComposer.isDom) USkikoBoxDom(size, content = content)
     else UFakeSkikoBoxImplSki(size, content)
 
-@Composable internal actual fun UWindowAct(onClose: (UWindowState) -> Unit, state: UWindowState, content: @Composable () -> Unit) =
-    if (currentComposer.isDom) UWindowDom(onClose, state, content)
-    else UWindowSki(onClose, state, content)
+@Composable internal actual fun UWindowAct(state: UWindowState, onClose: (UWindowState) -> Unit, content: @Composable () -> Unit) =
+    if (currentComposer.isDom) UWindowDom(state, onClose, content)
+    else UWindowSki(state, onClose, content)

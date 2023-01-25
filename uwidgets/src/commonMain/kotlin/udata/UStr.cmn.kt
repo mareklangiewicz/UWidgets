@@ -23,9 +23,9 @@ val Any?.ustr: String
         false -> "F"
         is Double -> toUStr(2)
         is Float -> toUStr(2)
-        is Offset -> "(${x.ustr},${y.ustr})"
+        is Offset -> if (isSpecified) "(${x.ustr},${y.ustr})" else "(unspecified)"
         is IntSize -> "size: ${width.ustr} x ${height.ustr}"
-        is DpSize -> "size: ${width.ustr} x ${height.ustr}"
+        is DpSize -> if (isSpecified) "size: ${width.ustr} x ${height.ustr}" else "size: unspecified"
         is Pair<*, *> -> "${first.ustr} to ${second.ustr}"
         is Triple<*, *, *> -> "${first.ustr} to ${second.ustr} tre ${third.ustr}"
         is UWindowState -> ustr

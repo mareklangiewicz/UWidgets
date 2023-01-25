@@ -8,8 +8,8 @@ import org.jetbrains.compose.web.dom.*
 
 // FIXME NOW implement for real
 @Composable fun UWindowDom(
-    onClose: (UWindowState) -> Unit,
     state: UWindowState = rememberUWindowState(),
+    onClose: (UWindowState) -> Unit,
     content: @Composable () -> Unit,
 ) {
     Div(attrs = {

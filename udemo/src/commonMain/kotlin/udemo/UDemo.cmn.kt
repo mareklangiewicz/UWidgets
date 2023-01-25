@@ -43,7 +43,7 @@ fun UDemo() = UAllStretch {
     UBtn("Create new UWindow") { windows.add(UWindowState(title = "W:${Random.nextLong().absoluteValue}")) }
     for (ustate in windows) {
         UText(ustate.ustr)
-        UWindow(onClose = { windows.remove(it) }, ustate) { UDemo() }
+        UWindow(ustate, onClose = { windows.remove(it) }) { UDemo() }
     }
 } }
 
