@@ -40,7 +40,7 @@ fun UDemo() = UAllStretch {
 
 @Composable fun UWindowsDemo() { UAllStartColumn {
     val windows = remember { mutableStateListOf<UWindowState>() }
-    UBtn("Create new UWindow") { windows.add(UWindowState(title = "W:${Random.nextLong().absoluteValue}")) }
+    UBtn("Create new UWindow") { windows.add(UWindowState(title = "W:${Random.nextLong().absoluteValue}", size = 800.dp.square)) }
     for (ustate in windows) {
         UText(ustate.ustr)
         UWindow(ustate, onClose = { windows.remove(it) }) { UDemo() }
