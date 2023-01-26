@@ -44,6 +44,13 @@ fun UWindowState(
     size: DpSize = DpSize.Unspecified,
 ): UWindowState = UWindowStateImpl(title, isVisible, isDecorated, isMinimized, isMaximized, position, size)
 
+// TODO_someday: Think more about current approach:
+// I don't want any data class, because I relay on separate object identities
+// when keeping list in reactive: remember { mutableStateListOf<UWindowState>() }
+// (see UDemo.cmn.kt:UWindowsDemo)
+// Using data classes would override .equals and I guess then,
+// I would have to (for example) add some random "id" field to each UWindowState
+// (maybe that would be better if I wanted easier rememberSaveable {..} support for whole list of open windows.
 private class UWindowStateImpl(
     title: String,
     isVisible: Boolean,
