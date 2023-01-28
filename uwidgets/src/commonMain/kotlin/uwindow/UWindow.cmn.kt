@@ -20,6 +20,12 @@ import pl.mareklangiewicz.udata.*
     /** important only when not isMinimized */
     var isMaximized: Boolean
 
+    /** When true window can be dragged around (Mod.onUDrag) */
+    var isMovable: Boolean
+
+    /** When true (and not isMovable) window can be resized by dragging (Mod.onUDrag) */
+    var isResizable: Boolean
+
     /** DpOffset.Unspecified encourages platform to specify some default position (and maybe to update this state) */
     var position: DpOffset
 
@@ -40,9 +46,11 @@ fun UWindowState(
     isDecorated: Boolean = true,
     isMinimized: Boolean = false,
     isMaximized: Boolean = false,
+    isMovable: Boolean = false,
+    isResizable: Boolean = false,
     position: DpOffset = DpOffset.Unspecified,
     size: DpSize = DpSize.Unspecified,
-): UWindowState = UWindowStateImpl(title, isVisible, isDecorated, isMinimized, isMaximized, position, size)
+): UWindowState = UWindowStateImpl(title, isVisible, isDecorated, isMinimized, isMaximized, isMovable, isResizable, position, size)
 
 // TODO_someday: Think more about current approach:
 // I don't want any data class, because I relay on separate object identities
@@ -57,6 +65,8 @@ private class UWindowStateImpl(
     isDecorated: Boolean,
     isMinimized: Boolean,
     isMaximized: Boolean,
+    isMovable: Boolean,
+    isResizable: Boolean,
     position: DpOffset,
     size: DpSize,
 ): UWindowState {
@@ -65,6 +75,8 @@ private class UWindowStateImpl(
     override var isDecorated by mutableStateOf(isDecorated)
     override var isMinimized by mutableStateOf(isMinimized)
     override var isMaximized by mutableStateOf(isMaximized)
+    override var isMovable by mutableStateOf(isMovable)
+    override var isResizable by mutableStateOf(isResizable)
     override var position by mutableStateOf(position)
     override var size by mutableStateOf(size)
 }
@@ -75,9 +87,11 @@ private class UWindowStateImpl(
     isDecorated: Boolean = true,
     isMinimized: Boolean = false,
     isMaximized: Boolean = false,
+    isMovable: Boolean = false,
+    isResizable: Boolean = false,
     position: DpOffset = DpOffset.Unspecified,
     size: DpSize = DpSize.Unspecified,
-): UWindowState = rememberSaveable { UWindowState(title, isVisible, isDecorated, isMinimized, isMaximized, position, size) }
+): UWindowState = rememberSaveable { UWindowState(title, isVisible, isDecorated, isMinimized, isMaximized, isMovable, isResizable, position, size) }
 
 
 

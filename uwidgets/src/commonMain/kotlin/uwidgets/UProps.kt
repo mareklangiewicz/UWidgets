@@ -2,6 +2,7 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.ulog.*
@@ -12,10 +13,12 @@ import androidx.compose.ui.Modifier as Mod
 
 private enum class UPropKey {
     EWidth, EHeight, EMargin, EContentColor, EBackgroundColor, EBorderColor, EBorderWidth, EPadding,
-    EOnUClick, EOnUReport, EUAlignHoriz, EUAlignVerti, EUScrollHoriz, EUScrollVerti, EUScrollStyle,
+    EOnUClick, EOnUDrag, EOnUWheel, EOnUReport, EUAlignHoriz, EUAlignVerti, EUScrollHoriz, EUScrollVerti, EUScrollStyle,
 }
 
 typealias OnUClick = (Unit) -> Unit
+typealias OnUDrag = (Offset) -> Unit
+typealias OnUWheel = (Offset) -> Unit
 typealias OnUReport = (UReport) -> Unit
 
 private class UPropMod(val key: UPropKey, val value: Any?) : Mod.Element
@@ -60,10 +63,12 @@ internal class UProps private constructor() {
     val margin: Dp @Composable get() = EMargin readOr { UTheme.sizes.ubinMargin }
     val contentColor: Color @Composable get() = EContentColor readOr { UTheme.colors.ubinContent }
     val backgroundColor: Color @Composable get() = EBackgroundColor readOr { UTheme.colors.ubinBackground }
-    val borderColor: Color @Composable get() = EBorderColor readOr { UTheme.colors.ubinBorder(/*FIXME*/clickable = onUClick != null) }
+    val borderColor: Color @Composable get() = EBorderColor readOr { UTheme.colors.ubinBorder(/*FIXME*/clickable = onUClick != null) } // also: draggable?wheelable?
     val borderWidth: Dp @Composable get() = EBorderWidth readOr { UTheme.sizes.ubinBorder }
     val padding: Dp @Composable get() = EPadding readOr { UTheme.sizes.ubinPadding }
     val onUClick: OnUClick? @Composable get() = state[EOnUClick.ordinal] as? OnUClick
+    val onUDrag: OnUDrag? @Composable get() = state[EOnUDrag.ordinal] as? OnUDrag
+    val onUWheel: OnUWheel? @Composable get() = state[EOnUWheel.ordinal] as? OnUWheel
     val onUReport: OnUReport? @Composable get() = state[EOnUReport.ordinal] as? OnUReport
     val ualignHoriz: UAlignmentType @Composable get() = EUAlignHoriz readOr { UTheme.alignments.horizontal }
     val ualignVerti: UAlignmentType @Composable get() = EUAlignVerti readOr { UTheme.alignments.vertical }
@@ -161,6 +166,8 @@ fun Mod.ustyleBlank(
 /** Warning: it replaces upstream Mod.onUClick - see comment at UProps.toCache */
 // It would be better if non-null mods were accumulated (all called in outside in order)
 fun Mod.onUClick(onUClick: OnUClick?) = uprop(EOnUClick, onUClick)
+fun Mod.onUDrag(onUDrag: OnUDrag?) = uprop(EOnUDrag, onUDrag)
+fun Mod.onUWheel(onUWheel: OnUWheel?) = uprop(EOnUWheel, onUWheel)
 
 /** Warning: it replaces upstream Mod.onUReport - see comment at UProps.toCache */
 // It would be better if non-null mods were accumulated (all called in outside in order)

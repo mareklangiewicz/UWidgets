@@ -4,6 +4,7 @@ package pl.mareklangiewicz.uwindow
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier.*
+import androidx.compose.ui.geometry.*
 import androidx.compose.ui.unit.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -24,31 +25,41 @@ import androidx.compose.ui.Modifier.Companion as Mod
     content: @Composable () -> Unit,
 ) {
     val currentOnClose by rememberUpdatedState(onClose)
-    val pos = state.position.takeIf { it.isSpecified } ?: DpOffset(200.near().dp, 200.near().dp)
-    val size = state.size.takeIf { it.isSpecified } ?: 800.dp.square
+    if (state.position.isUnspecified) state.position = DpOffset(200.near().dp, 200.near().dp)
+    if (state.size.isUnspecified) state.size = 800.dp.square
+    val pos = state.position
+    val size = state.size
     val left = pos.x
     val top = pos.y
-    val right = left + size.width
-    val bottom = top + size.height
     Div(attrs = {
         style {
             position(Position.Fixed)
             left(left.value.px)
-            right(right.value.px)
             top(top.value.px)
-            bottom(bottom.value.px)
+            width(size.width.value.px)
+            height(size.height.value.px)
         }
     }) {
-        // TODO: rethink/debug alignments etc. (current crappy code here is wrong)
-        UAllStretch {
-            UColumn {
-                URow(Mod.ualignVerti(USTART)) {
-                    UText(state.title, center = true, bold = true, mono = true)
-                    UBtn(" X ", Mod.ualignHoriz(UEND), bold = true) { currentOnClose(state) }
+        UDepth(0) {
+            // TODO: rethink/debug alignments etc. (current crappy code here is wrong)
+            UAllStretch {
+                UColumn(Mod.onUDrag {
+                    when {
+                        // FIXME += is still wrong, we have to always check for state.position.isUnspecified, etc :(
+                        state.isMovable -> state.position += it.dpo
+                        state.isResizable -> state.size += it.dps
+                    }
+                }) {
+                    URow(Mod.ualignVerti(USTART)) {
+                        UText(state.title, center = true, bold = true, mono = true)
+                        UBtn(" X ", Mod.ualignHoriz(UEND), bold = true) { currentOnClose(state) }
+                    }
+                    content()
                 }
-                content()
             }
         }
     }
-
 }
+
+private inline val Offset.dpo get() = DpOffset(x.dp, y.dp)
+private inline val Offset.dps get() = DpSize(x.dp, y.dp)

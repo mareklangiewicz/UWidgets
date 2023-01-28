@@ -3,6 +3,7 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,6 +17,7 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
 import androidx.compose.ui.Modifier as Mod
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable internal fun UCoreBinImplSki(type: UBinType, mod: Mod = Mod, content: @Composable () -> Unit) {
     // TODO_later: make sure .materialize here is ok (Layout does it internally again later)
     val m = currentComposer.materialize(mod)
@@ -28,6 +30,13 @@ import androidx.compose.ui.Modifier as Mod
             .padding(p.margin)
             .andUSize(p.width, p.height)
             .andIfNotNull(p.onUClick) { clickable { it(Unit) } }
+                // TODO: change .clickable to .onClick; use own nice looking multiplatform Indications,
+                //  and maybe own predictable keyboard navigation (focus system is too unreliable and platform specific)
+                //  But first check why onClick doesn't work on js in USkikoBox..
+            .andIfNotNull(p.onUDrag) { onUDrag -> onDrag { offset -> onUDrag(offset) } }
+                // TODO: UDrag with same config like in JS (required alt by default) (see UWidgets.js.kt)
+            .andIfNotNull(p.onUWheel) { TODO() }
+            // .andIfNotNull(p.onUWheel) { onUWheel -> onMouseWheel? { offset -> onUWheel(offset) } }
             .background(p.backgroundColor)
             .border(p.borderWidth, p.borderColor)
             .padding(p.borderWidth + p.padding)

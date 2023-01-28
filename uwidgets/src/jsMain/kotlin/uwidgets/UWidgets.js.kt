@@ -4,7 +4,9 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.web.events.*
 import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -27,6 +29,9 @@ import androidx.compose.ui.Modifier as Mod
     val pborderWidth = p.borderWidth
     val pborderColor = p.borderColor
     val ppadding = p.padding
+    val ponUClick = p.onUClick
+    val ponUDrag = p.onUDrag
+    val ponUWheel = p.onUWheel
     URawBinDom(type, p.ualignHoriz, p.ualignVerti,
         addStyle = {
             p.width?.let { width((it-pborderWidth*2-ppadding*2).value.px) }
@@ -39,19 +44,38 @@ import androidx.compose.ui.Modifier as Mod
             overflowX(if (p.uscrollHoriz) "auto" else "clip") // TODO_later: make sure we clip the similarly on both platforms
             overflowY(if (p.uscrollVerti) "auto" else "clip")
         },
-        addAttrs = p.onUClick?.let { click ->
-            {
-                addEventListener("click") { event ->
-                    event.preventDefault()
-                    event.stopPropagation()
-                    click(Unit)
+        addAttrs = {
+            if (ponUClick != null) onClick { event ->
+                event.consume()
+                ponUClick(Unit)
+                // not passing event.offsetX/Y because not available on desktop
+                // maybe I'll add onUMouseDown/Up later but onUClick should stay simple (like desktop Mod.onClick)
+            }
+            if (ponUDrag != null) onMouseMove { event ->
+                if (event.isUDrag) {
+                    event.consume()
+                    ponUDrag(event.movement)
+                    // FIXME_someday: stop using movement and use offset with whole onMouseDown/Move/Up/Leave
+                    // (works on SafariMobile too)
                 }
+            }
+            if (ponUWheel != null) onWheel { event ->
+                event.consume()
+                ponUWheel(event.delta)
             }
         },
         onUReport = p.onUReport,
         content = content
     )
 }
+
+// TODO_later: multiplatform LocalMouseConfig to configure what qualifies as dragging etc.
+private val SyntheticMouseEvent.isUDrag: Boolean get() = isPrimary && altKey
+private val SyntheticMouseEvent.isPrimary: Boolean get() = buttons.toInt() == 1
+private val SyntheticMouseEvent.offset: Offset get() = Offset(offsetX.flt, offsetY.flt)
+private val SyntheticMouseEvent.movement: Offset get() = Offset(movementX.flt, movementY.flt)
+private val SyntheticWheelEvent.delta: Offset get() = Offset(deltaX.flt, deltaY.flt)
+private fun SyntheticEvent<*>.consume() { preventDefault(); stopPropagation() }
 
 /** @param inline false -> div; true -> span and css display: inline-grid instead of grid */
 @Composable internal fun URawBinDom(
