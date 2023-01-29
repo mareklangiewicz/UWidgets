@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier as Mod
 @Composable internal actual fun USkikoBoxAct(size: DpSize?, content: @Composable () -> Unit) =
     UFakeSkikoBoxImplSki(size, content)
 
-@Composable internal actual fun UWindowAct(state: UWindowState, onClose: (UWindowState) -> Unit, content: @Composable () -> Unit) =
+@Composable internal actual fun UWindowAct(state: UWindowState, onClose: () -> Unit, content: @Composable () -> Unit) =
     when {
         currentComposer.isAwt -> UWindowAwt(state, onClose, content)
         currentComposer.isSki -> UWindowSki(state, onClose, content)

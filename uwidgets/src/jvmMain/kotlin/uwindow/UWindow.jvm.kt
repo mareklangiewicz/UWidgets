@@ -29,13 +29,13 @@ private class UWindowAwtState(val ustate: UWindowState): WindowState {
 
 @Composable fun UWindowAwt(
     ustate: UWindowState = rememberUWindowState(),
-    onClose: (UWindowState) -> Unit,
+    onClose: () -> Unit,
     content: @Composable () -> Unit,
 ) {
     val awtstate = remember(ustate) { UWindowAwtState(ustate) }
     val currentOnClose by rememberUpdatedState(onClose)
     Window(
-        onCloseRequest = { currentOnClose(ustate) },
+        onCloseRequest = { currentOnClose() },
         state = awtstate,
         visible = ustate.isVisible,
         title = ustate.title,

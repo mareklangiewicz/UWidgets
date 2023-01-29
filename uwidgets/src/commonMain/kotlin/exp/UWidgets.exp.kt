@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier as Mod
 
 @Composable internal expect fun USkikoBoxAct(size: DpSize?, content: @Composable () -> Unit)
 
-@Composable internal expect fun UWindowAct(state: UWindowState, onClose: (UWindowState) -> Unit, content: @Composable () -> Unit)
+@Composable internal expect fun UWindowAct(state: UWindowState, onClose: () -> Unit, content: @Composable () -> Unit)
 
 // Warning: I had cryptic issues with compiler when expect fun had some default values.
 
@@ -41,6 +41,6 @@ import androidx.compose.ui.Modifier as Mod
 
 @Composable fun UWindow(
     state: UWindowState = rememberUWindowState(),
-    onClose: (UWindowState) -> Unit = {},
+    onClose: () -> Unit = {},
     content: @Composable () -> Unit,
 ) = UWindowAct(state, onClose, content)

@@ -97,7 +97,7 @@ private class UWindowStateImpl(
 
 @Composable fun UWindowSki(
     state: UWindowState = rememberUWindowState(),
-    onClose: (UWindowState) -> Unit = {},
+    onClose: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     TODO()

@@ -21,6 +21,6 @@ import androidx.compose.ui.Modifier as Mod
 
 @Composable fun UWindow(
     state: UWindowState = rememberUWindowState(),
-    onClose: (UWindowState) -> Unit = {},
+    onClose: () -> Unit = {},
     content: @Composable () -> Unit,
 ) = UWindowSki(state, onClose, content)

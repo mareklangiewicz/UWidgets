@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier.Companion as Mod
 //  3. Make it all beautiful After making it work
 @Composable fun UWindowDom(
     state: UWindowState = rememberUWindowState(),
-    onClose: (UWindowState) -> Unit,
+    onClose: () -> Unit,
     content: @Composable () -> Unit,
 ) {
     val currentOnClose by rememberUpdatedState(onClose)
@@ -52,7 +52,7 @@ import androidx.compose.ui.Modifier.Companion as Mod
                 }) {
                     URow(Mod.ualignVerti(USTART)) {
                         UText(state.title, center = true, bold = true, mono = true)
-                        UBtn(" X ", Mod.ualignHoriz(UEND), bold = true) { currentOnClose(state) }
+                        UBtn(" X ", Mod.ualignHoriz(UEND), bold = true) { currentOnClose() }
                     }
                     content()
                 }
