@@ -70,7 +70,7 @@ import androidx.compose.ui.Modifier as Mod
 }
 
 // TODO_later: multiplatform LocalMouseConfig to configure what qualifies as dragging etc.
-private val SyntheticMouseEvent.isUDrag: Boolean get() = isPrimary && altKey
+private val SyntheticMouseEvent.isUDrag: Boolean get() = altKey //&& isPrimary
 private val SyntheticMouseEvent.isPrimary: Boolean get() = buttons.toInt() == 1
 private val SyntheticMouseEvent.offset: Offset get() = Offset(offsetX.flt, offsetY.flt)
 private val SyntheticMouseEvent.movement: Offset get() = Offset(movementX.flt, movementY.flt)

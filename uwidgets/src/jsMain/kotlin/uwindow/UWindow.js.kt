@@ -15,13 +15,14 @@ import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import androidx.compose.ui.Modifier.Companion as Mod
 
-// TODO: Make it all beautiful After making it work
+//  1  TODO NOW: fix resizing in y direction
+//  2  TODO NOW: fix other alignments issues
+//  3. TODO Make it all beautiful After making it work
 @Composable fun UWindowDom(
     state: UWindowState = rememberUWindowState(),
     onClose: () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    val currentOnClose by rememberUpdatedState(onClose)
     if (state.position.isUnspecified) state.position = DpOffset(200.near().dp, 200.near().dp)
     if (state.size.isUnspecified) state.size = 800.dp.square
     val pos = state.position
@@ -40,20 +41,30 @@ import androidx.compose.ui.Modifier.Companion as Mod
         UDepth(0) {
             // TODO: rethink/debug alignments etc. (current crappy code here is wrong)
             UAllStretch {
-                UColumn(Mod.onUDrag {
+                UColumn(Mod.onUDrag { // TODO_later: commonize moing/resizing with onUDrag
                     when {
                         // FIXME += is still wrong, we have to always check for state.position.isUnspecified, etc :(
                         state.isMovable -> state.position += it.dpo
                         state.isResizable -> state.size += it.dps
                     }
                 }) {
-                    URow(Mod.ualignVerti(USTART)) {
-                        UText(state.title, center = true, bold = true, mono = true)
-                        UBtn(" X ", Mod.ualignHoriz(UEND), bold = true) { currentOnClose() }
-                    }
+                    UWindowDecoration(state, onClose)
                     content()
                 }
             }
+        }
+    }
+}
+
+// TODO_later: commonize (and also most of UWindowDom)
+@Composable fun UWindowDecoration(state: UWindowState, onClose: () -> Unit) {
+    val currentOnClose by rememberUpdatedState(onClose)
+    URow(Mod.ualign(USTRETCH, USTART)) {
+        UText(state.title, center = true, bold = true, mono = true)
+        URow(Mod.ualign(UEND, USTART)) {
+            USwitch(state.isMovable, "m", "m") { state.isMovable = !state.isMovable }
+            USwitch(state.isResizable, "r", "r") { state.isResizable = !state.isResizable }
+            UBtn(" x ", bold = true) { currentOnClose() }
         }
     }
 }

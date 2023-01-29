@@ -121,15 +121,11 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
         }
     }
 
-@Composable fun USwitch(state: MutableState<Boolean>, labelOn: String = " on  ", labelOff: String = " off ") = UAllStart {
-    UText(
-        text = if (state.value) labelOn else labelOff,
-        mod = Mod.onUClick { state.value = !state.value },
-        center = true,
-        bold = state.value,
-        mono = true
-    )
-}
+@Composable fun USwitch(on: Boolean, labelOn: String = " on  ", labelOff: String = " off ", onClick: (Unit) -> Unit) =
+    UAllStart { UText(if (on) labelOn else labelOff, Mod.onUClick(onClick), true, on, true) }
+
+@Composable fun USwitch(onS: MutableState<Boolean>, labelOn: String = " on  ", labelOff: String = " off ") =
+    USwitch(onS.value, labelOn, labelOff) { onS.value = !onS.value }
 
 @Composable fun USwitches(
     vararg states: MutableState<Boolean>,
