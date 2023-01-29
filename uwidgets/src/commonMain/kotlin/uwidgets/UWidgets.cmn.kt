@@ -10,7 +10,6 @@ import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
-import androidx.compose.ui.Modifier as Mod
 
 enum class UBinType { UBOX, UROW, UCOLUMN }
 

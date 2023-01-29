@@ -17,7 +17,6 @@ import kotlinx.coroutines.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.usystem.*
-import androidx.compose.ui.Modifier as Mod
 
 @Deprecated("I had some strange issues with Mod.composed {..} and with lambdas")
 // See comment at: UChildrenComposedMod

@@ -8,7 +8,6 @@ import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.uwidgets.UScrollStyle.*
-import androidx.compose.ui.Modifier as Mod
 
 
 // thenIf would be wrong name (I use factory, not just Mod)

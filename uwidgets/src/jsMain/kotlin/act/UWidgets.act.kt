@@ -6,7 +6,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.usystem.*
 import pl.mareklangiewicz.uwindow.*
-import androidx.compose.ui.Modifier as Mod
 
 @Composable internal actual fun UCoreBinAct(type: UBinType, mod: Mod, content: @Composable () -> Unit) =
     if (currentComposer.isDom) UCoreBinImplDom(type, mod, content) else UCoreBinImplSki(type, mod, content)

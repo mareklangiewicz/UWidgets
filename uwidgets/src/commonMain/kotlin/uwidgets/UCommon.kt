@@ -2,6 +2,7 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.*
+import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.*
 import pl.mareklangiewicz.ulog.*
 
+typealias Mod = Modifier
 
 @Composable fun <T> ustate(init: T): MutableState<T> = remember { mutableStateOf(init) }
 

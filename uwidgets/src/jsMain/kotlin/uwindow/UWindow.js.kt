@@ -13,7 +13,6 @@ import pl.mareklangiewicz.umath.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
-import androidx.compose.ui.Modifier.Companion as Mod
 
 //  1  TODO NOW: fix resizing in y direction
 //  2  TODO NOW: fix other alignments issues

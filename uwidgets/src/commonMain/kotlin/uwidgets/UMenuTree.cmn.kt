@@ -2,7 +2,6 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.*
-import androidx.compose.ui.Modifier as Mod
 
 
 data class UCallbackTree(

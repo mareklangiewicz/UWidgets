@@ -2,6 +2,7 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier.*
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
@@ -9,7 +10,6 @@ import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UPropKey.*
 import pl.mareklangiewicz.uwidgets.UScrollStyle.*
-import androidx.compose.ui.Modifier as Mod
 
 private enum class UPropKey {
     EWidth, EHeight, EMargin, EContentColor, EBackgroundColor, EBorderColor, EBorderWidth, EPadding,
@@ -21,7 +21,7 @@ typealias OnUDrag = (Offset) -> Unit
 typealias OnUWheel = (Offset) -> Unit
 typealias OnUReport = (UReport) -> Unit
 
-private class UPropMod(val key: UPropKey, val value: Any?) : Mod.Element
+private class UPropMod(val key: UPropKey, val value: Any?) : Element
 
 /**
  * Default behavior for all Mod.u* parameters:

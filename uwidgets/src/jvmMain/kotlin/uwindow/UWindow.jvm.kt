@@ -1,10 +1,12 @@
 package pl.mareklangiewicz.uwindow
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
 import androidx.compose.ui.window.WindowPlacement.*
 import androidx.compose.ui.window.WindowPosition.*
+import pl.mareklangiewicz.uwidgets.*
 
 private class UWindowAwtState(val ustate: UWindowState): WindowState {
     override var isMinimized by ustate::isMinimized

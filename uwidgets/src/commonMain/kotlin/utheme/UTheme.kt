@@ -4,7 +4,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
-import androidx.compose.ui.Modifier as Mod
 
 /**
  * Warning: default values reuse mutable states with colors, sizes etc.

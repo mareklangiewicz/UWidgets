@@ -13,7 +13,6 @@ import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
-import androidx.compose.ui.Modifier as Mod
 
 
 @Composable fun MyExaminedLayoutPlayground(type: UBinType = UBOX) {

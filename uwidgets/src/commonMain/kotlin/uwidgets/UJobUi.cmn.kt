@@ -6,7 +6,6 @@ import androidx.compose.ui.graphics.*
 import kotlinx.coroutines.*
 import pl.mareklangiewicz.utheme.*
 import kotlin.coroutines.*
-import androidx.compose.ui.Modifier as Mod
 
 // TODO UFancyJobUi where we have more fancy controls, with restarting, pausing etc..
 //  Have to have some fun jobProvider: () -> Job, because single job can be run only once

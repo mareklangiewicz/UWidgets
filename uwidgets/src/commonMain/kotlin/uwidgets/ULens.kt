@@ -7,7 +7,6 @@ import androidx.compose.ui.*
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.input.pointer.*
 import pl.mareklangiewicz.ulog.*
-import androidx.compose.ui.Modifier as Mod
 
 // TODO_someday: experiment more with .magnifier+pointerInput and create some fancy lens (especially with strange/awesome/hacky gestures)
 

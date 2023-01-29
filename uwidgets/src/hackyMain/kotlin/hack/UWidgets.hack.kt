@@ -5,7 +5,6 @@ package pl.mareklangiewicz.uwidgets
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
-import androidx.compose.ui.Modifier as Mod
 
 @Composable fun UCoreBin(type: UBinType, mod: Mod = Mod, content: @Composable () -> Unit) =
     UCoreBinImplSki(type, mod, content)
