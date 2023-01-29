@@ -39,7 +39,7 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
             }
         }) {
         key(currentSize) { // make sure we have totally new canvas for different sizes
-            if (currentSize.area != 0.dp) {
+            if (currentSize.area > 0) {
                 val locals by rememberUpdatedState(currentCompositionLocalContext)
                 USkikoCanvasDom(currentSize) { CompositionLocalProvider(locals) {
                     if (withBackgroundBox) UBackgroundBox(content = content)

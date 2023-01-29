@@ -15,10 +15,7 @@ import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import androidx.compose.ui.Modifier.Companion as Mod
 
-// TODO:
-//  1. Moving windows with dragging title/bar
-//  2. Resizing (maybe at first just some small box at right bottom corner to drag)
-//  3. Make it all beautiful After making it work
+// TODO: Make it all beautiful After making it work
 @Composable fun UWindowDom(
     state: UWindowState = rememberUWindowState(),
     onClose: () -> Unit,
@@ -61,5 +58,3 @@ import androidx.compose.ui.Modifier.Companion as Mod
     }
 }
 
-private inline val Offset.dpo get() = DpOffset(x.dp, y.dp)
-private inline val Offset.dps get() = DpSize(x.dp, y.dp)
