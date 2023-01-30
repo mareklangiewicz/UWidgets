@@ -3,11 +3,12 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.geometry.*
+import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
@@ -28,14 +29,14 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
         mod = m
             .padding(p.margin)
             .andUSize(p.width, p.height)
+            .andUAddXY(p.addx, p.addy)
             .andIfNotNull(p.onUClick) { clickable { it(Unit) } }
                 // TODO: change .clickable to .onClick; use own nice looking multiplatform Indications,
                 //  and maybe own predictable keyboard navigation (focus system is too unreliable and platform specific)
                 //  But first check why onClick doesn't work on js in USkikoBox..
-            .andIfNotNull(p.onUDrag) { onUDrag -> onDrag { offset -> onUDrag(offset) } }
+            .andIfNotNull(p.onUDrag) { onUDrag -> onUDragSki(onUDrag) }
                 // TODO: UDrag with same config like in JS (required alt by default) (see UWidgets.js.kt)
-            .andIfNotNull(p.onUWheel) { TODO() }
-            // .andIfNotNull(p.onUWheel) { onUWheel -> onMouseWheel? { offset -> onUWheel(offset) } }
+            .andIfNotNull(p.onUWheel) { onUWheel -> onUWheelSki(onUWheel) }
             .background(p.backgroundColor)
             .border(p.borderWidth, p.borderColor)
             .padding(p.borderWidth + p.padding)
@@ -43,6 +44,41 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
         parentAlignMod = UAlignDataMod(p.ualignHoriz, p.ualignVerti),
         onUReport = p.onUReport,
     ) { CompositionLocalProvider(LocalContentColor provides p.contentColor) { content() } }
+}
+
+// FIXME NOW: jumps around. Check UWindowsDemoInternal()
+//  position - lastPosition is wrong when moving UBin while dragging!
+//  but looks like that's not the only issue here
+@OptIn(ExperimentalComposeUiApi::class)
+private fun Mod.onUDragSki(onUDrag: (Offset) -> Unit) = composed {
+    var lastPosition by ustate(Offset.Unspecified)
+    this
+        .onPointerEvent(PointerEventType.Enter) { lastPosition = it.changes.first().position }
+        .onPointerEvent(PointerEventType.Exit) { lastPosition = Offset.Unspecified }
+        .onPointerEvent(PointerEventType.Move) {
+            if (
+                it.keyboardModifiers.isAltPressed //&& it.buttons.isPrimaryPressed
+            ) {
+                // for (ch in it.changes) {
+                //     println("ch")
+                //     println(ch)
+                // }
+                val ch = it.changes.first()
+                if (lastPosition.isSpecified) {
+                    val delta = ch.position - lastPosition
+                    // println("delta $delta")
+                    ch.consume()
+                    onUDrag(delta)
+                }
+                lastPosition = ch.position
+            }
+            else lastPosition = Offset.Unspecified
+        }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+private fun Mod.onUWheelSki(onWheel: (Offset) -> Unit) = onPointerEvent(PointerEventType.Scroll) {
+    onWheel(it.changes.first().scrollDelta)
 }
 
 @Composable private fun URawBinSki(

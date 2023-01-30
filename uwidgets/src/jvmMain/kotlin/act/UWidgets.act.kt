@@ -22,6 +22,5 @@ import pl.mareklangiewicz.uwindow.*
 @Composable internal actual fun UWindowAct(state: UWindowState, onClose: () -> Unit, content: @Composable () -> Unit) =
     when {
         currentComposer.isAwt -> UWindowAwt(state, onClose, content)
-        currentComposer.isSki -> UWindowSki(state, onClose, content)
-        else -> error("UWindow unsupported in this composition")
+        else -> UWindowInUBox(state, onClose, content)
     }

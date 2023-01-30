@@ -1,12 +1,13 @@
 package pl.mareklangiewicz.uwindow
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
 import androidx.compose.ui.window.WindowPlacement.*
 import androidx.compose.ui.window.WindowPosition.*
+import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.uwidgets.*
+import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
 private class UWindowAwtState(val ustate: UWindowState): WindowState {
     override var isMinimized by ustate::isMinimized
@@ -42,5 +43,12 @@ private class UWindowAwtState(val ustate: UWindowState): WindowState {
         visible = ustate.isVisible,
         title = ustate.title,
         undecorated = !ustate.isDecorated
-    ) { content() }
+    ) {
+        UBox(Mod.ualign(USTRETCH, USTRETCH).onUDrag {
+            when {
+                ustate.isMovable -> ustate.position = ustate.position.orZero + it.dpo
+                ustate.isResizable -> ustate.size = ustate.size.orZero + it.dps
+            }
+        }) { content() }
+    }
 }

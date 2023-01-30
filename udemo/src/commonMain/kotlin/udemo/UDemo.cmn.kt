@@ -6,13 +6,13 @@ import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
+import pl.mareklangiewicz.umath.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwindow.*
 import kotlin.math.*
 import kotlin.random.*
-import androidx.compose.ui.Modifier as Mod
 
 @Composable
 fun UDemo() = UAllStretch {
@@ -38,14 +38,46 @@ fun UDemo() = UAllStretch {
     }
 }
 
-@Composable fun UWindowsDemo() { UAllStartColumn {
-    val windows = remember { mutableStateListOf<UWindowState>() }
-    UBtn("Create new UWindow") { windows.add(UWindowState(title = "W:${Random.nextLong().absoluteValue}", isMovable = true, size = 800.dp.square)) }
-    for (ustate in windows) {
-        UText(ustate.ustr)
-        UWindow(ustate, onClose = { windows.remove(ustate) }) { UDemo() }
+@Composable fun UWindowsDemo() = UTabs(
+    "Issue demo" to { UWindowsIssueDemo() },
+    "Real demo" to { UWindowsRealDemo() },
+)
+
+// FIXME NOW: flickering on JVM when dragging
+@Composable fun UWindowsIssueDemo() = UAllStart {
+    UBox(Mod.usize(800.dp.square)) {
+        for (i in 1..5) {
+            var offset by ustate(DpOffset(150.near().dp, 100.near().dp))
+            var size by ustate(300.dp.square)
+            UColumn(Mod
+                .onUDrag { offset += it.dpo }
+                .onUWheel { size += it.dps * 10 }
+                .uaddxy(offset)
+                .usize(size)
+            ) {
+                UText("Not really UWindow $i")
+                UText("move me with Alt pressed")
+                UText("mouse wheel to resize")
+            }
+        }
     }
-} }
+}
+
+@Composable fun UWindowsRealDemo() {
+    UAllStartColumn {
+        val windows = remember { mutableStateListOf<UWindowState>() }
+        UBtn("Create new UWindow") { windows.add(UWindowState(title = "W:${Random.nextLong().absoluteValue}", isMovable = true, size = 800.dp.square)) }
+        UBtn("Create new UWindowInUBox") { windows.add(UWindowState(title = "WiB:${Random.nextLong().absoluteValue}", isMovable = true, size = 800.dp.square)) }
+        for (ustate in windows) UText(ustate.ustr)
+        UBox(Mod.usize(800.dp.square)) {
+            for (ustate in windows)
+                if (ustate.title.startsWith("WiB"))
+                    UWindowInUBox(ustate, onClose = { windows.remove(ustate) }) { UDemo() }
+                else
+                    UWindow(ustate, onClose = { windows.remove(ustate) }) { UDemo() }
+        }
+    }
+}
 
 // FIXME NOW: remove this temporary code
 @Composable fun UDemoTemp() = UAllStartColumn {

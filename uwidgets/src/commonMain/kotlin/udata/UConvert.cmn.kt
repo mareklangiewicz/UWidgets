@@ -38,6 +38,10 @@ import kotlin.math.*
 @Stable inline val IntOffset.dpo get() = DpOffset(x.dp, y.dp)
 @Stable inline val IntOffset.dps get() = DpSize(x.dp, y.dp)
 
+@Stable inline val DpOffset.orZero get() = if (isSpecified) this else DpOffset.Zero
+@Stable inline val DpSize.orZero get() = if (isSpecified) this else DpSize.Zero
+
+
 @Stable fun Size.copyToIntSize(w: Int = width.int, h: Int = height.int) = IntSize(w, h)
 @Stable fun Size.copyRoundToIntSize(w: Int = width.intr, h: Int = height.intr) = IntSize(w, h)
 @Stable fun IntSize.copyToAllConstraints(minW: Int = width, maxW: Int = width, minH: Int = height, maxH: Int = height) =

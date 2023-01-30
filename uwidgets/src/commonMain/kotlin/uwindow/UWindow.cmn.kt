@@ -4,6 +4,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
+import pl.mareklangiewicz.umath.*
+import pl.mareklangiewicz.utheme.*
+import pl.mareklangiewicz.uwidgets.*
+import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
 @Stable interface UWindowState {
 
@@ -94,11 +98,44 @@ private class UWindowStateImpl(
 ): UWindowState = rememberSaveable { UWindowState(title, isVisible, isDecorated, isMinimized, isMaximized, isMovable, isResizable, position, size) }
 
 
+@Composable internal fun UWindowContent(ustate: UWindowState, onClose: () -> Unit, content: @Composable () -> Unit) {
+    UDepth(0) {
+        // TODO: rethink/debug alignments etc.
+        UAllStretch {
+            UColumn(Mod.onUDrag {
+                when {
+                    ustate.isMovable -> ustate.position = ustate.position.orZero + it.dpo
+                    ustate.isResizable -> ustate.size = ustate.size.orZero + it.dps
+                }
+            }) {
+                if (ustate.isDecorated) UWindowDecoration(ustate, onClose)
+                content()
+            }
+        }
+    }
+}
 
-@Composable fun UWindowSki(
+@Composable private fun UWindowDecoration(state: UWindowState, onClose: () -> Unit) {
+    val currentOnClose by rememberUpdatedState(onClose)
+    URow(Mod.ualign(USTRETCH, USTART)) {
+        UText(state.title, center = true, bold = true, mono = true)
+        URow(Mod.ualign(UEND, USTART)) {
+            USwitch(state.isMovable, "m", "m") { state.isMovable = !state.isMovable }
+            USwitch(state.isResizable, "r", "r") { state.isResizable = !state.isResizable }
+            UBtn(" x ", bold = true) { currentOnClose() }
+        }
+    }
+}
+
+/** This version is assuming it is composed directly inside some big UBox which represents kind of a workspace */
+@Composable fun UWindowInUBox(
     state: UWindowState = rememberUWindowState(),
     onClose: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
-    TODO()
+    if (state.position.isUnspecified) state.position = DpOffset(200.near().dp, 200.near().dp)
+    if (state.size.isUnspecified) state.size = 800.dp.square
+    val pos = state.position
+    val size = state.size
+    UBox(Mod.usize(size).uaddxy(pos)) { UWindowContent(state, onClose, content) }
 }

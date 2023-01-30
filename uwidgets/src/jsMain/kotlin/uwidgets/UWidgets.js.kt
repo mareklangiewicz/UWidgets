@@ -35,6 +35,9 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
         addStyle = {
             p.width?.let { width((it-pborderWidth*2-ppadding*2).value.px) }
             p.height?.let { height((it-pborderWidth*2-ppadding*2).value.px) }
+            p.addx?.let { left(it.value.px) }
+            p.addy?.let { top(it.value.px) }
+            if (p.addx != null || p.addy != null) position(Position.Relative)
             color(pcontentColor.cssRgba)
             margin(pmargin.value.px)
             backgroundColor(pbackgroundColor.cssRgba)
@@ -60,7 +63,12 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
             }
             if (ponUWheel != null) onWheel { event ->
                 event.consume()
-                ponUWheel(event.delta)
+                require(event.deltaMode == 0)
+                    // TODO_someday: other modes (can it happen at all?)
+                    // https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent/deltaMode
+                    // I just checked manually that dividing by 120f makes it about the same in chrome on my laptop
+                    // as in Jvm desktop compilation without any scaling.
+                ponUWheel(event.delta / 120f)
             }
         },
         onUReport = p.onUReport,

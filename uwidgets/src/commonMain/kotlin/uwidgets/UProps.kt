@@ -12,7 +12,7 @@ import pl.mareklangiewicz.uwidgets.UPropKey.*
 import pl.mareklangiewicz.uwidgets.UScrollStyle.*
 
 private enum class UPropKey {
-    EWidth, EHeight, EMargin, EContentColor, EBackgroundColor, EBorderColor, EBorderWidth, EPadding,
+    EWidth, EHeight, EAddX, EAddY, EMargin, EContentColor, EBackgroundColor, EBorderColor, EBorderWidth, EPadding,
     EOnUClick, EOnUDrag, EOnUWheel, EOnUReport, EUAlignHoriz, EUAlignVerti, EUScrollHoriz, EUScrollVerti, EUScrollStyle,
 }
 
@@ -60,6 +60,8 @@ internal class UProps private constructor() {
 
     val width: Dp? get() = state[EWidth.ordinal] as? Dp
     val height: Dp? get() = state[EHeight.ordinal] as? Dp
+    val addx: Dp? get() = state[EAddX.ordinal] as? Dp
+    val addy: Dp? get() = state[EAddY.ordinal] as? Dp
     val margin: Dp @Composable get() = EMargin readOr { UTheme.sizes.ubinMargin }
     val contentColor: Color @Composable get() = EContentColor readOr { UTheme.colors.ubinContent }
     val backgroundColor: Color @Composable get() = EBackgroundColor readOr { UTheme.colors.ubinBackground }
@@ -94,6 +96,12 @@ fun Mod.uwidth(width: Dp?) = uprop(EWidth, width)
 fun Mod.uheight(height: Dp?) = uprop(EHeight, height)
 fun Mod.usize(width: Dp? = null, height: Dp? = null) = uwidth(width).uheight(height)
 fun Mod.usize(size: DpSize?) = usize(size?.width, size?.height)
+
+// these are like .offset on jvm and like left and top css properties on js/dom (and css position:relative)
+fun Mod.uaddx(x: Dp?) = uprop(EAddX, x)
+fun Mod.uaddy(y: Dp?) = uprop(EAddY, y)
+fun Mod.uaddxy(x: Dp?, y: Dp?) = uprop(EAddX, x).uprop(EAddY, y)
+fun Mod.uaddxy(offset: DpOffset?) = uaddxy(offset?.x, offset?.y)
 
 fun Mod.umargin(margin: Dp?) = uprop(EMargin, margin)
 fun Mod.ucontentColor(contentColor: Color?) = uprop(EContentColor, contentColor)

@@ -24,4 +24,4 @@ import pl.mareklangiewicz.uwindow.*
 
 @Composable internal actual fun UWindowAct(state: UWindowState, onClose: () -> Unit, content: @Composable () -> Unit) =
     if (currentComposer.isDom) UWindowDom(state, onClose, content)
-    else UWindowSki(state, onClose, content)
+    else UWindowInUBox(state, onClose, content)

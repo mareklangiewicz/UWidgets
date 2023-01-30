@@ -23,6 +23,9 @@ internal fun Mod.andUSize(width: Dp? = null, height: Dp? = null): Mod = when {
     else -> size(width, height)
 }
 
+internal fun Mod.andUAddXY(x: Dp? = null, y: Dp? = null): Mod =
+    andIf(x != null || y != null) { offset(x ?: 0.dp, y ?: 0.dp) }
+
 
 enum class UScrollStyle { UFANCY, UBASIC, UHIDDEN }
 
