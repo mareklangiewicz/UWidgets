@@ -57,11 +57,23 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 @Composable fun UAllCenter(content: @Composable () -> Unit) = UAlign(UCENTER, UCENTER, content)
 @Composable fun UAllStretch(content: @Composable () -> Unit) = UAlign(USTRETCH, USTRETCH, content)
 
+@Composable fun UAllStartBox(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
+    UAllStart { UBox(mod, selected, content) }
+
 @Composable fun UAllStartRow(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
     UAllStart { URow(mod, selected, content) }
 
 @Composable fun UAllStartColumn(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
     UAllStart { UColumn(mod, selected, content) }
+
+@Composable fun UAllStretchBox(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
+    UAllStretch { UBox(mod, selected, content) }
+
+@Composable fun UAllStretchRow(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
+    UAllStretch { URow(mod, selected, content) }
+
+@Composable fun UAllStretchColumn(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
+   UAllStretch { UColumn(mod, selected, content) }
 
 
 object UTheme {

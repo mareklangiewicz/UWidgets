@@ -33,7 +33,7 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
             .andIfNotNull(p.onUClick) { clickable { it(Unit) } }
                 // TODO: change .clickable to .onClick; use own nice looking multiplatform Indications,
                 //  and maybe own predictable keyboard navigation (focus system is too unreliable and platform specific)
-                //  But first check why onClick doesn't work on js in USkikoBox..
+                //  But first check why onClick doesn't work on js in USkikoBox.
             .andIfNotNull(p.onUDrag) { onUDrag -> onUDragSki(onUDrag) }
                 // TODO: UDrag with same config like in JS (required alt by default) (see UWidgets.js.kt)
             .andIfNotNull(p.onUWheel) { onUWheel -> onUWheelSki(onUWheel) }
@@ -46,15 +46,17 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
     ) { CompositionLocalProvider(LocalContentColor provides p.contentColor) { content() } }
 }
 
-// FIXME NOW: jumps around. Check UWindowsDemoInternal()
+// FIXME NOW: jumps around (when using lastPosition). Check UWindowsDemoInternal()
 //  position - lastPosition is wrong when moving UBin while dragging!
 //  but looks like that's not the only issue here
+//  Update: on the other hand: when using previousPosition it doesn't work without button pressed...
 @OptIn(ExperimentalComposeUiApi::class)
 private fun Mod.onUDragSki(onUDrag: (Offset) -> Unit) = composed {
-    var lastPosition by ustate(Offset.Unspecified)
+    val currentOnUDrag by rememberUpdatedState(onUDrag)
+    // var lastPosition by ustate(Offset.Unspecified)
     this
-        .onPointerEvent(PointerEventType.Enter) { lastPosition = it.changes.first().position }
-        .onPointerEvent(PointerEventType.Exit) { lastPosition = Offset.Unspecified }
+        // .onPointerEvent(PointerEventType.Enter) { lastPosition = it.changes.first().position }
+        // .onPointerEvent(PointerEventType.Exit) { lastPosition = Offset.Unspecified }
         .onPointerEvent(PointerEventType.Move) {
             if (
                 it.keyboardModifiers.isAltPressed //&& it.buttons.isPrimaryPressed
@@ -64,15 +66,18 @@ private fun Mod.onUDragSki(onUDrag: (Offset) -> Unit) = composed {
                 //     println(ch)
                 // }
                 val ch = it.changes.first()
-                if (lastPosition.isSpecified) {
-                    val delta = ch.position - lastPosition
-                    // println("delta $delta")
-                    ch.consume()
-                    onUDrag(delta)
+                // ch.consume()
+                // if (lastPosition.isSpecified) {
+                if (ch.uptimeMillis - ch.previousUptimeMillis < 200) {
+                    // val delta = ch.position - lastPosition
+                    val delta = ch.position - ch.previousPosition
+                    // println("xxx delta: ${ch.position} - ${lastPosition} == $delta")
+                    println("xxx delta: ${ch.position} - ${ch.previousPosition} == $delta")
+                    currentOnUDrag(delta)
                 }
-                lastPosition = ch.position
+                // lastPosition = ch.position
             }
-            else lastPosition = Offset.Unspecified
+            // else lastPosition = Offset.Unspecified
         }
 }
 
@@ -402,17 +407,15 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
 }
 
 @Composable private fun UTabsImplM3TabRow(vararg tabs: String, onSelected: (index: Int, tab: String) -> Unit) =
-    UAllStart {
-        UBox {
-            var selectedTabIndex by ustate(0)
-            TabRow(selectedTabIndex = selectedTabIndex) {
-                tabs.forEachIndexed { index, title ->
-                    Tab(
-                        text = { Text(title, style = MaterialTheme.typography.titleSmall) },
-                        selected = selectedTabIndex == index,
-                        onClick = { selectedTabIndex = index; onSelected(index, title) }
-                    )
-                }
+    UAllStartBox {
+        var selectedTabIndex by ustate(0)
+        TabRow(selectedTabIndex = selectedTabIndex) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    text = { Text(title, style = MaterialTheme.typography.titleSmall) },
+                    selected = selectedTabIndex == index,
+                    onClick = { selectedTabIndex = index; onSelected(index, title) }
+                )
             }
         }
     }

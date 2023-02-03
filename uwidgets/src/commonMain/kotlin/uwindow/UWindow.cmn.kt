@@ -101,16 +101,14 @@ private class UWindowStateImpl(
 @Composable internal fun UWindowContent(ustate: UWindowState, onClose: () -> Unit, content: @Composable () -> Unit) {
     UDepth(0) {
         // TODO: rethink/debug alignments etc.
-        UAllStretch {
-            UColumn(Mod.onUDrag {
-                when {
-                    ustate.isMovable -> ustate.position = ustate.position.orZero + it.dpo
-                    ustate.isResizable -> ustate.size = ustate.size.orZero + it.dps
-                }
-            }) {
-                if (ustate.isDecorated) UWindowDecoration(ustate, onClose)
-                content()
+        UAllStretchColumn(Mod.onUDrag {
+            when {
+                ustate.isMovable -> ustate.position = ustate.position.orZero + it.dpo
+                ustate.isResizable -> ustate.size = ustate.size.orZero + it.dps
             }
+        }) {
+            if (ustate.isDecorated) UWindowDecoration(ustate, onClose)
+            content()
         }
     }
 }

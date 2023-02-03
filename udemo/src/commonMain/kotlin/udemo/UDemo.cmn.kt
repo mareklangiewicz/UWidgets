@@ -44,21 +44,19 @@ fun UDemo() = UAllStretch {
 )
 
 // FIXME NOW: flickering on JVM when dragging
-@Composable fun UWindowsIssueDemo() = UAllStart {
-    UBox(Mod.usize(800.dp.square)) {
-        for (i in 1..5) {
-            var offset by ustate(DpOffset(150.near().dp, 100.near().dp))
-            var size by ustate(300.dp.square)
-            UColumn(Mod
-                .onUDrag { offset += it.dpo }
-                .onUWheel { size += it.dps * 10 }
-                .uaddxy(offset)
-                .usize(size)
-            ) {
-                UText("Not really UWindow $i")
-                UText("move me with Alt pressed")
-                UText("mouse wheel to resize")
-            }
+@Composable fun UWindowsIssueDemo() = UAllStartBox(Mod.usize(800.dp.square)) {
+    for (i in 1..5) {
+        var offset by ustate(DpOffset(150.near().dp, 100.near().dp))
+        var size by ustate(300.dp.square)
+        UColumn(Mod
+            .onUDrag { offset += it.dpo }
+            .onUWheel { size += it.dps * 10 }
+            .uaddxy(offset)
+            .usize(size)
+        ) {
+            UText("Not really UWindow $i")
+            UText("move me with Alt pressed")
+            UText("mouse wheel to resize")
         }
     }
 }
@@ -127,47 +125,42 @@ fun UDemo() = UAllStretch {
     }
 }
 
-@Composable fun UDemo0() = UAllStretch {
-    UColumn {
-        var switch1 by ustate(USTART)
-        var switch2 by ustate(USTART)
-        var switch3 by ustate(USTART)
-        var switch4 by ustate(USTART)
-        var rendering by ustate("DOM")
-        UAllStartColumn {
-            UText("Align switches:")
-            val options = UAlignmentType.values().map { it.css }.toTypedArray()
-            UTabs(*options) { idx, tab -> switch1 = UAlignmentType.css(tab) }
-            UTabs(*options) { idx, tab -> switch2 = UAlignmentType.css(tab) }
-            UTabs(*options) { idx, tab -> switch3 = UAlignmentType.css(tab) }
-            UTabs(*options) { idx, tab -> switch4 = UAlignmentType.css(tab) }
-            UText("Rendering switch:")
-            UTabs("DOM", "Canvas", "DOM and Canvas") { idx, tab -> rendering = tab }
-        }
-        URow {
-            if ("DOM" in rendering) UBackgroundBox { UDemo0Content(switch1, switch2, switch3, switch4) }
-            if ("Canvas" in rendering) USkikoBox { UDemo0Content(switch1, switch2, switch3, switch4) }
-        }
+@Composable fun UDemo0() = UAllStretchColumn {
+    var switch1 by ustate(USTART)
+    var switch2 by ustate(USTART)
+    var switch3 by ustate(USTART)
+    var switch4 by ustate(USTART)
+    var rendering by ustate("DOM")
+    UAllStartColumn {
+        UText("Align switches:")
+        val options = UAlignmentType.values().map { it.css }.toTypedArray()
+        UTabs(*options) { idx, tab -> switch1 = UAlignmentType.css(tab) }
+        UTabs(*options) { idx, tab -> switch2 = UAlignmentType.css(tab) }
+        UTabs(*options) { idx, tab -> switch3 = UAlignmentType.css(tab) }
+        UTabs(*options) { idx, tab -> switch4 = UAlignmentType.css(tab) }
+        UText("Rendering switch:")
+        UTabs("DOM", "Canvas", "DOM and Canvas") { idx, tab -> rendering = tab }
+    }
+    URow {
+        if ("DOM" in rendering) UBackgroundBox { UDemo0Content(switch1, switch2, switch3, switch4) }
+        if ("Canvas" in rendering) USkikoBox { UDemo0Content(switch1, switch2, switch3, switch4) }
     }
 }
 
-@Composable private fun UDemo0Content(switch1: UAlignmentType, switch2: UAlignmentType, switch3: UAlignmentType, switch4: UAlignmentType) {
-    UAllStretch {
-        UBox {
-            UAlign(horizontal = switch1, vertical = switch2) {
-                UColumn {
-                    UBox { UBox { URow { UDemoTexts(3) } } }
-                    UBox { UBox { URow { UDemoTexts(10) } } }
-                    UTheme(lightBluishUColors()) { UBox { UBox { UBox { UDemoTexts() } } } }
-                    UTheme(m3UColors()) { UBox { UBox { UBox { UDemoTexts() } } } }
-                    UAlign(horizontal = switch3, vertical = switch4) {
-                        UBox { UBox { UColumn { UDemoTexts(10, growFactor = 3) } } }
-                    }
+@Composable private fun UDemo0Content(switch1: UAlignmentType, switch2: UAlignmentType, switch3: UAlignmentType, switch4: UAlignmentType) =
+    UAllStretchBox {
+        UAlign(horizontal = switch1, vertical = switch2) {
+            UColumn {
+                UBox { UBox { URow { UDemoTexts(3) } } }
+                UBox { UBox { URow { UDemoTexts(10) } } }
+                UTheme(lightBluishUColors()) { UBox { UBox { UBox { UDemoTexts() } } } }
+                UTheme(m3UColors()) { UBox { UBox { UBox { UDemoTexts() } } } }
+                UAlign(horizontal = switch3, vertical = switch4) {
+                    UBox { UBox { UColumn { UDemoTexts(10, growFactor = 3) } } }
                 }
             }
         }
     }
-}
 
 @Composable fun UDemoTexts(
     count: Int = 20,
