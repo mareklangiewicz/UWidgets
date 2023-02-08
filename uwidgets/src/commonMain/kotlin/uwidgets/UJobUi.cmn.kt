@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import kotlinx.coroutines.*
+import pl.mareklangiewicz.usystem.*
 import pl.mareklangiewicz.utheme.*
 import kotlin.coroutines.*
 
@@ -74,5 +75,8 @@ fun UJobUi(
     val log: (Any?) -> Unit = { ureports("log" to it) }
     val block: suspend CoroutineScope.() -> Unit = { jobBlock(log) }
     UJobUi(Mod, jobTitle, jobContext, jobStart, block)
-    UReportsUi(ureports)
+
+    // FIXME: move UReportsUi to more common (so it works without USkikoBox) (no skiko in KoWebExt)
+    if (!currentComposer.isDom) UReportsUi(ureports)
+    else println("FIXME! move UReportsUi")
 }
