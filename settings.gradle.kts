@@ -6,15 +6,16 @@
 // gradle.logSomeEventsToFile(rootProject.projectDir.toOkioPath() / "my.gradle.log")
 
 pluginManagement {
-    includeBuild("../deps.kt")
+//    includeBuild("../deps.kt")
     repositories {
+        mavenLocal()
         google()
         gradlePluginPortal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
-plugins { id("pl.mareklangiewicz.deps.settings") }
+plugins { id("pl.mareklangiewicz.deps.settings") version "0.2.25" }
 
 rootProject.name = "UWidgets"
 
