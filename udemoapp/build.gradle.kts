@@ -16,7 +16,6 @@ defaultBuildTemplateForComposeMppApp(
     withJs = true,
     withComposeCompilerAndroidxDev = deps.composeCompilerAndroidxDev,
 ) {
-    implementation(deps.uspekx)
     implementation(project(":udemo"))
 }
 
