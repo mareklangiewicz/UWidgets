@@ -6,7 +6,7 @@
 // gradle.logSomeEventsToFile(rootProject.projectDir.toOkioPath() / "my.gradle.log")
 
 pluginManagement {
-//    includeBuild("../deps.kt")
+    includeBuild("../deps.kt")
     repositories {
         mavenLocal()
         google()
@@ -19,6 +19,6 @@ plugins { id("pl.mareklangiewicz.deps.settings") version "0.2.26" }
 
 rootProject.name = "UWidgets"
 
-include(":uwidgets", ":udemo", ":udemoapp")
+include(":uwidgets", ":uwidgets-udemo", ":uwidgets-udemo-app")
 
 

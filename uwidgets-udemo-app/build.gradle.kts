@@ -16,7 +16,7 @@ defaultBuildTemplateForComposeMppApp(
     withJs = true,
     withComposeCompilerAndroidxDev = deps.composeCompilerAndroidxDev,
 ) {
-    implementation(project(":udemo"))
+    implementation(project(":uwidgets-udemo"))
 }
 
 // TODO_later: should I already start using experimental DSL in default scripts?
