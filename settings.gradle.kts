@@ -19,6 +19,6 @@ plugins { id("pl.mareklangiewicz.deps.settings") version "0.2.26" }
 
 rootProject.name = "UWidgets"
 
-include(":uwidgets", ":udemo")
+include(":uwidgets", ":udemo", ":udemoapp")
 
 

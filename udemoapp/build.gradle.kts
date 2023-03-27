@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_VARIABLE")
-
 import org.jetbrains.compose.*
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.plugin.*
@@ -10,18 +8,28 @@ import pl.mareklangiewicz.utils.*
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose") version vers.composeJb
-    id("maven-publish")
-    id("signing")
 }
 
-defaultBuildTemplateForComposeMppLib(
-    details = libs.UWidgets.copy(name = "UDemo"),
+
+defaultBuildTemplateForComposeMppApp(
+    appMainPackage = "pl.mareklangiewicz.udemo",
     withJs = true,
     withComposeCompilerAndroidxDev = deps.composeCompilerAndroidxDev,
 ) {
     implementation(deps.uspekx)
-    implementation(project(":uwidgets"))
+    implementation(project(":udemo"))
 }
+
+// TODO_later: should I already start using experimental DSL in default scripts?
+// like: web.experimental.application {} ?? analyze it. Usage example:
+// https://github.com/mipastgt/JavaForumStuttgartTalk2022/blob/1bdec6884c89def8ca461c084f6cb08553cffaa5/PolySpiralMpp/build.gradle.kts#L169
+compose.experimental.web.application {} // needed for onWasmReady etc.
+
+//// Fixes webpack-cli incompatibility by pinning the newest version. TODO_later: works for me now. But remove comment only when bug is closed.
+//// https://youtrack.jetbrains.com/issue/KT-52776/KJS-Gradle-Webpack-version-update-despite-yarnlock-breaks-KotlinJS-build
+//rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
+//    versions.webpackCli.version = "4.10.0"
+//}
 
 // region [Kotlin Module Build Template]
 
@@ -274,6 +282,55 @@ fun KotlinMultiplatformExtension.jsDefault(
 
 // endregion [MPP Module Build Template]
 
+// region [MPP App Build Template]
+
+fun Project.defaultBuildTemplateForMppApp(
+    appMainPackage: String,
+    appMainFun: String = "main",
+    details: LibDetails = libs.Unknown,
+    withJvm: Boolean = true,
+    withJs: Boolean = true,
+    withNativeLinux64: Boolean = false,
+    withKotlinxHtml: Boolean = false,
+    withComposeJbDevRepo: Boolean = false,
+    withTestJUnit4: Boolean = false,
+    withTestJUnit5: Boolean = true,
+    withTestUSpekX: Boolean = true,
+    addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {},
+) {
+    defaultBuildTemplateForMppLib(
+        details = details,
+        withJvm = withJvm,
+        withJs = withJs,
+        withNativeLinux64 = withNativeLinux64,
+        withKotlinxHtml = withKotlinxHtml,
+        withComposeJbDevRepo = withComposeJbDevRepo,
+        withTestJUnit4 = withTestJUnit4,
+        withTestJUnit5 = withTestJUnit5,
+        withTestUSpekX = withTestUSpekX,
+        addCommonMainDependencies = addCommonMainDependencies
+    )
+    kotlin {
+        if (withJvm) jvm {
+            println("MPP App ${project.name}: Generating general jvm executables with kotlin multiplatform plugin is not supported (without compose).")
+            // TODO_someday: Will they support multiplatform way of declaring jvm app?
+            // binaries.executable()
+        }
+        if (withJs) js(IR) {
+            binaries.executable()
+        }
+        if (withNativeLinux64) linuxX64 {
+            binaries {
+                executable {
+                    entryPoint = "$appMainPackage.$appMainFun"
+                }
+            }
+        }
+    }
+}
+
+// endregion [MPP App Build Template]
+
 // region [Compose MPP Module Build Template]
 
 /** Only for very standard compose mpp libs. In most cases it's better to not use this function. */
@@ -379,3 +436,82 @@ fun Project.defaultBuildTemplateForComposeMppLib(
 }
 
 // endregion [Compose MPP Module Build Template]
+
+// region [Compose MPP App Build Template]
+
+/** Only for very standard compose mpp apps. In most cases it's better to not use this function. */
+fun Project.defaultBuildTemplateForComposeMppApp(
+    appMainPackage: String,
+    appMainClass: String = "App_jvmKt", // for compose jvm
+    appMainFun: String = "main", // for native
+    details: LibDetails = libs.Unknown,
+    withJvm: Boolean = true,
+    withJs: Boolean = true,
+    withNativeLinux64: Boolean = false,
+    withKotlinxHtml: Boolean = false,
+    withComposeCompilerAndroidxDev: String? = null,
+    withComposeUi: Boolean = true,
+    withComposeFoundation: Boolean = true,
+    withComposeMaterial2: Boolean = withJvm,
+    withComposeMaterial3: Boolean = withJvm,
+    withComposeMaterialIconsExtended: Boolean = false,
+        // https://mvnrepository.com/artifact/org.jetbrains.compose.material/material-icons-extended?repo=space-public-compose-dev
+    withComposeFullAnimation: Boolean = withJvm,
+    withComposeDesktop: Boolean = withJvm,
+    withComposeDesktopComponents: Boolean = false,
+        // https://mvnrepository.com/artifact/org.jetbrains.compose.components/components-splitpane?repo=space-public-compose-dev
+    withComposeWebCore: Boolean = withJs,
+    withComposeWebSvg: Boolean = withJs,
+    withComposeTestUiJUnit4: Boolean = withJvm,
+    withComposeTestWebUtils: Boolean = withJs,
+    addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {},
+) {
+    defaultBuildTemplateForComposeMppLib(
+        details = details,
+        withJvm = withJvm,
+        withJs = withJs,
+        withNativeLinux64 = withNativeLinux64,
+        withKotlinxHtml = withKotlinxHtml,
+        withComposeCompilerAndroidxDev = withComposeCompilerAndroidxDev,
+        withComposeUi = withComposeUi,
+        withComposeFoundation = withComposeFoundation,
+        withComposeMaterial2 = withComposeMaterial2,
+        withComposeMaterial3 = withComposeMaterial3,
+        withComposeMaterialIconsExtended = withComposeMaterialIconsExtended,
+        withComposeFullAnimation = withComposeFullAnimation,
+        withComposeDesktop = withComposeDesktop,
+        withComposeDesktopComponents = withComposeDesktopComponents,
+        withComposeWebCore = withComposeWebCore,
+        withComposeWebSvg = withComposeWebSvg,
+        withComposeTestUiJUnit4 = withComposeTestUiJUnit4,
+        withComposeTestWebUtils = withComposeTestWebUtils,
+        addCommonMainDependencies = addCommonMainDependencies
+    )
+    kotlin {
+        if (withJs) js(IR) {
+            binaries.executable()
+        }
+        if (withNativeLinux64) linuxX64 {
+            binaries {
+                executable {
+                    entryPoint = "$appMainPackage.$appMainFun"
+                }
+            }
+        }
+    }
+    if (withJvm) {
+        compose.desktop {
+            application {
+                mainClass = "$appMainPackage.$appMainClass"
+                nativeDistributions {
+                    targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb)
+                    packageName = details.name
+                    packageVersion = details.version
+                    description = details.description
+                }
+            }
+        }
+    }
+}
+
+// endregion [Compose MPP App Build Template]

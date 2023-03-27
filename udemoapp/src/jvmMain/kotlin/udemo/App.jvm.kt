@@ -7,12 +7,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.window.*
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication, title = "UDemo App JVM") { UDemoAppJvm() }
+    Window(onCloseRequest = ::exitApplication, title = "UDemo App JVM") { AppJvm() }
 }
 
 @Preview
 @Composable
-private fun UDemoAppJvm() {
+private fun AppJvm() {
     Column {
         Text("Hello JVM Desktop!", style = MaterialTheme.typography.headlineLarge)
         UDemo()
