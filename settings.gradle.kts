@@ -6,7 +6,7 @@
 // gradle.logSomeEventsToFile(rootProject.projectDir.toOkioPath() / "my.gradle.log")
 
 pluginManagement {
-    includeBuild("../DepsKt")
+//    includeBuild("../DepsKt")
     repositories {
         mavenLocal()
         google()
@@ -15,7 +15,19 @@ pluginManagement {
     }
 }
 
-plugins { id("pl.mareklangiewicz.deps.settings") version "0.2.34" }
+plugins {
+    id("pl.mareklangiewicz.deps.settings") version "0.2.36" // https://plugins.gradle.org/search?term=mareklangiewicz
+    id("com.gradle.enterprise") version "3.13.1" // https://docs.gradle.com/enterprise/gradle-plugin/
+}
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+        publishAlwaysIf(System.getenv("GITHUB_ACTIONS") == "true")
+        publishOnFailure()
+    }
+}
 
 rootProject.name = "UWidgets"
 
