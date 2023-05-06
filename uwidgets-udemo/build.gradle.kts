@@ -12,7 +12,7 @@ plugins {
 }
 
 defaultBuildTemplateForComposeMppLib(withJs = true) {
-    implementation(depsOld.uspekx)
+    implementation(Langiewicz.uspekx)
     implementation(project(":uwidgets"))
 }
 
