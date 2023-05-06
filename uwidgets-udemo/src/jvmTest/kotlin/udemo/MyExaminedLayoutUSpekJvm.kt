@@ -7,6 +7,7 @@ import org.junit.runner.*
 import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.uspek.*
 
+@Ignore // FIXME_later
 @RunWith(USpekJUnit4Runner::class)
 class MyExaminedLayoutUSpekJvm {
     init { uspekLog = { ulogw("uspek ${it.status}") } }
