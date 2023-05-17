@@ -1,6 +1,5 @@
 import pl.mareklangiewicz.deps.*
 import pl.mareklangiewicz.defaults.*
-import pl.mareklangiewicz.ure.*
 import pl.mareklangiewicz.utils.*
 
 plugins {
@@ -8,14 +7,15 @@ plugins {
     plug(plugs.KotlinMulti) apply false
 }
 
-val UWidgets = langaraLibDetails(
-    name = "UWidgets",
-    description = "Micro widgets for Compose Multiplatform",
-    githubUrl = "https://github.com/langara/UWidgets",
-    version = Ver(0, 0, 4)
+defaultBuildTemplateForRootProject(
+    langaraLibDetails(
+        name = "UWidgets",
+        description = "Micro widgets for Compose Multiplatform",
+        githubUrl = "https://github.com/langara/UWidgets",
+        version = Ver(0, 0, 4)
+    ),
+    withSonatypeOssPublishing = true,
 )
-
-defaultBuildTemplateForRootProject(UWidgets)
 
 // region [Root Build Template]
 
