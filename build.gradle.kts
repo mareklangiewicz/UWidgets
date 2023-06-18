@@ -12,7 +12,7 @@ defaultBuildTemplateForRootProject(
         name = "UWidgets",
         description = "Micro widgets for Compose Multiplatform",
         githubUrl = "https://github.com/langara/UWidgets",
-        version = Ver(0, 0, 4)
+        version = Ver(0, 0, 5)
     ),
     withSonatypeOssPublishing = true,
 )

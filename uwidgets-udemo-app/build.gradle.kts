@@ -9,6 +9,10 @@ plugins {
     plugAll(plugs.KotlinMulti, plugs.Compose)
 }
 
+// workaround for crazy gradle bugs like this one or simillar:
+// https://youtrack.jetbrains.com/issue/KT-43500/KJS-IR-Failed-to-resolve-Kotlin-library-on-attempting-to-resolve-compileOnly-transitive-dependency-from-direct-dependency
+repositories { maven(repos.composeJbDev) }
+
 
 defaultBuildTemplateForComposeMppApp(appMainPackage = "pl.mareklangiewicz.udemo", withJs = true) {
     implementation(project(":uwidgets-udemo"))
@@ -18,12 +22,6 @@ defaultBuildTemplateForComposeMppApp(appMainPackage = "pl.mareklangiewicz.udemo"
 // like: web.experimental.application {} ?? analyze it. Usage example:
 // https://github.com/mipastgt/JavaForumStuttgartTalk2022/blob/1bdec6884c89def8ca461c084f6cb08553cffaa5/PolySpiralMpp/build.gradle.kts#L169
 compose.experimental.web.application {} // needed for onWasmReady etc.
-
-//// Fixes webpack-cli incompatibility by pinning the newest version. TODO_later: works for me now. But remove comment only when bug is closed.
-//// https://youtrack.jetbrains.com/issue/KT-52776/KJS-Gradle-Webpack-version-update-despite-yarnlock-breaks-KotlinJS-build
-//rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
-//    versions.webpackCli.version = "4.10.0"
-//}
 
 // region [Kotlin Module Build Template]
 
@@ -389,7 +387,7 @@ fun Project.defaultBuildTemplateForComposeMppLib(
     withJs: Boolean = true,
     withNativeLinux64: Boolean = false,
     withKotlinxHtml: Boolean = false,
-    withComposeCompilerVer: Ver? = versNew.ComposeCompiler,
+    withComposeCompilerVer: Ver? = null,
     withComposeUi: Boolean = true,
     withComposeFoundation: Boolean = true,
     withComposeMaterial2: Boolean = withJvm,
@@ -495,7 +493,7 @@ fun Project.defaultBuildTemplateForComposeMppApp(
     withJs: Boolean = true,
     withNativeLinux64: Boolean = false,
     withKotlinxHtml: Boolean = false,
-    withComposeCompilerVer: Ver? = versNew.ComposeCompiler,
+    withComposeCompilerVer: Ver? = null,
     withComposeUi: Boolean = true,
     withComposeFoundation: Boolean = true,
     withComposeMaterial2: Boolean = withJvm,
