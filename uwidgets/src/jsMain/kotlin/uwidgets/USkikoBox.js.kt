@@ -80,7 +80,7 @@ private class USkikoComposeWindow(canvas: HTMLCanvasElement) {
     private val layer = ComposeLayer(
         layer = createSkiaLayer(),
         platform = Platform.Empty,
-        getTopLeftOffset = { Offset.Zero },
+//        getTopLeftOffset = { Offset.Zero },
         input = jsTextInputService.input
     )
 

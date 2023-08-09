@@ -18,9 +18,6 @@ repositories { maven(repos.composeJbDev) }
 defaultBuildTemplateForComposeMppLib(withJs = true) {
     implementation(Langiewicz.uspekx)
     implementation(project(":uwidgets"))
-// workaround for crazy gradle bugs like this one or simillar:
-// https://youtrack.jetbrains.com/issue/KT-43500/KJS-IR-Failed-to-resolve-Kotlin-library-on-attempting-to-resolve-compileOnly-transitive-dependency-from-direct-dependency
-    implementation(KotlinX.coroutines_core)
 }
 
 // region [Kotlin Module Build Template]
