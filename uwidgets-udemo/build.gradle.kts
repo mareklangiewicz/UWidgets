@@ -102,7 +102,12 @@ fun Project.defaultSigning(
     sign(extensions.getByType<PublishingExtension>().publications)
 }
 
-fun Project.defaultPublishing(lib: LibDetails, readmeFile: File = File(rootDir, "README.md"), withSignErrorWorkaround: Boolean = true) {
+fun Project.defaultPublishing(
+    lib: LibDetails,
+    readmeFile: File = File(rootDir, "README.md"),
+    withSignErrorWorkaround: Boolean = true,
+    withPublishingPrintln: Boolean = true,
+) {
 
     val readmeJavadocJar by tasks.registering(Jar::class) {
         from(readmeFile) // TODO_maybe: use dokka to create real docs? (but it's not even java..)
@@ -137,6 +142,7 @@ fun Project.defaultPublishing(lib: LibDetails, readmeFile: File = File(rootDir, 
         }
     }
     if (withSignErrorWorkaround) tasks.withSignErrorWorkaround() //very much related to comments above too
+    if (withPublishingPrintln) tasks.withPublishingPrintln()
 }
 
 /*
@@ -161,8 +167,20 @@ A problem was found with the configuration of task ':template-mpp-lib:signJvmPub
 fun TaskContainer.withSignErrorWorkaround() =
     withType<AbstractPublishToMaven>().configureEach { dependsOn(withType<Sign>()) }
 
+fun TaskContainer.withPublishingPrintln() = withType<AbstractPublishToMaven>().configureEach {
+    val coordinates = publication.run { "$groupId:$artifactId:$version" }
+    when (this) {
+        is PublishToMavenRepository -> doFirst {
+            println("Publishing $coordinates to ${repository.url}")
+        }
+        is PublishToMavenLocal -> doFirst {
+            val localRepo = System.getenv("HOME")!! + "/.m2/repository"
+            val localPath = localRepo + publication.run { "/$groupId/$artifactId".replace('.', '/') }
+            println("Publishing $coordinates to $localPath")
+        }
+    }
+}
 
-@Suppress("UNUSED_VARIABLE")
 fun Project.defaultBuildTemplateForJvmLib(
     details: LibDetails = rootExtLibDetails,
     withTestJUnit4: Boolean = false,
@@ -253,7 +271,6 @@ fun Project.defaultBuildTemplateForMppLib(
 }
 
 /** Only for very standard small libs. In most cases it's better to not use this function. */
-@Suppress("UNUSED_VARIABLE")
 fun KotlinMultiplatformExtension.allDefault(
     withJvm: Boolean = true,
     withJs: Boolean = true,
@@ -327,7 +344,6 @@ fun KotlinMultiplatformExtension.jsDefault(
 // region [Compose MPP Module Build Template]
 
 /** Only for very standard compose mpp libs. In most cases, it's better to not use this function. */
-@Suppress("UNUSED_VARIABLE")
 @OptIn(ExperimentalComposeLibrary::class)
 fun Project.defaultBuildTemplateForComposeMppLib(
     details: LibDetails = rootExtLibDetails,
@@ -349,12 +365,22 @@ fun Project.defaultBuildTemplateForComposeMppLib(
     withComposeWebCore: Boolean = withJs,
     withComposeWebSvg: Boolean = withJs,
     withComposeTestUiJUnit4: Boolean = withJvm,
+    withComposeTestUiJUnit5: Boolean = false,
+        // Not yet supported, but let's use this flag to use when I want to experiment with junit5 anyway.
+        // (Theoretically JUnit5 should live with JUnit4 peacefully, but I expect issues with Gradle or IDE)
+        // https://issuetracker.google.com/issues/127100532?pli=1
+        // https://github.com/android/android-test/issues/224
+        // https://github.com/JetBrains/compose-multiplatform/issues/2371
+
     withComposeTestWebUtils: Boolean = withJs,
     addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {},
 ) {
     if (withComposeCompilerVer != null) compose {
         val cc = AndroidX.Compose.Compiler.compiler.withVer(withComposeCompilerVer)
         kotlinCompilerPlugin.set(cc.mvn)
+    }
+    if (withComposeTestUiJUnit5) {
+        logger.warn("Compose UI Tests with JUnit5 are not supported yet! Configuring JUnit5 anyway.")
     }
     defaultBuildTemplateForMppLib(
         details = details,
@@ -365,7 +391,7 @@ fun Project.defaultBuildTemplateForComposeMppLib(
         withComposeJbDevRepo = true,
         withComposeCompilerAndroidxDevRepo = withComposeCompilerVer != null,
         withTestJUnit4 = withComposeTestUiJUnit4, // Unfortunately Compose UI still uses JUnit4 instead of 5
-        withTestJUnit5 = false,
+        withTestJUnit5 = withComposeTestUiJUnit5,
         withTestUSpekX = true,
         addCommonMainDependencies = addCommonMainDependencies
     )
@@ -405,6 +431,7 @@ fun Project.defaultBuildTemplateForComposeMppLib(
                 }
                 val jvmTest by getting {
                     dependencies {
+                        @Suppress("DEPRECATION")
                         if (withComposeTestUiJUnit4) implementation(compose.uiTestJUnit4)
                     }
                 }
