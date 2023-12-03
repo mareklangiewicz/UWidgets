@@ -16,7 +16,7 @@ plugins {
 repositories { maven(repos.composeJbDev) }
 
 defaultBuildTemplateForComposeMppLib(withJs = true) {
-    api("pl.mareklangiewicz:kground:0.0.21") // FIXME https://repo1.maven.org/maven2/pl/mareklangiewicz/kground/
+    api("pl.mareklangiewicz:kground:0.0.27") // FIXME https://repo1.maven.org/maven2/pl/mareklangiewicz/kground/
 }
 
 // region [Kotlin Module Build Template]
@@ -46,7 +46,7 @@ fun RepositoryHandler.defaultRepos(
 }
 
 fun TaskCollection<Task>.defaultKotlinCompileOptions(
-    jvmTargetVer: String = "21",  // FIXME NOW: update deps and use versNew.JvmDefaultVer,
+    jvmTargetVer: String = versNew.JvmDefaultVer,
     renderInternalDiagnosticNames: Boolean = false,
 ) = withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
