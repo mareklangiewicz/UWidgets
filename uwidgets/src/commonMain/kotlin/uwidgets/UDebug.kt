@@ -68,8 +68,10 @@ fun Mod.drawWithUReports(measurer: TextMeasurer, ureports: UReports, interactive
 fun DrawScope.drawUReports(measurer: TextMeasurer, ureports: UReports, scale: Float = .5f, start: Offset = Offset.Zero) {
     val text = ureports.allUStr().joinToString(separator = "\n")
     scale(scale, Offset.Zero) {
-        drawContext.size = size * 1f / scale
-        drawText(measurer, text, start, TextStyle.Default.copy(fontFamily = FontFamily.Monospace))
+        val s = size * 1f / scale
+        drawContext.size = s
+        if (s.width > start.x && s.height > start.y)
+            drawText(measurer, text, start, TextStyle.Default.copy(fontFamily = FontFamily.Monospace))
     }
 }
 
