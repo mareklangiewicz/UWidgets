@@ -10,11 +10,20 @@ import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.uwidgets.UScrollStyle.*
 
 
+// TODO NOW: There is a bug in K2/JS causing hard to find issues with inline functions.
+//  Track the issue I created:
+//  https://youtrack.jetbrains.com/issue/KT-64135/K2-JS-Incorrect-value-class-support-when-used-with-inline-fun
+//  If not fixed soon: remove ALL inline fun used on JS?? or only those which can use nullable value class?
+//  I don't want to experience such hard to find issues again..
+//  For now I just commented out 2 /*inline */ functions below.
+//  Will uncomment it all when fixed.
+
+
 // thenIf would be wrong name (I use factory, not just Mod)
-inline fun Mod.andIf(condition: Boolean, add: Mod.() -> Mod): Mod =
+/*inline */fun Mod.andIf(condition: Boolean, add: Mod.() -> Mod): Mod =
     if (condition) add() else this // then(add()) would be incorrect
 
-inline fun <V : Any> Mod.andIfNotNull(value: V?, add: Mod.(V) -> Mod): Mod =
+/*inline */fun <V : Any> Mod.andIfNotNull(value: V?, add: Mod.(V) -> Mod): Mod =
     if (value != null) add(value) else this
 
 internal fun Mod.andUSize(width: Dp? = null, height: Dp? = null): Mod = when {
