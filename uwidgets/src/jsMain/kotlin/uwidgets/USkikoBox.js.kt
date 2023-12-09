@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
+import kotlinx.browser.*
 import kotlinx.coroutines.*
 import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.*
@@ -58,7 +59,7 @@ private val Element.clientSizeDp get() = DpSize(clientWidth.dp, clientHeight.dp)
     attrs: AttrBuilderContext<HTMLCanvasElement>? = null,
     content: @Composable () -> Unit,
 ) = Canvas(attrs = {
-    id("uscd" + Random.nextLong(from = 1000L, until = Long.MAX_VALUE))
+    id(randomId("uscd"))
     width(size.width.value.int)
     height(size.height.value.int)
     attrs?.invoke(this)
@@ -72,6 +73,8 @@ private val Element.clientSizeDp get() = DpSize(clientWidth.dp, clientHeight.dp)
         onDispose { window?.dispose(); disposed = true }
     }
 })
+
+private fun randomId(prefix: String = "id") = prefix + Random.nextLong(from = 1000L, until = Long.MAX_VALUE)
 
 /**
  * @see androidx.compose.ui.window.ComposeWindow
@@ -114,4 +117,24 @@ private class USkikoComposeWindow(canvas: HTMLCanvasElement) {
     // (maybe we somehow try to close the scene twice?)
     // see also! https://github.com/JetBrains/compose-multiplatform/issues/1639
     // (Update: I guess this issue is not reproducible at all now, since dispose is ignored anyway...)
+}
+
+/**
+ * This is using [CanvasBasedWindow] to render whole app on one big canvas.
+ * It's more in line with "intended" usage of CanvasBasedWindow, so default resizing and styling should kinda work.
+ * Although I still can see some scrollbars when resizing the browser window, so it's buggy.
+ * Also it replaces everything with one big canvas, so it's pretty limited and I don't like it.
+ * TODO_someday: PR to improve CanvasBasedWindow impl to be more COMPOSABLE.
+ */
+@OptIn(ExperimentalComposeUiApi::class)
+fun renderComposableCanvasAppOnWasmReady(
+    title: String? = null,
+    content: @Composable () -> Unit,
+) = onWasmReady {
+    val canvas = document.createElement("canvas")
+    val id = randomId("ccaowr")
+    canvas.id = id
+    document.body!!.replaceWith(canvas)
+    CanvasBasedWindow(title, id, content = content)
+
 }

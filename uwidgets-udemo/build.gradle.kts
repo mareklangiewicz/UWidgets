@@ -16,8 +16,8 @@ plugins {
 repositories { maven(repos.composeJbDev) }
 
 defaultBuildTemplateForComposeMppLib(withJs = true) {
-    implementation(Langiewicz.uspekx)
-    implementation(project(":uwidgets"))
+    api(Langiewicz.uspekx)
+    api(project(":uwidgets"))
 }
 
 // region [Kotlin Module Build Template]
