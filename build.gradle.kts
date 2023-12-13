@@ -3,8 +3,11 @@ import pl.mareklangiewicz.defaults.*
 import pl.mareklangiewicz.utils.*
 
 plugins {
-    plug(plugs.NexusPublish)
     plug(plugs.KotlinMulti) apply false
+    plug(plugs.Compose) apply false
+    plug(plugs.AndroLib) apply false
+    plug(plugs.AndroApp) apply false
+    plug(plugs.NexusPublish)
 }
 
 defaultBuildTemplateForRootProject(

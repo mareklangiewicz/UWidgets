@@ -57,34 +57,39 @@ private fun Mod.onUDragSki(onUDrag: (Offset) -> Unit) = composed {
     this
         // .onPointerEvent(PointerEventType.Enter) { lastPosition = it.changes.first().position }
         // .onPointerEvent(PointerEventType.Exit) { lastPosition = Offset.Unspecified }
-        .onPointerEvent(PointerEventType.Move) {
-            if (
-                it.keyboardModifiers.isAltPressed //&& it.buttons.isPrimaryPressed
-            ) {
-                // for (ch in it.changes) {
-                //     println("ch")
-                //     println(ch)
-                // }
-                val ch = it.changes.first()
-                // ch.consume()
-                // if (lastPosition.isSpecified) {
-                if (ch.uptimeMillis - ch.previousUptimeMillis < 200) {
-                    // val delta = ch.position - lastPosition
-                    val delta = ch.position - ch.previousPosition
-                    // println("xxx delta: ${ch.position} - ${lastPosition} == $delta")
-                    println("xxx delta: ${ch.position} - ${ch.previousPosition} == $delta")
-                    currentOnUDrag(delta)
-                }
-                // lastPosition = ch.position
-            }
-            // else lastPosition = Offset.Unspecified
-        }
+
+        // FIXME NOW: still not supported on android??
+        // https://github.com/JetBrains/compose-multiplatform/issues/3167
+
+        // .onPointerEvent(PointerEventType.Move) {
+        //     if (
+        //         it.keyboardModifiers.isAltPressed //&& it.buttons.isPrimaryPressed
+        //     ) {
+        //         // for (ch in it.changes) {
+        //         //     println("ch")
+        //         //     println(ch)
+        //         // }
+        //         val ch = it.changes.first()
+        //         // ch.consume()
+        //         // if (lastPosition.isSpecified) {
+        //         if (ch.uptimeMillis - ch.previousUptimeMillis < 200) {
+        //             // val delta = ch.position - lastPosition
+        //             val delta = ch.position - ch.previousPosition
+        //             // println("xxx delta: ${ch.position} - ${lastPosition} == $delta")
+        //             println("xxx delta: ${ch.position} - ${ch.previousPosition} == $delta")
+        //             currentOnUDrag(delta)
+        //         }
+        //         // lastPosition = ch.position
+        //     }
+        //     // else lastPosition = Offset.Unspecified
+        // }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
-private fun Mod.onUWheelSki(onWheel: (Offset) -> Unit) = onPointerEvent(PointerEventType.Scroll) {
-    onWheel(it.changes.first().scrollDelta)
-}
+private fun Mod.onUWheelSki(onWheel: (Offset) -> Unit) = this
+    // FIXME NOW: still not supported on android??
+    // https://github.com/JetBrains/compose-multiplatform/issues/3167
+    // .onPointerEvent(PointerEventType.Scroll) { onWheel(it.changes.first().scrollDelta) }
 
 @Composable private fun URawBinSki(
     type: UBinType,
