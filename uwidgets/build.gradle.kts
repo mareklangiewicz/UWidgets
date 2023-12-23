@@ -3,36 +3,69 @@
 import org.jetbrains.compose.*
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.plugin.*
+import com.android.build.api.dsl.*
 import pl.mareklangiewicz.defaults.*
 import pl.mareklangiewicz.deps.*
 import pl.mareklangiewicz.utils.*
 
 plugins {
-    plugAll(plugs.KotlinMulti, plugs.Compose, plugs.MavenPublish, plugs.Signing)
+    plugAll(
+        plugs.KotlinMulti,
+        plugs.Compose,
+        plugs.MavenPublish,
+        plugs.Signing
+    )
+    plug(plugs.AndroLibNoVer) apply false // will be applied conditionally depending on LibSettings
 }
 
 // workaround for crazy gradle bugs like this one or simillar:
 // https://youtrack.jetbrains.com/issue/KT-43500/KJS-IR-Failed-to-resolve-Kotlin-library-on-attempting-to-resolve-compileOnly-transitive-dependency-from-direct-dependency
 repositories { maven(repos.composeJbDev) }
 
-defaultBuildTemplateForComposeMppLib(withJs = true) {
-    api("pl.mareklangiewicz:kground:0.0.27") // FIXME https://repo1.maven.org/maven2/pl/mareklangiewicz/kground/
+defaultBuildTemplateForFullMppLib {
+    api("pl.mareklangiewicz:kground:0.0.34")
+    // FIXME https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
 }
+
+// region [Full MPP Lib Build Template]
+
+fun Project.defaultBuildTemplateForFullMppLib(
+    details: LibDetails = rootExtLibDetails,
+    addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {},
+) {
+    if (details.settings.withAndro) {
+        apply(plugin = plugs.AndroLibNoVer.group) // group is actually id for plugins
+        // TODO_later: try to move the rest of andro config from below here
+    }
+    defaultBuildTemplateForComposeMppLib(
+        details = details,
+        ignoreAndroConfig = true, // andro configured below
+        addCommonMainDependencies = addCommonMainDependencies,
+    )
+
+    if (details.settings.withAndro) {
+        extensions.configure<LibraryExtension> {
+            defaultAndroLib(ignoreCompose = true) // compose mpp configured already
+        }
+
+        // this is "single platform way" / "android way" to declare deps,
+        // it would be more "correct" to configure everything "mpp way" (android deps too),
+        // but it's more important to reuse andro related functions like "fun defaultAndroDeps"
+        // (trust me future Marek: I've tried this already :) )
+        dependencies {
+            // ignoreCompose because we have compose configured mpp way already.
+            defaultAndroDeps(details.settings, ignoreCompose = true)
+            defaultAndroTestDeps(details.settings, ignoreCompose = true)
+        }
+    }
+}
+
+// endregion [Full MPP Lib Build Template]
+
 
 // region [Kotlin Module Build Template]
 
-fun RepositoryHandler.defaultRepos(
-    withMavenLocal: Boolean = true,
-    withMavenCentral: Boolean = true,
-    withGradle: Boolean = false,
-    withGoogle: Boolean = true,
-    withKotlinx: Boolean = true,
-    withKotlinxHtml: Boolean = false,
-    withComposeJbDev: Boolean = false,
-    withComposeCompilerAndroidxDev: Boolean = false,
-    withKtorEap: Boolean = false,
-    withJitpack: Boolean = false,
-) {
+fun RepositoryHandler.addRepos(settings: LibReposSettings) = with(settings) {
     if (withMavenLocal) mavenLocal()
     if (withMavenCentral) mavenCentral()
     if (withGradle) gradlePluginPortal()
@@ -40,17 +73,17 @@ fun RepositoryHandler.defaultRepos(
     if (withKotlinx) maven(repos.kotlinx)
     if (withKotlinxHtml) maven(repos.kotlinxHtml)
     if (withComposeJbDev) maven(repos.composeJbDev)
-    if (withComposeCompilerAndroidxDev) maven(repos.composeCompilerAndroidxDev)
+    if (withComposeCompilerAxDev) maven(repos.composeCompilerAxDev)
     if (withKtorEap) maven(repos.ktorEap)
     if (withJitpack) maven(repos.jitpack)
 }
 
 fun TaskCollection<Task>.defaultKotlinCompileOptions(
-    jvmTargetVer: String = vers.JvmDefaultVer,
+    jvmTargetVer: String? = vers.JvmDefaultVer,
     renderInternalDiagnosticNames: Boolean = false,
 ) = withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = jvmTargetVer
+        jvmTargetVer?.let { jvmTarget = it }
         if (renderInternalDiagnosticNames) freeCompilerArgs = freeCompilerArgs + "-Xrender-internal-diagnostic-names"
         // useful, for example, to suppress some errors when accessing internal code from some library, like:
         // @file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE", "EXPOSED_PARAMETER_TYPE", "EXPOSED_PROPERTY_TYPE", "CANNOT_OVERRIDE_INVISIBLE_MEMBER")
@@ -180,88 +213,43 @@ fun TaskContainer.withPublishingPrintln() = withType<AbstractPublishToMaven>().c
     }
 }
 
-fun Project.defaultBuildTemplateForJvmLib(
-    details: LibDetails = rootExtLibDetails,
-    withTestJUnit4: Boolean = false,
-    withTestJUnit5: Boolean = true,
-    withTestUSpekX: Boolean = true,
-    addMainDependencies: KotlinDependencyHandler.() -> Unit = {},
-) {
-    repositories { defaultRepos() }
-    defaultGroupAndVerAndDescription(details)
-
-    kotlin {
-        sourceSets {
-            val main by getting {
-                dependencies {
-                    addMainDependencies()
-                }
-            }
-            val test by getting {
-                dependencies {
-                    if (withTestJUnit4) implementation(JUnit.junit)
-                    if (withTestJUnit5) implementation(Org.JUnit.Jupiter.junit_jupiter_engine)
-                    if (withTestUSpekX) {
-                        implementation(Langiewicz.uspekx)
-                        if (withTestJUnit4) implementation(Langiewicz.uspekx_junit4)
-                        if (withTestJUnit5) implementation(Langiewicz.uspekx_junit5)
-                    }
-                }
-            }
-        }
-    }
-
-    configurations.checkVerSync()
-    tasks.defaultKotlinCompileOptions()
-    tasks.defaultTestsOptions(onJvmUseJUnitPlatform = withTestJUnit5)
-    if (plugins.hasPlugin("maven-publish")) {
-        defaultPublishing(details)
-        if (plugins.hasPlugin("signing")) defaultSigning()
-        else println("JVM Module ${name}: signing disabled")
-    } else println("JVM Module ${name}: publishing (and signing) disabled")
-}
-
 // endregion [Kotlin Module Build Template]
 
 // region [MPP Module Build Template]
 
-/** Only for very standard small libs. In most cases it's better to not use this function. */
-fun Project.defaultBuildTemplateForMppLib(
+/**
+ * Only for very standard small libs. In most cases it's better to not use this function.
+ *
+ * These ignoreXXX flags are hacky, but needed. see [allDefault] kdoc for details.
+ */
+fun Project.defaultBuildTemplateForBasicMppLib(
     details: LibDetails = rootExtLibDetails,
-    withJvm: Boolean = true,
-    withJs: Boolean = true,
-    withNativeLinux64: Boolean = false,
-    withKotlinxHtml: Boolean = false,
-    withComposeJbDevRepo: Boolean = false,
-    withComposeCompilerAndroidxDevRepo: Boolean = false,
-    withTestJUnit4: Boolean = false,
-    withTestJUnit5: Boolean = true,
-    withTestUSpekX: Boolean = true,
+    ignoreCompose: Boolean = false, // so user have to explicitly say THAT he wants to ignore compose settings here.
+    ignoreAndroTarget: Boolean = false, // so user have to explicitly say IF he wants to ignore it.
+    ignoreAndroConfig: Boolean = false, // so user have to explicitly say THAT he wants to ignore it.
+    ignoreAndroPublish: Boolean = false, // so user have to explicitly say THAT he wants to ignore it.
     addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {},
 ) {
-    repositories {
-        defaultRepos(
-            withKotlinxHtml = withKotlinxHtml,
-            withComposeJbDev = withComposeJbDevRepo,
-            withComposeCompilerAndroidxDev = withComposeCompilerAndroidxDevRepo,
-        )
+    require(ignoreCompose || details.settings.compose == null) { "defaultBuildTemplateForMppLib can not configure compose stuff" }
+    details.settings.andro?.let {
+        require(ignoreAndroConfig) { "defaultBuildTemplateForBasicMppLib can not configure android stuff (besides just adding target)" }
+        require(ignoreAndroPublish || it.publishNoVariants) { "defaultBuildTemplateForBasicMppLib can not publish android stuff YET" }
     }
+    repositories { addRepos(details.settings.repos) }
     defaultGroupAndVerAndDescription(details)
-    kotlin {
+    extensions.configure<KotlinMultiplatformExtension> {
         allDefault(
-            withJvm,
-            withJs,
-            withNativeLinux64,
-            withKotlinxHtml,
-            withTestJUnit4,
-            withTestJUnit5,
-            withTestUSpekX,
-            addCommonMainDependencies
+            settings = details.settings,
+            ignoreCompose = ignoreCompose,
+            ignoreAndroTarget = ignoreAndroTarget,
+            ignoreAndroConfig = ignoreAndroConfig,
+            ignoreAndroPublish = ignoreAndroPublish,
+            addCommonMainDependencies = addCommonMainDependencies,
         )
     }
     configurations.checkVerSync()
-    tasks.defaultKotlinCompileOptions()
-    tasks.defaultTestsOptions(onJvmUseJUnitPlatform = withTestJUnit5)
+    tasks.defaultKotlinCompileOptions(details.settings.withJvmVer)
+    tasks.defaultTestsOptions(onJvmUseJUnitPlatform = details.settings.withTestJUnit5)
     if (plugins.hasPlugin("maven-publish")) {
         defaultPublishing(details)
         if (plugins.hasPlugin("signing")) defaultSigning()
@@ -269,20 +257,35 @@ fun Project.defaultBuildTemplateForMppLib(
     } else println("MPP Module ${name}: publishing (and signing) disabled")
 }
 
-/** Only for very standard small libs. In most cases it's better to not use this function. */
+/**
+ * Only for very standard small libs. In most cases it's better to not use this function.
+ *
+ * These ignoreXXX flags are hacky, but needed because we want to inject this code also to such build files,
+ * where plugins for compose and/or android are not applied at all, so compose/android stuff should be explicitly ignored,
+ * and then configured right after this call, using code from another special region (region using compose and/or andro plugin stuff).
+ * Also kmp andro publishing is in the middle of big changes, so let's not support it yet, and let's wait for more clarity regarding:
+ * https://youtrack.jetbrains.com/issue/KT-61575/Publishing-a-KMP-library-handles-Android-target-inconsistently-requiring-an-explicit-publishLibraryVariants-call-to-publish
+ * https://youtrack.jetbrains.com/issue/KT-60623/Deprecate-publishAllLibraryVariants-in-kotlin-android
+ */
 fun KotlinMultiplatformExtension.allDefault(
-    withJvm: Boolean = true,
-    withJs: Boolean = true,
-    withNativeLinux64: Boolean = false,
-    withKotlinxHtml: Boolean = false,
-    withTestJUnit4: Boolean = false,
-    withTestJUnit5: Boolean = true,
-    withTestUSpekX: Boolean = true,
+    settings: LibSettings,
+    ignoreCompose: Boolean = false, // so user have to explicitly say THAT he wants to ignore compose settings here.
+    ignoreAndroTarget: Boolean = false, // so user have to explicitly say IF he wants to ignore it.
+    ignoreAndroConfig: Boolean = false, // so user have to explicitly say THAT he wants to ignore it.
+    ignoreAndroPublish: Boolean = false, // so user have to explicitly say THAT he wants to ignore it.
     addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {},
-) {
+) = with(settings) {
+    require(ignoreCompose || compose == null) { "allDefault can not configure compose stuff" }
+    andro?.let {
+        require(ignoreAndroConfig) { "allDefault can not configure android stuff (besides just adding target)" }
+        require(ignoreAndroPublish || it.publishNoVariants) { "allDefault can not publish android stuff YET" }
+    }
     if (withJvm) jvm()
     if (withJs) jsDefault()
     if (withNativeLinux64) linuxX64()
+    if (withAndro && !ignoreAndroTarget) androidTarget {
+        // TODO_someday some kmp andro publishing. See kdoc above why not yet.
+    }
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -306,6 +309,8 @@ fun KotlinMultiplatformExtension.allDefault(
                         if (withTestJUnit4) implementation(Langiewicz.uspekx_junit4)
                         if (withTestJUnit5) implementation(Langiewicz.uspekx_junit5)
                     }
+                    if (withTestGoogleTruth) implementation(Com.Google.Truth.truth)
+                    if (withTestMockitoKotlin) implementation(Org.Mockito.Kotlin.mockito_kotlin)
                 }
             }
         }
@@ -346,107 +351,89 @@ fun KotlinMultiplatformExtension.jsDefault(
 @OptIn(ExperimentalComposeLibrary::class)
 fun Project.defaultBuildTemplateForComposeMppLib(
     details: LibDetails = rootExtLibDetails,
-    withJvm: Boolean = true,
-    withJs: Boolean = true,
-    withNativeLinux64: Boolean = false,
-    withKotlinxHtml: Boolean = false,
-    withComposeCompilerVer: Ver? = null,
-    withComposeUi: Boolean = true,
-    withComposeFoundation: Boolean = true,
-    withComposeMaterial2: Boolean = withJvm,
-    withComposeMaterial3: Boolean = withJvm,
-    withComposeMaterialIconsExtended: Boolean = false,
-        // https://mvnrepository.com/artifact/org.jetbrains.compose.material/material-icons-extended?repo=space-public-compose-dev
-    withComposeFullAnimation: Boolean = withJvm,
-    withComposeDesktop: Boolean = withJvm,
-    withComposeDesktopComponents: Boolean = false,
-        // https://mvnrepository.com/artifact/org.jetbrains.compose.components/components-splitpane?repo=space-public-compose-dev
-    withComposeWebCore: Boolean = withJs,
-    withComposeWebSvg: Boolean = withJs,
-    withComposeTestUiJUnit4: Boolean = withJvm,
-    withComposeTestUiJUnit5: Boolean = false,
-        // Not yet supported, but let's use this flag to use when I want to experiment with junit5 anyway.
-        // (Theoretically JUnit5 should live with JUnit4 peacefully, but I expect issues with Gradle or IDE)
-        // https://issuetracker.google.com/issues/127100532?pli=1
-        // https://github.com/android/android-test/issues/224
-        // https://github.com/JetBrains/compose-multiplatform/issues/2371
-
-    withComposeTestWebUtils: Boolean = withJs,
+    ignoreAndroTarget: Boolean = false, // so user have to explicitly say IF he wants to ignore it.
+    ignoreAndroConfig: Boolean = false, // so user have to explicitly say THAT he wants to ignore it.
+    ignoreAndroPublish: Boolean = false, // so user have to explicitly say THAT he wants to ignore it.
     addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {},
-) {
-    if (withComposeCompilerVer != null) compose {
-        val cc = AndroidX.Compose.Compiler.compiler.withVer(withComposeCompilerVer)
-        kotlinCompilerPlugin.set(cc.mvn)
+) = with(details.settings.compose ?: error("Compose settings not set.")) {
+    withComposeCompiler?.let {
+        extensions.configure<ComposeExtension> { kotlinCompilerPlugin.set(it.mvn) }
     }
-    if (withComposeTestUiJUnit5) {
+    if (withComposeTestUiJUnit5)
         logger.warn("Compose UI Tests with JUnit5 are not supported yet! Configuring JUnit5 anyway.")
-    }
-    defaultBuildTemplateForMppLib(
+    defaultBuildTemplateForBasicMppLib(
         details = details,
-        withJvm = withJvm,
-        withJs = withJs,
-        withNativeLinux64 = withNativeLinux64,
-        withKotlinxHtml = withKotlinxHtml,
-        withComposeJbDevRepo = true,
-        withComposeCompilerAndroidxDevRepo = withComposeCompilerVer != null,
-        withTestJUnit4 = withComposeTestUiJUnit4, // Unfortunately Compose UI still uses JUnit4 instead of 5
-        withTestJUnit5 = withComposeTestUiJUnit5,
-        withTestUSpekX = true,
-        addCommonMainDependencies = addCommonMainDependencies
+        ignoreCompose = true,
+        ignoreAndroTarget = ignoreAndroTarget,
+        ignoreAndroConfig = ignoreAndroConfig,
+        ignoreAndroPublish = ignoreAndroPublish,
+        addCommonMainDependencies = addCommonMainDependencies,
     )
-    kotlin {
-        sourceSets {
-            val commonMain by getting {
+    extensions.configure<KotlinMultiplatformExtension> {
+        allDefaultSourceSetsForCompose(details.settings)
+    }
+}
+
+
+/**
+ * Normal fun KotlinMultiplatformExtension.allDefault ignores compose stuff,
+ * because it's also used for libs without compose plugin.
+ * This one does the rest, so it has to be called additionally for compose libs, after .allDefault */
+@OptIn(ExperimentalComposeLibrary::class)
+fun KotlinMultiplatformExtension.allDefaultSourceSetsForCompose(
+    settings: LibSettings,
+) = with(settings.compose ?: error("Compose settings not set.")) {
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(compose.runtime)
+                if (withComposeUi) {
+                    implementation(compose.ui)
+                }
+                if (withComposeFoundation) implementation(compose.foundation)
+                if (withComposeFullAnimation) {
+                    implementation(compose.animation)
+                    implementation(compose.animationGraphics)
+                }
+                if (withComposeMaterial2) implementation(compose.material)
+                if (withComposeMaterial3) implementation(compose.material3)
+            }
+        }
+        if (settings.withJvm) {
+            val jvmMain by getting {
+                dependencies {
+                    if (withComposeUi) {
+                        implementation(compose.uiTooling)
+                        implementation(compose.preview)
+                    }
+                    if (withComposeMaterialIconsExtended) implementation(compose.materialIconsExtended)
+                    if (withComposeDesktop) {
+                        implementation(compose.desktop.common)
+                        implementation(compose.desktop.currentOs)
+                    }
+                    if (withComposeDesktopComponents) {
+                        implementation(compose.desktop.components.splitPane)
+                    }
+                }
+            }
+            val jvmTest by getting {
+                dependencies {
+                    @Suppress("DEPRECATION")
+                    if (withComposeTestUiJUnit4) implementation(compose.uiTestJUnit4)
+                }
+            }
+        }
+        if (settings.withJs) {
+            val jsMain by getting {
                 dependencies {
                     implementation(compose.runtime)
-                    if (withComposeUi) {
-                        implementation(compose.ui)
-                    }
-                    if (withComposeFoundation) implementation(compose.foundation)
-                    if (withComposeFullAnimation) {
-                        implementation(compose.animation)
-                        implementation(compose.animationGraphics)
-                    }
-                    if (withComposeMaterial2) implementation(compose.material)
-                    if (withComposeMaterial3) implementation(compose.material3)
+                    if (withComposeHtmlCore) implementation(compose.html.core)
+                    if (withComposeHtmlSvg) implementation(compose.html.svg)
                 }
             }
-            if (withJvm) {
-                val jvmMain by getting {
-                    dependencies {
-                        if (withComposeUi) {
-                            implementation(compose.uiTooling)
-                            implementation(compose.preview)
-                        }
-                        if (withComposeMaterialIconsExtended) implementation(compose.materialIconsExtended)
-                        if (withComposeDesktop) {
-                            implementation(compose.desktop.common)
-                            implementation(compose.desktop.currentOs)
-                        }
-                        if (withComposeDesktopComponents) {
-                            implementation(compose.desktop.components.splitPane)
-                        }
-                    }
-                }
-                val jvmTest by getting {
-                    dependencies {
-                        @Suppress("DEPRECATION")
-                        if (withComposeTestUiJUnit4) implementation(compose.uiTestJUnit4)
-                    }
-                }
-            }
-            if (withJs) {
-                val jsMain by getting {
-                    dependencies {
-                        implementation(compose.runtime)
-                        if (withComposeWebCore) implementation(compose.html.core)
-                        if (withComposeWebSvg) implementation(compose.html.svg)
-                    }
-                }
-                val jsTest by getting {
-                    dependencies {
-                        if (withComposeTestWebUtils) implementation(compose.html.testUtils)
-                    }
+            val jsTest by getting {
+                dependencies {
+                    if (withComposeTestHtmlUtils) implementation(compose.html.testUtils)
                 }
             }
         }
@@ -454,3 +441,223 @@ fun Project.defaultBuildTemplateForComposeMppLib(
 }
 
 // endregion [Compose MPP Module Build Template]
+
+
+
+// region [Andro Common Build Template]
+
+/** @param ignoreCompose Should be set to true if compose mpp is configured instead of compose andro */
+fun DependencyHandler.defaultAndroDeps(
+    settings: LibSettings,
+    ignoreCompose: Boolean = false,
+    configuration: String = "implementation",
+) {
+    val andro = settings.andro ?: error("No andro settings.")
+    addAll(
+        configuration,
+        AndroidX.Core.ktx,
+        AndroidX.AppCompat.appcompat.takeIf { andro.withAppCompat },
+        AndroidX.Activity.compose.takeIf { andro.withActivityCompose }, // this should not depend on ignoreCompose!
+        AndroidX.Lifecycle.compiler.takeIf { andro.withLifecycle },
+        AndroidX.Lifecycle.runtime_ktx.takeIf { andro.withLifecycle },
+        // TODO_someday_maybe: more lifecycle related stuff by default (viewmodel, compose)?
+        Com.Google.Android.Material.material.takeIf { andro.withMDC },
+    )
+    if (!ignoreCompose && settings.withCompose) {
+        val compose = settings.compose!!
+        addAllWithVer(
+            configuration,
+            Vers.ComposeAndro,
+            AndroidX.Compose.Ui.ui,
+            AndroidX.Compose.Ui.tooling,
+            AndroidX.Compose.Ui.tooling_preview,
+            AndroidX.Compose.Material.material.takeIf { compose.withComposeMaterial2 },
+        )
+        addAll(
+            configuration,
+            AndroidX.Compose.Material3.material3.takeIf { compose.withComposeMaterial3 },
+        )
+    }
+}
+
+/** @param ignoreCompose Should be set to true if compose mpp is configured instead of compose andro */
+fun DependencyHandler.defaultAndroTestDeps(
+    settings: LibSettings,
+    ignoreCompose: Boolean = false,
+    configuration: String = "testImplementation",
+) {
+    val andro = settings.andro ?: error("No andro settings.")
+    addAll(
+        configuration,
+        AndroidX.Test.Espresso.core.takeIf { andro.withTestEspresso },
+        Com.Google.Truth.truth.takeIf { settings.withTestGoogleTruth },
+        AndroidX.Test.rules,
+        AndroidX.Test.runner,
+        AndroidX.Test.Ext.truth.takeIf { settings.withTestGoogleTruth },
+        Org.Mockito.Kotlin.mockito_kotlin.takeIf { settings.withTestMockitoKotlin },
+    )
+
+    if (settings.withTestJUnit4) {
+        addAll(
+            configuration,
+            Kotlin.test_junit.withVer(Vers.Kotlin),
+            JUnit.junit,
+            Langiewicz.uspekx_junit4.takeIf { settings.withTestUSpekX },
+            AndroidX.Test.Ext.junit_ktx,
+        )
+    }
+    // android doesn't fully support JUnit5, but adding deps anyway to be able to write JUnit5 dependent code
+    if (settings.withTestJUnit5) {
+        addAll(
+            configuration,
+            Kotlin.test_junit5.withVer(Vers.Kotlin),
+            Org.JUnit.Jupiter.junit_jupiter_api,
+            Org.JUnit.Jupiter.junit_jupiter_engine,
+            Langiewicz.uspekx_junit5.takeIf { settings.withTestUSpekX },
+        )
+    }
+
+    if (!ignoreCompose && settings.withCompose) addAllWithVer(
+        configuration,
+        vers.ComposeAndro,
+        AndroidX.Compose.Ui.test,
+        AndroidX.Compose.Ui.test_manifest,
+        AndroidX.Compose.Ui.test_junit4.takeIf { settings.withTestJUnit4 },
+    )
+}
+
+fun MutableSet<String>.defaultAndroExcludedResources() = addAll(
+    listOf(
+        "**/*.md",
+        "**/attach_hotspot_windows.dll",
+        "META-INF/licenses/**",
+        "META-INF/AL2.0",
+        "META-INF/LGPL2.1",
+        "META-INF/kotlinx_coroutines_core.version",
+    )
+)
+
+fun CommonExtension<*, *, *, *, *>.defaultCompileOptions(
+    jvmVer: String = vers.JvmDefaultVer,
+) = compileOptions {
+    sourceCompatibility(jvmVer)
+    targetCompatibility(jvmVer)
+}
+
+fun CommonExtension<*, *, *, *, *>.defaultComposeStuff(withComposeCompiler: Dep? = null) {
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = withComposeCompiler?.run {
+            require(group == AndroidX.Compose.Compiler.compiler.group) {
+                "Wrong compiler group: $group. Only AndroidX compose compilers are supported on android (without mpp)."
+            }
+            ver?.ver ?: error("Compose compiler without version provided: $this")
+        }
+    }
+}
+
+fun CommonExtension<*, *, *, *, *>.defaultPackagingOptions() = packaging {
+    resources.excludes.defaultAndroExcludedResources()
+}
+
+/** Use template-andro/build.gradle.kts:fun defaultAndroLibPublishAllVariants() to create component with name "default". */
+fun Project.defaultPublishingOfAndroLib(
+    lib: LibDetails,
+    componentName: String = "default",
+) {
+    afterEvaluate {
+        extensions.configure<PublishingExtension> {
+            publications.register<MavenPublication>(componentName) {
+                from(components[componentName])
+                defaultPOM(lib)
+            }
+        }
+    }
+}
+
+fun Project.defaultPublishingOfAndroApp(
+    lib: LibDetails,
+    componentName: String = "release",
+) = defaultPublishingOfAndroLib(lib, componentName)
+
+
+// endregion [Andro Common Build Template]
+
+// region [Andro Lib Build Template]
+
+fun Project.defaultBuildTemplateForAndroLib(
+    details: LibDetails = rootExtLibDetails,
+    addAndroMainDependencies: DependencyHandler.() -> Unit = {},
+) {
+    val andro = details.settings.andro ?: error("No andro settings.")
+    repositories { addRepos(details.settings.repos) }
+    extensions.configure<LibraryExtension> {
+        defaultAndroLib(details)
+        if (andro.publishAllVariants) defaultAndroLibPublishAllVariants()
+        if (andro.publishOneVariant) defaultAndroLibPublishVariant(andro.publishVariant)
+    }
+    dependencies {
+        defaultAndroDeps(details.settings)
+        defaultAndroTestDeps(details.settings)
+        add("debugImplementation", AndroidX.Tracing.ktx) // https://github.com/android/android-test/issues/1755
+        addAndroMainDependencies()
+    }
+    configurations.checkVerSync()
+    tasks.defaultKotlinCompileOptions(details.settings.withJvmVer ?: error("No JVM version in settings."))
+    defaultGroupAndVerAndDescription(details)
+    if (andro.publishAllVariants) defaultPublishingOfAndroLib(details, "default")
+    if (andro.publishOneVariant) defaultPublishingOfAndroLib(details, andro.publishVariant)
+    if (!andro.publishNoVariants) defaultSigning()
+}
+
+fun LibraryExtension.defaultAndroLib(
+    details: LibDetails = rootExtLibDetails,
+    ignoreCompose: Boolean = false,
+) {
+    val andro = details.settings.andro ?: error("No andro settings.")
+    compileSdk = andro.sdkCompile
+    defaultCompileOptions(details.settings.withJvmVer!!)
+    defaultDefaultConfig(details)
+    defaultBuildTypes()
+    details.settings.compose?.takeIf { !ignoreCompose }?.let { defaultComposeStuff(it.withComposeCompiler) }
+    defaultPackagingOptions()
+}
+
+fun LibraryExtension.defaultDefaultConfig(details: LibDetails) = defaultConfig {
+    val asettings = details.settings.andro ?: error("No andro settings.")
+    namespace = details.namespace
+    minSdk = asettings.sdkMin
+    testInstrumentationRunner = asettings.withTestRunner
+}
+
+fun LibraryExtension.defaultBuildTypes() = buildTypes { release { isMinifyEnabled = false } }
+
+fun LibraryExtension.defaultAndroLibPublishVariant(
+    variant: String = "debug",
+    withSources: Boolean = true,
+    withJavadoc: Boolean = false,
+) {
+    publishing {
+        singleVariant(variant) {
+            if (withSources) withSourcesJar()
+            if (withJavadoc) withJavadocJar()
+        }
+    }
+}
+
+fun LibraryExtension.defaultAndroLibPublishAllVariants(
+    withSources: Boolean = true,
+    withJavadoc: Boolean = false,
+) {
+    publishing {
+        multipleVariants {
+            allVariants()
+            if (withSources) withSourcesJar()
+            if (withJavadoc) withJavadocJar()
+        }
+    }
+}
+
+// endregion [Andro Lib Build Template]

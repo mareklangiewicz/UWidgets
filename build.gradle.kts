@@ -5,31 +5,49 @@ import pl.mareklangiewicz.utils.*
 plugins {
     plug(plugs.NexusPublish)
     plug(plugs.KotlinMulti) apply false
+    plug(plugs.Compose) apply false // https://github.com/JetBrains/compose-multiplatform/issues/3459
+    plug(plugs.AndroLib) apply false
+    plug(plugs.AndroApp) apply false
 }
+
+
+val enableJs = false
+// TODO TRACK JS BLOCKING ISSUE:
+//  https://youtrack.jetbrains.com/issue/KT-64257/K2-QG-kotlin.NotImplementedError-Generation-of-stubs-for-class
+
+val enableAndro = false
+// TODO TRACK ANDRO ISSUE:
+//  https://github.com/JetBrains/compose-multiplatform/issues/3167
 
 defaultBuildTemplateForRootProject(
     langaraLibDetails(
         name = "UWidgets",
         description = "Micro widgets for Compose Multiplatform",
         githubUrl = "https://github.com/langara/UWidgets",
-        version = Ver(0, 0, 8)
-    ),
-    withSonatypeOssPublishing = true,
+        version = Ver(0, 0, 10),
+        settings = LibSettings(
+            withJs = enableJs,
+            withSonatypeOssPublishing = true,
+            compose = LibComposeSettings(
+                withComposeCompiler = ComposeCompilerJb,
+                withComposeHtmlCore = enableJs,
+                withComposeHtmlSvg = enableJs,
+                withComposeTestHtmlUtils = enableJs,
+            ),
+            andro = if (enableAndro) LibAndroSettings() else null
+        ),
+    ).copy(appMainPackage = "pl.mareklangiewicz.udemo"), // FIXME_later: meh, langaraLibDetails should have such params too.
 )
 
 // region [Root Build Template]
 
 /** Publishing to Sonatype OSSRH has to be explicitly allowed here, by setting withSonatypeOssPublishing to true. */
-fun Project.defaultBuildTemplateForRootProject(
-    libDetails: LibDetails? = null,
-    withSonatypeOssPublishing: Boolean = false
-) {
-    check(libDetails != null || !withSonatypeOssPublishing)
+fun Project.defaultBuildTemplateForRootProject(details: LibDetails? = null) {
     ext.addDefaultStuffFromSystemEnvs()
-    libDetails?.let {
+    details?.let {
         rootExtLibDetails = it
         defaultGroupAndVerAndDescription(it)
-        if (withSonatypeOssPublishing) defaultSonatypeOssNexusPublishing()
+        if (it.settings.withSonatypeOssPublishing) defaultSonatypeOssNexusPublishing()
     }
 
     // kinda workaround for kinda issue with kotlin native
