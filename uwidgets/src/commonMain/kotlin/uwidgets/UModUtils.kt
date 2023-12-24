@@ -6,6 +6,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.uwidgets.UScrollStyle.*
 
@@ -52,3 +53,13 @@ fun Mod.drawWithScroll(scrollS: ScrollState, isVertical: Boolean = false) = draw
     if (scrollS.maxValue > 0 && scrollS.maxValue < Int.MAX_VALUE)
         drawCircle(c.copy(alpha = .1f), size.minDimension * .5f * scrollS.value / scrollS.maxValue)
 }
+
+/**
+ * Temporary workaround for compose-multiplatform + android issue
+ * https://github.com/JetBrains/compose-multiplatform/issues/3167
+ */
+expect fun Mod.onMyPointerEvent(
+    eventType: PointerEventType,
+    pass: PointerEventPass = PointerEventPass.Main,
+    onEvent: AwaitPointerEventScope.(event: PointerEvent) -> Unit
+): Mod

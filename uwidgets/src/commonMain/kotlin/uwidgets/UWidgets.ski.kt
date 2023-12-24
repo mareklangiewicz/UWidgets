@@ -55,9 +55,9 @@ private fun Mod.onUDragSki(onUDrag: (Offset) -> Unit) = composed {
     val currentOnUDrag by rememberUpdatedState(onUDrag)
     // var lastPosition by ustate(Offset.Unspecified)
     this
-        // .onPointerEvent(PointerEventType.Enter) { lastPosition = it.changes.first().position }
-        // .onPointerEvent(PointerEventType.Exit) { lastPosition = Offset.Unspecified }
-        .onPointerEvent(PointerEventType.Move) {
+        // .onMyPointerEvent(PointerEventType.Enter) { lastPosition = it.changes.first().position }
+        // .onMyPointerEvent(PointerEventType.Exit) { lastPosition = Offset.Unspecified }
+        .onMyPointerEvent(PointerEventType.Move) {
             if (
                 it.keyboardModifiers.isAltPressed //&& it.buttons.isPrimaryPressed
             ) {
@@ -82,7 +82,7 @@ private fun Mod.onUDragSki(onUDrag: (Offset) -> Unit) = composed {
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
-private fun Mod.onUWheelSki(onWheel: (Offset) -> Unit) = onPointerEvent(PointerEventType.Scroll) {
+private fun Mod.onUWheelSki(onWheel: (Offset) -> Unit) = onMyPointerEvent(PointerEventType.Scroll) {
     onWheel(it.changes.first().scrollDelta)
 }
 
