@@ -1,4 +1,4 @@
-package pl.mareklangiewicz.uwidgets.udemo.app
+package pl.mareklangiewicz.udemapp
 
 import androidx.compose.desktop.ui.tooling.preview.*
 import androidx.compose.foundation.layout.*
