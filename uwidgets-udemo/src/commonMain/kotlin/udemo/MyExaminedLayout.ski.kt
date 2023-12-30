@@ -96,7 +96,7 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
     }
     AnimatedContent(
         targetState = type,
-        transitionSpec = { fadeIn(tween(900, easing = LinearEasing)) with fadeOut(tween(900, easing = LinearEasing)) }
+        transitionSpec = { fadeIn(tween(900, easing = LinearEasing)) togetherWith fadeOut(tween(900, easing = LinearEasing)) }
     ) { MyExaminedLayoutPlayground(it) }
 }
 
