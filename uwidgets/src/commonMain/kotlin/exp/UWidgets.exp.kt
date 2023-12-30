@@ -14,8 +14,6 @@ import pl.mareklangiewicz.uwindow.*
 
 @Composable internal expect fun USkikoBoxAct(size: DpSize?, content: @Composable () -> Unit)
 
-@Composable internal expect fun USkikoBoxAct2(size: DpSize?, content: @Composable () -> Unit)
-
 @Composable internal expect fun UWindowAct(state: UWindowState, onClose: () -> Unit, content: @Composable () -> Unit)
 
 // Warning: I had cryptic issues with compiler when expect fun had some default values.

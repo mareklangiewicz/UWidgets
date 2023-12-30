@@ -19,9 +19,6 @@ import pl.mareklangiewicz.uwindow.*
 @Composable internal actual fun USkikoBoxAct(size: DpSize?, content: @Composable () -> Unit) =
     UFakeSkikoBoxImplSki(size, content)
 
-@Composable internal actual fun USkikoBoxAct2(size: DpSize?, content: @Composable () -> Unit) =
-    UFakeSkikoBoxImplSki(size, content)
-
 @Composable internal actual fun UWindowAct(state: UWindowState, onClose: () -> Unit, content: @Composable () -> Unit) =
     when {
         currentComposer.isAwt -> UWindowAwt(state, onClose, content)

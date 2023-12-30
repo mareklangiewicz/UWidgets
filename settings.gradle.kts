@@ -6,7 +6,7 @@
 // gradle.logSomeEventsToFile(rootProject.projectDir.toOkioPath() / "my.gradle.log")
 
 pluginManagement {
-    includeBuild("../DepsKt")
+    // includeBuild("../DepsKt")
     repositories {
         mavenLocal()
         google()
@@ -16,7 +16,7 @@ pluginManagement {
 }
 
 plugins {
-    id("pl.mareklangiewicz.deps.settings") version "0.2.77" // https://plugins.gradle.org/search?term=mareklangiewicz
+    id("pl.mareklangiewicz.deps.settings") version "0.2.78" // https://plugins.gradle.org/search?term=mareklangiewicz
     id("com.gradle.enterprise") version "3.16.1" // https://docs.gradle.com/enterprise/gradle-plugin/
 }
 
@@ -31,9 +31,6 @@ gradleEnterprise {
 
 rootProject.name = "UWidgets"
 
-include(":uwidgets",
-    // ":uwidgets-udemo",
-    // ":uwidgets-udemo-app",
-)
+include(":uwidgets", ":uwidgets-udemo", ":uwidgets-udemo-app")
 
 
