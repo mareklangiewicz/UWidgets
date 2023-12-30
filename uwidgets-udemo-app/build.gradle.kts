@@ -18,8 +18,14 @@ plugins {
 // https://youtrack.jetbrains.com/issue/KT-43500/KJS-IR-Failed-to-resolve-Kotlin-library-on-attempting-to-resolve-compileOnly-transitive-dependency-from-direct-dependency
 repositories { maven(repos.composeJbDev) }
 
+val namespace = "pl.mareklangiewicz.uwidgets.udemo.app"
+val details = rootExtLibDetails.copy(
+    namespace = namespace,
+    appId = namespace,
+    appMainPackage = namespace,
+)
 
-defaultBuildTemplateForFullMppApp {
+defaultBuildTemplateForFullMppApp(details) {
     implementation(project(":uwidgets-udemo"))
 }
 

@@ -27,7 +27,7 @@ defaultBuildTemplateForRootProject(
         name = "UWidgets",
         description = "Micro widgets for Compose Multiplatform",
         githubUrl = "https://github.com/langara/UWidgets",
-        version = Ver(0, 0, 10),
+        version = Ver(0, 0, 11),
         settings = LibSettings(
             withJs = enableJs,
             withSonatypeOssPublishing = true,
@@ -39,7 +39,7 @@ defaultBuildTemplateForRootProject(
             ),
             andro = if (enableAndro) LibAndroSettings() else null
         ),
-    ).copy(appMainPackage = "pl.mareklangiewicz.udemo"), // FIXME_later: meh, langaraLibDetails should have such params too.
+    ) // stuff like appMainPackage, namespace, etc. are customized at module level.
 )
 
 // region [Root Build Template]

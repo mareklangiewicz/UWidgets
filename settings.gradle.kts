@@ -6,7 +6,7 @@
 // gradle.logSomeEventsToFile(rootProject.projectDir.toOkioPath() / "my.gradle.log")
 
 pluginManagement {
-    // includeBuild("../DepsKt")
+    includeBuild("../DepsKt")
     repositories {
         mavenLocal()
         google()
