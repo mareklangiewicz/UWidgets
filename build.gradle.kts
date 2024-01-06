@@ -16,7 +16,7 @@ val enableJs = false
 //  https://youtrack.jetbrains.com/issue/KT-64257/K2-QG-kotlin.NotImplementedError-Generation-of-stubs-for-class
 
 
-val enableAndro = true
+val enableAndro = false
 // TODO TRACK MAJOR ISSUE WITH ANDROID (MY REPORT):
 //  https://youtrack.jetbrains.com/issue/KT-64621/K2-Beta2-compileDebugSources-exception-with-Compose-MPP
 // TODO TRACK ANDRO ISSUE (this one can take a while, so I added workaround already - "onMyPointerEvent"):
@@ -26,7 +26,7 @@ defaultBuildTemplateForRootProject(
     langaraLibDetails(
         name = "UWidgets",
         description = "Micro widgets for Compose Multiplatform",
-        githubUrl = "https://github.com/langara/UWidgets",
+        githubUrl = "https://github.com/mareklangiewicz/UWidgets",
         version = Ver(0, 0, 11),
         settings = LibSettings(
             withJs = enableJs,
