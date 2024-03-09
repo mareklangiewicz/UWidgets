@@ -15,6 +15,7 @@ fun <R> syncMaybe(lock: Any, block: () -> R): R = syncMaybeAct(lock, block)
 val Composer.isDom: Boolean @Composable get() = isDomAct
 val Composer.isSki: Boolean @Composable get() = isSkiAct
 val Composer.isAwt: Boolean @Composable get() = isAwtAct
+val Composer.isTui: Boolean @Composable get() = isTuiAct
 
 internal expect fun Float.toUStrAct(precision: Int): String
 internal expect fun Double.toUStrAct(precision: Int): String
@@ -26,3 +27,4 @@ internal expect fun <R> syncMaybeAct(lock: Any, block: () -> R): R
 internal expect val Composer.isDomAct: Boolean
 internal expect val Composer.isSkiAct: Boolean
 internal expect val Composer.isAwtAct: Boolean
+internal expect val Composer.isTuiAct: Boolean
