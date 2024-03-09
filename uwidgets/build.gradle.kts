@@ -23,10 +23,9 @@ plugins {
 repositories { maven(repos.composeJbDev) }
 
 defaultBuildTemplateForFullMppLib {
-    api("pl.mareklangiewicz:kground:0.0.34")
-    // FIXME https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
-}
     api(Langiewicz.kground) // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
+
+    // api(Com.GitHub.Ajalt.Mordant.mordant)
 }
 
 
