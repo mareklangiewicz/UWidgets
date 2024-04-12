@@ -10,6 +10,9 @@ import pl.mareklangiewicz.uspek.*
 @Ignore // FIXME_later
 @RunWith(USpekJUnit4Runner::class)
 class MyExaminedLayoutUSpekJvm {
-    init { uspekLog = { ulogw("uspek ${it.status}") } }
-    @USpekTestTree(33) fun melusf() = runUComposeTest { MyExaminedLayoutUSpekFun() }
+  init {
+    uspekLog = { ulogw("uspek ${it.status}") }
+  }
+
+  @USpekTestTree(33) fun melusf() = runUComposeTest { MyExaminedLayoutUSpekFun() }
 }

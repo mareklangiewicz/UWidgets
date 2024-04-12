@@ -9,13 +9,13 @@ import pl.mareklangiewicz.deps.*
 import pl.mareklangiewicz.utils.*
 
 plugins {
-    plugAll(
-        plugs.KotlinMulti,
-        plugs.Compose,
-        plugs.MavenPublish,
-        plugs.Signing
-    )
-    plug(plugs.AndroLibNoVer) apply false // will be applied conditionally depending on LibSettings
+  plugAll(
+    plugs.KotlinMulti,
+    plugs.Compose,
+    plugs.MavenPublish,
+    plugs.Signing,
+  )
+  plug(plugs.AndroLibNoVer) apply false // will be applied conditionally depending on LibSettings
 }
 
 // workaround for crazy gradle bugs like this one or simillar:
@@ -23,9 +23,9 @@ plugins {
 repositories { maven(repos.composeJbDev) }
 
 defaultBuildTemplateForFullMppLib {
-    api(Langiewicz.kground) // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
+  api(Langiewicz.kground) // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
 
-    // api(Com.GitHub.Ajalt.Mordant.mordant)
+  // api(Com.GitHub.Ajalt.Mordant.mordant)
 }
 
 
@@ -453,7 +453,6 @@ fun KotlinMultiplatformExtension.allDefaultSourceSetsForCompose(
 }
 
 // endregion [Compose MPP Module Build Template]
-
 
 
 // region [Andro Common Build Template]

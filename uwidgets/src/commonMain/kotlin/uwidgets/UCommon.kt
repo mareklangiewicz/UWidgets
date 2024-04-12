@@ -25,30 +25,30 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 
 @ExperimentalComposeApi // FIXME: Needs tests, and more thinking about concurrency
 @Composable fun DelayedUpdateEffectBroken(delayMs: Long = 200, update: () -> Unit) = LaunchedEffect(delayMs, update) {
-    ulogw("Something is probably broken in this fun. (strange behaviors when experimenting on 'Examined layout uspek ski' tab)")
-    val observer = SnapshotStateObserver { it() }
-    val gate = Channel<Unit>(CONFLATED)
-    val open: (Unit) -> Unit = {
-        gate.trySend(Unit)
+  ulogw("Something is probably broken in this fun. (strange behaviors when experimenting on 'Examined layout uspek ski' tab)")
+  val observer = SnapshotStateObserver { it() }
+  val gate = Channel<Unit>(CONFLATED)
+  val open: (Unit) -> Unit = {
+    gate.trySend(Unit)
+  }
+  try {
+    observer.start()
+    while (true) {
+      observer.observeReads(Unit, open, update)
+      delay(delayMs)
+      gate.receive()
     }
-    try {
-        observer.start()
-        while (true) {
-            observer.observeReads(Unit, open, update)
-            delay(delayMs)
-            gate.receive()
-        }
-    } finally {
-        observer.stop()
-        observer.clear()
-    }
+  } finally {
+    observer.stop()
+    observer.clear()
+  }
 }
 
 @ExperimentalComposeApi
 @Composable fun <T> delayedStateOfBroken(init: T, delayMs: Long = 200, calculation: () -> T): State<T> {
-    val state = ustate(init)
-    DelayedUpdateEffectBroken(delayMs) { state.value = calculation() }
-    return state
+  val state = ustate(init)
+  DelayedUpdateEffectBroken(delayMs) { state.value = calculation() }
+  return state
 }
 
 // @Composable fun <T> delayedStateOfBetterTODO(init: T, delayMs: Long = 200, calculation: () -> T): State<T> {
@@ -60,7 +60,8 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 
 
 // TODO_later: Implement this kind of stuff directly with snapshot system (better performance + great exercise).
-@Composable fun <T> debouncedStateOf(init: T, delayMs: Long = 200, calculation: () -> T): State<T> = produceState(init) {
+@Composable fun <T> debouncedStateOf(init: T, delayMs: Long = 200, calculation: () -> T): State<T> =
+  produceState(init) {
     snapshotFlow(calculation).collectLatest { delay(delayMs); value = it }
-}
+  }
 

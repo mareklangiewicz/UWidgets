@@ -21,25 +21,31 @@ import pl.mareklangiewicz.uwindow.*
 
 
 @Composable fun UCoreBin(type: UBinType, mod: Mod = Mod, content: @Composable () -> Unit) =
-    UCoreBinAct(type, mod, content)
+  UCoreBinAct(type, mod, content)
 
 /**
  * The mod: Mod is only passed to platform implementation. Mod.u* modifiers are ignored.
  * Use UText instead of URawText to add Mod.u* modifiers.
  * TODO_someday: Maybe make it public if turns out to be really needed.
  */
-@Composable internal fun URawText(text: String, mod: Mod = Mod, bold: Boolean = false, mono: Boolean = false, maxLines: Int = 1) =
-    URawTextAct(text, mod, bold, mono, maxLines)
+@Composable internal fun URawText(
+  text: String,
+  mod: Mod = Mod,
+  bold: Boolean = false,
+  mono: Boolean = false,
+  maxLines: Int = 1,
+) =
+  URawTextAct(text, mod, bold, mono, maxLines)
 
 @Composable fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
-    UTabsAct(*tabs, onSelected = onSelected)
+  UTabsAct(*tabs, onSelected = onSelected)
 
 @Composable fun USkikoBox(size: DpSize? = null, content: @Composable () -> Unit) =
-    USkikoBoxAct(size, content)
+  USkikoBoxAct(size, content)
 
 
 @Composable fun UWindow(
-    state: UWindowState = rememberUWindowState(),
-    onClose: () -> Unit = {},
-    content: @Composable () -> Unit,
+  state: UWindowState = rememberUWindowState(),
+  onClose: () -> Unit = {},
+  content: @Composable () -> Unit,
 ) = UWindowAct(state, onClose, content)

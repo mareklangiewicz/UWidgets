@@ -21,31 +21,31 @@ import pl.mareklangiewicz.uwidgets.*
 
 // TODO_later: move it to USpek:uspek-compose (when API becomes more stable)
 class UComposeRuleScope(
-    private val rule: ComposeContentTestRule,
-    log: (Any?) -> Unit = { ulogd(it.ustr) },
+  private val rule: ComposeContentTestRule,
+  log: (Any?) -> Unit = { ulogd(it.ustr) },
 ) : UComposeScope {
-    override fun setContent(content: @Composable () -> Unit) = rule.setContent(content)
-    override suspend fun awaitIdle() = rule.awaitIdle()
-    override val density: Density get() = rule.density
-    override val ureports: UReports = UReports(log)
+  override fun setContent(content: @Composable () -> Unit) = rule.setContent(content)
+  override suspend fun awaitIdle() = rule.awaitIdle()
+  override val density: Density get() = rule.density
+  override val ureports: UReports = UReports(log)
 }
 
 @OptIn(ExperimentalTestApi::class)
 class UComposeUiTestScope(
-    private val uitest: ComposeUiTest,
-    log: (Any?) -> Unit = { ulogd(it.ustr) },
+  private val uitest: ComposeUiTest,
+  log: (Any?) -> Unit = { ulogd(it.ustr) },
 ) : UComposeScope {
-    override fun setContent(content: @Composable () -> Unit) = uitest.setContent(content)
-    override suspend fun awaitIdle() = uitest.awaitIdle()
-    override val density: Density get() = uitest.density
-    override val ureports: UReports = UReports(log)
+  override fun setContent(content: @Composable () -> Unit) = uitest.setContent(content)
+  override suspend fun awaitIdle() = uitest.awaitIdle()
+  override val density: Density get() = uitest.density
+  override val ureports: UReports = UReports(log)
 }
 
 @OptIn(ExperimentalTestApi::class)
 fun runUComposeTest(code: suspend UComposeScope.() -> Unit) = runComposeUiTest {
-    // FIXME_later: think about runTest instead of runBlocking, when commonizing,
-    // but runTest should always be outermost and returning TestResult immediately (see runTest documentation)
-    runBlocking {
-        UComposeUiTestScope(this@runComposeUiTest).code()
-    }
+  // FIXME_later: think about runTest instead of runBlocking, when commonizing,
+  // but runTest should always be outermost and returning TestResult immediately (see runTest documentation)
+  runBlocking {
+    UComposeUiTestScope(this@runComposeUiTest).code()
+  }
 }

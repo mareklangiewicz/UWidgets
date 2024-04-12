@@ -45,22 +45,23 @@ import kotlin.math.*
 @Stable fun Size.copyToIntSize(w: Int = width.int, h: Int = height.int) = IntSize(w, h)
 @Stable fun Size.copyRoundToIntSize(w: Int = width.intr, h: Int = height.intr) = IntSize(w, h)
 @Stable fun IntSize.copyToAllConstraints(minW: Int = width, maxW: Int = width, minH: Int = height, maxH: Int = height) =
-    Constraints(minW, maxW, minH, maxH)
+  Constraints(minW, maxW, minH, maxH)
 
 @Stable fun IntSize.copyToMaxConstraints(minW: Int = 0, maxW: Int = width, minH: Int = 0, maxH: Int = height) =
-    Constraints(minW, maxW, minH, maxH)
+  Constraints(minW, maxW, minH, maxH)
 
 @Stable fun IntSize.copyToMinConstraints(
-    minW: Int = width,
-    maxW: Int = Constraints.Infinity,
-    minH: Int = height,
-    maxH: Int = Constraints.Infinity,
+  minW: Int = width,
+  maxW: Int = Constraints.Infinity,
+  minH: Int = height,
+  maxH: Int = Constraints.Infinity,
 ) = Constraints(minW, maxW, minH, maxH)
 
-@Stable fun Any?.markIfNull(markNotNull: String = "nn", markNull: String = "n"): String = if (this != null) markNotNull else markNull
+@Stable fun Any?.markIfNull(markNotNull: String = "nn", markNull: String = "n"): String =
+  if (this != null) markNotNull else markNull
 
 @Stable fun String.limit(limit: Int = 64, limitIndicator: String = "..") =
-    if (length > limit) substring(0, limit - limitIndicator.length) + limitIndicator else this
+  if (length > limit) substring(0, limit - limitIndicator.length) + limitIndicator else this
 
 
 @Stable fun String.containsOneOf(vararg substrings: String) = substrings.any { it in this }

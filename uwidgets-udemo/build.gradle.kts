@@ -9,13 +9,13 @@ import pl.mareklangiewicz.deps.*
 import pl.mareklangiewicz.utils.*
 
 plugins {
-    plugAll(
-        plugs.KotlinMulti,
-        plugs.Compose,
-        plugs.MavenPublish,
-        plugs.Signing
-    )
-    plug(plugs.AndroLibNoVer) apply false // will be applied conditionally depending on LibSettings
+  plugAll(
+    plugs.KotlinMulti,
+    plugs.Compose,
+    plugs.MavenPublish,
+    plugs.Signing,
+  )
+  plug(plugs.AndroLibNoVer) apply false // will be applied conditionally depending on LibSettings
 }
 
 // workaround for crazy gradle bugs like this one or simillar:
@@ -26,8 +26,8 @@ val namespace = "pl.mareklangiewicz.uwidemo"
 val details = rootExtLibDetails.copy(namespace = namespace)
 
 defaultBuildTemplateForFullMppLib(details) {
-    api(project(":uwidgets"))
-    api(Langiewicz.uspek)
+  api(project(":uwidgets"))
+  api(Langiewicz.uspek)
 }
 
 // region [Full MPP Lib Build Template]
@@ -455,7 +455,6 @@ fun KotlinMultiplatformExtension.allDefaultSourceSetsForCompose(
 }
 
 // endregion [Compose MPP Module Build Template]
-
 
 
 

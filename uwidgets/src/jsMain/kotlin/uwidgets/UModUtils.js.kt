@@ -7,7 +7,7 @@ import androidx.compose.ui.input.pointer.*
 import pl.mareklangiewicz.uwidgets.Mod
 
 actual fun Mod.onMyPointerEvent(
-    eventType: PointerEventType,
-    pass: PointerEventPass,
-    onEvent: AwaitPointerEventScope.(event: PointerEvent) -> Unit
+  eventType: PointerEventType,
+  pass: PointerEventPass,
+  onEvent: AwaitPointerEventScope.(event: PointerEvent) -> Unit,
 ) = onPointerEvent(eventType, pass, onEvent)

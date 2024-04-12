@@ -21,37 +21,42 @@ private const val isSlowStateDebounced: Boolean = true // false means delayed bu
 
 @OptIn(ExperimentalComposeApi::class)
 @Composable private fun <T> slowStateOf(init: T, delayMs: Long = 200, calculation: () -> T) =
-    if (isSlowStateDebounced) debouncedStateOf(init, delayMs, calculation) else delayedStateOfBroken(init, delayMs, calculation)
+  if (isSlowStateDebounced) debouncedStateOf(init, delayMs, calculation) else delayedStateOfBroken(
+    init,
+    delayMs,
+    calculation,
+  )
 
 // TODO_later: move it to "more common" code using other uwidgets, so it can be used with DOM "backend" too
 @Composable fun UReportsUi(reports: UReports, mod: Mod = Mod, reversed: Boolean = false) {
-    CompositionLocalProvider(LocalDensity provides Density(1f)) {
-        val vScrollS = rememberScrollState()
-        Column(mod.scroll(verticalS = vScrollS)) {
-            val r by slowStateOf(emptyList()) { reports.toList() }
-            for (idx in if (reversed) r.indices.reversed() else r.indices) {
-                val entry = r[idx]
-                Row(Mod.background(Color.White.darken(.06f * (idx % 4))).padding(2.dp)) {
-                    Box(Mod.width(60.dp)) { Text(entry.timeUStr) }
-                    Box(Mod.width(200.dp)) { Text(entry.key) }
-                    Box(Mod.weight(1f)) { Text(entry.data.ustr) }
-                }
-            }
+  CompositionLocalProvider(LocalDensity provides Density(1f)) {
+    val vScrollS = rememberScrollState()
+    Column(mod.scroll(verticalS = vScrollS)) {
+      val r by slowStateOf(emptyList()) { reports.toList() }
+      for (idx in if (reversed) r.indices.reversed() else r.indices) {
+        val entry = r[idx]
+        Row(Mod.background(Color.White.darken(.06f * (idx % 4))).padding(2.dp)) {
+          Box(Mod.width(60.dp)) { Text(entry.timeUStr) }
+          Box(Mod.width(200.dp)) { Text(entry.key) }
+          Box(Mod.weight(1f)) { Text(entry.data.ustr) }
         }
+      }
     }
+  }
 }
 
 fun Mod.reportMeasuring(onUReport: OnUReport): Mod = layout { measurable, constraints ->
-    onUReport("measure in" to constraints)
-    val placeable = measurable.measure(constraints)
-    onUReport("measured" to placeable.udata)
-    layout(placeable.width, placeable.height) { placeable.place(0, 0) }
+  onUReport("measure in" to constraints)
+  val placeable = measurable.measure(constraints)
+  onUReport("measured" to placeable.udata)
+  layout(placeable.width, placeable.height) { placeable.place(0, 0) }
 }
 
 fun Mod.reportPlacement(onUReport: OnUReport): Mod = onPlaced {
-    onUReport("placed" to it.udata)
+  onUReport("placed" to it.udata)
 }
 
 fun Mod.reportMeasuringAndPlacement(onUReport: OnUReport): Mod = reportMeasuring(onUReport).reportPlacement(onUReport)
 
-fun UReports.Entry.hasPlacedCoordinates(tag: String, checkData: ULayoutCoordinatesData.() -> Boolean) = has("$tag placed", checkData)
+fun UReports.Entry.hasPlacedCoordinates(tag: String, checkData: ULayoutCoordinatesData.() -> Boolean) =
+  has("$tag placed", checkData)

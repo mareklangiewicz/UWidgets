@@ -11,7 +11,8 @@ import pl.mareklangiewicz.ulog.*
 // TODO_someday: experiment more with .magnifier+pointerInput and create some fancy lens (especially with strange/awesome/hacky gestures)
 
 @OptIn(ExperimentalFoundationApi::class)
-fun Mod.ulens(zoom: Float = 1f) = composed { when {
+fun Mod.ulens(zoom: Float = 1f) = composed {
+  when {
     else -> this.also { ulogw("Disabled. TODO: enable when MagnifierStyle symbol itself is available in compose-jb") }
     // !MagnifierStyle.Default.isSupported -> this.also { ulogw("Magnifier is not supported on this platform.") }
     // zoom == 1f -> this
@@ -27,5 +28,6 @@ fun Mod.ulens(zoom: Float = 1f) = composed { when {
     //         onDragCancel = { center = Offset.Unspecified }
     //     ) }
     // }
-} }
+  }
+}
 

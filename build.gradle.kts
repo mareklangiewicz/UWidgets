@@ -3,11 +3,11 @@ import pl.mareklangiewicz.defaults.*
 import pl.mareklangiewicz.utils.*
 
 plugins {
-    plug(plugs.NexusPublish)
-    plug(plugs.KotlinMulti) apply false
-    plug(plugs.Compose) apply false // https://github.com/JetBrains/compose-multiplatform/issues/3459
-    plug(plugs.AndroLib) apply false
-    plug(plugs.AndroApp) apply false
+  plug(plugs.NexusPublish)
+  plug(plugs.KotlinMulti) apply false
+  plug(plugs.Compose) apply false // https://github.com/JetBrains/compose-multiplatform/issues/3459
+  plug(plugs.AndroLib) apply false
+  plug(plugs.AndroApp) apply false
 }
 
 
@@ -23,23 +23,23 @@ val enableAndro = false
 //  https://github.com/JetBrains/compose-multiplatform/issues/3167
 
 defaultBuildTemplateForRootProject(
-    langaraLibDetails(
-        name = "UWidgets",
-        description = "Micro widgets for Compose Multiplatform",
-        githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-        version = Ver(0, 0, 11),
-        settings = LibSettings(
-            withJs = enableJs,
-            withSonatypeOssPublishing = true,
-            compose = LibComposeSettings(
-                withComposeCompiler = ComposeCompilerJb,
-                withComposeHtmlCore = enableJs,
-                withComposeHtmlSvg = enableJs,
-                withComposeTestHtmlUtils = enableJs,
-            ),
-            andro = if (enableAndro) LibAndroSettings() else null
-        ),
-    ) // stuff like appMainPackage, namespace, etc. are customized at module level.
+  langaraLibDetails(
+    name = "UWidgets",
+    description = "Micro widgets for Compose Multiplatform",
+    githubUrl = "https://github.com/mareklangiewicz/UWidgets",
+    version = Ver(0, 0, 12),
+    settings = LibSettings(
+      withJs = enableJs,
+      withSonatypeOssPublishing = true,
+      compose = LibComposeSettings(
+        withComposeCompiler = ComposeCompilerJb,
+        withComposeHtmlCore = enableJs,
+        withComposeHtmlSvg = enableJs,
+        withComposeTestHtmlUtils = enableJs,
+      ),
+      andro = if (enableAndro) LibAndroSettings() else null,
+    ),
+  ), // stuff like appMainPackage, namespace, etc. are customized at module level.
 )
 
 // region [Root Build Template]

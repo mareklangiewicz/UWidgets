@@ -17,15 +17,15 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
  *    (immutable - simple but less reactive/dynamic)
  */
 @Composable fun UTheme(
-    colors: UColors = UTheme.colors,
-    sizes: USizes = UTheme.sizes,
-    alignments: UAlignments = UTheme.alignments,
-    content: @Composable () -> Unit,
+  colors: UColors = UTheme.colors,
+  sizes: USizes = UTheme.sizes,
+  alignments: UAlignments = UTheme.alignments,
+  content: @Composable () -> Unit,
 ) = CompositionLocalProvider(
-    LocalUColors provides colors,
-    LocalUSizes provides sizes,
-    LocalUAlignments provides alignments,
-    content = content
+  LocalUColors provides colors,
+  LocalUSizes provides sizes,
+  LocalUAlignments provides alignments,
+  content = content,
 )
 
 // TODO_someday: support themes resembling winamp themes like:
@@ -45,9 +45,9 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
  * (so for now I'm reluctant to introducing additional copying like in material3 colorScheme)
  */
 @Composable fun UAlign(
-    horizontal: UAlignmentType = UTheme.alignments.horizontal,
-    vertical: UAlignmentType = UTheme.alignments.vertical,
-    content: @Composable () -> Unit,
+  horizontal: UAlignmentType = UTheme.alignments.horizontal,
+  vertical: UAlignmentType = UTheme.alignments.vertical,
+  content: @Composable () -> Unit,
 ) = UTheme(alignments = UAlignments(horizontal, vertical), content = content)
 
 // I do it often so let's have this convenient fun even if it makes code less "micro"
@@ -58,51 +58,51 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 @Composable fun UAllStretch(content: @Composable () -> Unit) = UAlign(USTRETCH, USTRETCH, content)
 
 @Composable fun UAllStartBox(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
-    UAllStart { UBox(mod, selected, content) }
+  UAllStart { UBox(mod, selected, content) }
 
 @Composable fun UAllStartRow(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
-    UAllStart { URow(mod, selected, content) }
+  UAllStart { URow(mod, selected, content) }
 
 @Composable fun UAllStartColumn(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
-    UAllStart { UColumn(mod, selected, content) }
+  UAllStart { UColumn(mod, selected, content) }
 
 @Composable fun UAllStretchBox(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
-    UAllStretch { UBox(mod, selected, content) }
+  UAllStretch { UBox(mod, selected, content) }
 
 @Composable fun UAllStretchRow(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
-    UAllStretch { URow(mod, selected, content) }
+  UAllStretch { URow(mod, selected, content) }
 
 @Composable fun UAllStretchColumn(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
-   UAllStretch { UColumn(mod, selected, content) }
+  UAllStretch { UColumn(mod, selected, content) }
 
 
 object UTheme {
 
-    val colors: UColors
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalUColors.current
+  val colors: UColors
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalUColors.current
 
-    val sizes: USizes
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalUSizes.current
+  val sizes: USizes
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalUSizes.current
 
-    val alignments: UAlignments
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalUAlignments.current
+  val alignments: UAlignments
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalUAlignments.current
 }
 
 @Stable class USizes(ubinMargin: Dp = 1.dp, ubinBorder: Dp = 1.dp, ubinPadding: Dp = 1.dp) {
-    var ubinMargin by mutableStateOf(ubinMargin)
-    var ubinBorder by mutableStateOf(ubinBorder)
-    var ubinPadding by mutableStateOf(ubinPadding)
+  var ubinMargin by mutableStateOf(ubinMargin)
+  var ubinBorder by mutableStateOf(ubinBorder)
+  var ubinPadding by mutableStateOf(ubinPadding)
 }
 
 @Stable class UAlignments(horizontal: UAlignmentType = USTART, vertical: UAlignmentType = USTART) {
-    var horizontal by mutableStateOf(horizontal)
-    var vertical by mutableStateOf(vertical)
+  var horizontal by mutableStateOf(horizontal)
+  var vertical by mutableStateOf(vertical)
 }
 
 

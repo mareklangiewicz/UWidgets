@@ -9,14 +9,14 @@ import pl.mareklangiewicz.ulog.ULogLevel.*
  * ASSERT can crash the system/app (meaning unsupported or fatal error)
  */
 enum class ULogLevel(val symbol: Char) {
-    NONE('N'),
-    QUIET('Q'),
-    VERBOSE('V'),
-    DEBUG('D'),
-    INFO('I'),
-    WARN('W'),
-    ERROR('E'),
-    ASSERT('A'),
+  NONE('N'),
+  QUIET('Q'),
+  VERBOSE('V'),
+  DEBUG('D'),
+  INFO('I'),
+  WARN('W'),
+  ERROR('E'),
+  ASSERT('A'),
 }
 
 // TODO LATER: probably functions below should be defined with context(ULog) ??

@@ -19,32 +19,32 @@ typealias UReport = Pair<String, Any?>
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun OnUReport.withKeyPrefix(keyPrefix: String): OnUReport =
-    if (keyPrefix.isEmpty()) this else { ureport -> this(keyPrefix + ureport.first to ureport.second) }
+  if (keyPrefix.isEmpty()) this else { ureport -> this(keyPrefix + ureport.first to ureport.second) }
 
 @Composable fun rememberUReports(log: (Any?) -> Unit = { ulogd(it.ustr) }) = remember { UReports(log) }
 
 class UReports(val log: (Any?) -> Unit = { ulogd(it.ustr) }) : Iterable<Entry> {
 
-    private val entries = mutableStateListOf<Entry>()
+  private val entries = mutableStateListOf<Entry>()
 
-    operator fun get(idx: Int) = entries[idx]
+  operator fun get(idx: Int) = entries[idx]
 
-    val size: Int get() = entries.size
+  val size: Int get() = entries.size
 
-    override operator fun iterator() = entries.iterator()
+  override operator fun iterator() = entries.iterator()
 
-    fun clear() = entries.clear()
+  fun clear() = entries.clear()
 
-    operator fun invoke(r: UReport) {
-        val s = Snapshot.withoutReadObservation { size }
-        log(s to r)
-        entries.add(Entry(r))
-    }
+  operator fun invoke(r: UReport) {
+    val s = Snapshot.withoutReadObservation { size }
+    log(s to r)
+    entries.add(Entry(r))
+  }
 
-    data class Entry(val report: UReport, val timeMS: Long = nowTimeMs()) {
-        val key: String get() = report.first
-        val data: Any? get() = report.second
-    }
+  data class Entry(val report: UReport, val timeMS: Long = nowTimeMs()) {
+    val key: String get() = report.first
+    val data: Any? get() = report.second
+  }
 }
 
 fun Long.asTimeUStr() = (this / 1000.0).ustr.substring(startIndex = 7)
@@ -52,7 +52,7 @@ fun Long.asTimeUStr() = (this / 1000.0).ustr.substring(startIndex = 7)
 val Entry.timeUStr get() = timeMS.asTimeUStr()
 
 fun Entry.hasTimeIn(erange: LongRange) =
-    check(timeMS in erange) { "Unexpected time: $timeUStr not in ${erange.first.asTimeUStr()}..${erange.last.asTimeUStr()}" }
+  check(timeMS in erange) { "Unexpected time: $timeUStr not in ${erange.first.asTimeUStr()}..${erange.last.asTimeUStr()}" }
 
 fun Entry.hasKey(ekey: String) = check(key == ekey) { "Unexpected key: $key != $ekey" }
 
@@ -60,18 +60,18 @@ fun Entry.hasKey(ekey: String) = check(key == ekey) { "Unexpected key: $key != $
 fun <T> Entry.hasData(edata: T) = check(data as T == edata) { "Unexpected data reported at time: $timeUStr, key: $key" }
 
 fun <T> Entry.hasKeyAndData(ekey: String, edata: T) {
-    hasKey(ekey)
-    hasData(edata)
+  hasKey(ekey)
+  hasData(edata)
 }
 
 @Suppress("UNCHECKED_CAST")
 fun <T : Any> Entry.has(ekey: String? = null, checkData: T.() -> Boolean) {
-    if (ekey != null) hasKey(ekey)
-    check((data as T).checkData()) { "Unexpected data reported at time: $timeUStr, key: $key" }
+  if (ekey != null) hasKey(ekey)
+  check((data as T).checkData()) { "Unexpected data reported at time: $timeUStr, key: $key" }
 }
 
 fun UReports.eqAt(vararg indices: Int) {
-    val expected = this[indices[0]]
-    for (i in indices.drop(1)) this[i].hasKeyAndData(expected.key, expected.data)
+  val expected = this[indices[0]]
+  for (i in indices.drop(1)) this[i].hasKeyAndData(expected.key, expected.data)
 }
 

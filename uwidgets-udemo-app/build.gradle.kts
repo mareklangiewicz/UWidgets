@@ -7,11 +7,11 @@ import pl.mareklangiewicz.deps.*
 import pl.mareklangiewicz.utils.*
 
 plugins {
-    plugAll(
-        plugs.KotlinMulti,
-        plugs.Compose,
-    )
-    plug(plugs.AndroAppNoVer) apply false // will be applied conditionally depending on LibSettings
+  plugAll(
+    plugs.KotlinMulti,
+    plugs.Compose,
+  )
+  plug(plugs.AndroAppNoVer) apply false // will be applied conditionally depending on LibSettings
 }
 
 // workaround for crazy gradle bugs like this one or simillar:
@@ -20,13 +20,13 @@ repositories { maven(repos.composeJbDev) }
 
 val namespace = "pl.mareklangiewicz.udemapp"
 val details = rootExtLibDetails.copy(
-    namespace = namespace,
-    appId = namespace,
-    appMainPackage = namespace,
+  namespace = namespace,
+  appId = namespace,
+  appMainPackage = namespace,
 )
 
 defaultBuildTemplateForFullMppApp(details) {
-    implementation(project(":uwidgets-udemo"))
+  implementation(project(":uwidgets-udemo"))
 }
 
 // FIXME NOW: update do I need it? If so it should be moved into "Full MPP App Build Template"
@@ -552,7 +552,6 @@ fun Project.defaultBuildTemplateForComposeMppApp(
 }
 
 // endregion [Compose MPP App Build Template]
-
 
 
 

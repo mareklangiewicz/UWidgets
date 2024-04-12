@@ -7,14 +7,14 @@ import pl.mareklangiewicz.utheme.*
 
 
 fun DrawScope.drawNeonDigit(digit: Char) {
-    val d = digit - '0'
-    require(d in 0..9)
-    val h = size.height / 12 * (d + 1)
-    drawRect(Color.DarkBlue, size = Size(size.width, h))
+  val d = digit - '0'
+  require(d in 0..9)
+  val h = size.height / 12 * (d + 1)
+  drawRect(Color.DarkBlue, size = Size(size.width, h))
 }
 
 fun DrawScope.drawNeonNumber(number: String) {
-    for (digit in number) {
-    }
+  for (digit in number) {
+  }
 }
 
