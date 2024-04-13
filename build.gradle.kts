@@ -12,8 +12,17 @@ plugins {
 
 
 val enableJs = false
-// TODO TRACK JS BLOCKING ISSUE:
-//  https://youtrack.jetbrains.com/issue/KT-64257/K2-QG-kotlin.NotImplementedError-Generation-of-stubs-for-class
+// TODO TRACK NEW JS BLOCKING ISSUE:
+// https://youtrack.jetbrains.com/issue/KT-67330/K2-Wasm-Compose-const-val-property-must-have-a-const-initializer
+//
+// > Task :uwidgets-udemo:compileKotlinJs FAILED
+//   e: java.lang.IllegalArgumentException: This is a compiler bug, please report it to https://kotl.in/issue : const val property must have a const initializer:
+// FIELD name:pl_mareklangiewicz_uspek_UNomadicComposeScope$stable type:kotlin.Int visibility:public [final,static]
+// at org.jetbrains.kotlin.backend.common.serialization.IrFileSerializer.serializeIrField(IrFileSerializer.kt:1145)
+// at org.jetbrains.kotlin.backend.common.serialization.IrFileSerializer.serializeIrProperty(IrFileSerializer.kt:1128)
+// at org.jetbrains.kotlin.backend.common.serialization.IrFileSerializer.serializeDeclaration(IrFileSerializer.kt:1267)
+// at org.jetbrains.kotlin.backend.common.serialization.IrFileSerializer.serializeIrFile$lambda$94(IrFileSerializer.kt:1369)
+// at org.jetbrains.kotlin.backend.common.serialization.signature.PublicIdSignatureComputer.inFile(IdSignatureFactory.kt:40)
 
 
 val enableAndro = false
