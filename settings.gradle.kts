@@ -1,5 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
+rootProject.name = "UWidgets"
+
 // import okio.Path.Companion.toOkioPath
 // import pl.mareklangiewicz.evts.*
 
@@ -25,7 +27,7 @@ pluginManagement {
 
 plugins {
   id("pl.mareklangiewicz.deps.settings") version "0.2.98" // https://plugins.gradle.org/search?term=mareklangiewicz
-  id("com.gradle.enterprise") version "3.17.1" // https://docs.gradle.com/enterprise/gradle-plugin/
+  id("com.gradle.develocity") version "3.17.1" // https://docs.gradle.com/develocity/gradle-plugin/
 }
 
 develocity {
@@ -43,8 +45,6 @@ develocity {
     }
   }
 }
-
-rootProject.name = "UWidgets"
 
 include(":uwidgets", ":uwidgets-udemo", ":uwidgets-udemo-app")
 
