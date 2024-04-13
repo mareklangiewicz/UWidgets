@@ -30,6 +30,10 @@ val enableAndro = false
 //  https://youtrack.jetbrains.com/issue/KT-64621/K2-Beta2-compileDebugSources-exception-with-Compose-MPP
 // TODO TRACK ANDRO ISSUE (this one can take a while, so I added workaround already - "onMyPointerEvent"):
 //  https://github.com/JetBrains/compose-multiplatform/issues/3167
+val enablePublishing = findProject(":kground") == null
+// don't publish to sonatype from my machine, because I include local kground module
+// (see settings.gradle.kts) so it would also publish these with wrong description and ver etc.
+// exception: publishToMavenLocal for debugging
 
 defaultBuildTemplateForRootProject(
   langaraLibDetails(
@@ -39,7 +43,7 @@ defaultBuildTemplateForRootProject(
     version = Ver(0, 0, 13),
     settings = LibSettings(
       withJs = enableJs,
-      withSonatypeOssPublishing = true,
+      withSonatypeOssPublishing = enablePublishing,
       compose = LibComposeSettings(
         withComposeCompiler = ComposeCompilerJb,
         withComposeHtmlCore = enableJs,
