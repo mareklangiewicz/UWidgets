@@ -7,13 +7,14 @@ import androidx.compose.ui.*
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.input.pointer.*
 import pl.mareklangiewicz.ulog.*
+import pl.mareklangiewicz.ulog.hack.ulog
 
 // TODO_someday: experiment more with .magnifier+pointerInput and create some fancy lens (especially with strange/awesome/hacky gestures)
 
 @OptIn(ExperimentalFoundationApi::class)
 fun Mod.ulens(zoom: Float = 1f) = composed {
   when {
-    else -> this.also { ulogw("Disabled. TODO: enable when MagnifierStyle symbol itself is available in compose-jb") }
+    else -> this.also { ulog.w("Disabled. TODO: enable when MagnifierStyle symbol itself is available in compose-jb") }
     // !MagnifierStyle.Default.isSupported -> this.also { ulogw("Magnifier is not supported on this platform.") }
     // zoom == 1f -> this
     // else -> {

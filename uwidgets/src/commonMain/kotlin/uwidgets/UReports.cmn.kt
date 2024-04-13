@@ -5,6 +5,7 @@ import androidx.compose.runtime.snapshots.*
 import pl.mareklangiewicz.kground.getCurrentTimeMs
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
+import pl.mareklangiewicz.ulog.hack.ulog
 import pl.mareklangiewicz.usystem.*
 import pl.mareklangiewicz.uwidgets.UReports.*
 
@@ -22,9 +23,9 @@ typealias UReport = Pair<String, Any?>
 inline fun OnUReport.withKeyPrefix(keyPrefix: String): OnUReport =
   if (keyPrefix.isEmpty()) this else { ureport -> this(keyPrefix + ureport.first to ureport.second) }
 
-@Composable fun rememberUReports(log: (Any?) -> Unit = { ulogd(it.ustr) }) = remember { UReports(log) }
+@Composable fun rememberUReports(log: (Any?) -> Unit = { ulog.d(it.ustr) }) = remember { UReports(log) }
 
-class UReports(val log: (Any?) -> Unit = { ulogd(it.ustr) }) : Iterable<Entry> {
+class UReports(val log: (Any?) -> Unit = { ulog.d(it.ustr) }) : Iterable<Entry> {
 
   private val entries = mutableStateListOf<Entry>()
 

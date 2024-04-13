@@ -17,6 +17,7 @@ import kotlinx.coroutines.*
 import pl.mareklangiewicz.kground.getCurrentTimeMs
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
+import pl.mareklangiewicz.ulog.hack.ulog
 import pl.mareklangiewicz.usystem.*
 
 @Deprecated("I had some strange issues with Mod.composed {..} and with lambdas")
@@ -39,7 +40,7 @@ import pl.mareklangiewicz.usystem.*
   onUReport: OnUReport?,
   keyPrefix: String = "",
   interactive: Boolean = false,
-  log: (Any?) -> Unit = { ulogd(it.ustr) },
+  log: (Any?) -> Unit = { ulog.d(it.ustr) },
 ): Mod {
   val measurer = rememberTextMeasurer()
   val ureports = rememberUReports(log)
@@ -63,7 +64,7 @@ fun Mod.drawWithUReports(measurer: TextMeasurer, ureports: UReports, interactive
           // TODO NOW: more cool gestures changing what drawUReports shows
           launch {
             detectTapGestures {
-              ureports.allUStr().forEach { ulogd(it) }
+              ureports.allUStr().forEach { ulog.d(it) }
             }
           }
           launch {

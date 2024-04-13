@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.*
 import pl.mareklangiewicz.ulog.*
+import pl.mareklangiewicz.ulog.hack.ulog
 
 typealias Mod = Modifier
 
@@ -25,7 +26,7 @@ fun Color.darken(fraction: Float = 0.1f) = lerp(this, Color.Black, fraction.coer
 
 @ExperimentalComposeApi // FIXME: Needs tests, and more thinking about concurrency
 @Composable fun DelayedUpdateEffectBroken(delayMs: Long = 200, update: () -> Unit) = LaunchedEffect(delayMs, update) {
-  ulogw("Something is probably broken in this fun. (strange behaviors when experimenting on 'Examined layout uspek ski' tab)")
+  ulog.w("Something is probably broken in this fun. (strange behaviors when experimenting on 'Examined layout uspek ski' tab)")
   val observer = SnapshotStateObserver { it() }
   val gate = Channel<Unit>(CONFLATED)
   val open: (Unit) -> Unit = {

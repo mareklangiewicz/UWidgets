@@ -7,6 +7,7 @@ import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.ulog.*
+import pl.mareklangiewicz.ulog.hack.ulog
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UPropKey.*
 import pl.mareklangiewicz.uwidgets.UScrollStyle.*
@@ -43,7 +44,7 @@ internal class UProps private constructor() {
 
   private fun UPropMod.updateState() {
     // TODO: configurable behavior when not null (mostly for easier debugging)
-    if (state[key.ordinal] != null) ulogw("Overwriting UProp.$key: ${state[key.ordinal]} -> $value")
+    if (state[key.ordinal] != null) ulog.w("Overwriting UProp.$key: ${state[key.ordinal]} -> $value")
     // require(state[key.ordinal] == null) { "Can't set UProp: $key to $value. It's already set to ${state[key.ordinal]}" }
 
     state[key.ordinal] = value

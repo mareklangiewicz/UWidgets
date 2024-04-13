@@ -51,8 +51,8 @@ include(":uwidgets", ":uwidgets-udemo", ":uwidgets-udemo-app")
 
 val kgroundDir = File("../KGround/kground")
 val kgroundInclude =
-  // kgroundDir.exists()
-  false
+  kgroundDir.exists()
+  // false
 if (kgroundInclude) {
   logger.warn("Adding local kground module.")
   include(":kground")

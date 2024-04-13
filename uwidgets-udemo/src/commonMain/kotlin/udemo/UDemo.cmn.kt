@@ -13,6 +13,7 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwindow.*
 import kotlin.math.*
 import kotlin.random.*
+import pl.mareklangiewicz.ulog.hack.ulog
 
 @Composable
 fun UDemo() = UAllStretch {
@@ -233,14 +234,14 @@ fun UDemo() = UAllStretch {
     UMenuTree(
       "XYZ".cbtree(
         "AAA".cbtree(
-          "aaa1".cbtree { ulogw("aaa1") },
-          "aaa2".cbtree { ulogw("aaa2") },
+          "aaa1".cbtree { ulog.w("aaa1") },
+          "aaa2".cbtree { ulog.w("aaa2") },
         ),
         "BBB".cbtree(
-          "bbb1".cbtree { ulogw("bbb1") },
-          "bbb2".cbtree { ulogw("bbb2") },
+          "bbb1".cbtree { ulog.w("bbb1") },
+          "bbb2".cbtree { ulog.w("bbb2") },
           "bCCC".cbtree(
-            "ccc".cbtree { ulogw("ccc") },
+            "ccc".cbtree { ulog.w("ccc") },
           ),
         ),
       ),

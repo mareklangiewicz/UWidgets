@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
+import pl.mareklangiewicz.ulog.hack.ulog
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
@@ -17,7 +18,7 @@ import pl.mareklangiewicz.uwidgets.UBinType.*
 
 @Composable fun MyExaminedLayoutPlayground(type: UBinType = UBOX) {
 
-  val ureports = rememberUReports { ulogw("rspek ${it.ustr}") } // rspek so I can filter logs with uspek/rspek/spek
+  val ureports = rememberUReports { ulog.w("rspek ${it.ustr}") } // rspek so I can filter logs with uspek/rspek/spek
 
   Column(Mod.fillMaxWidth()) {
     MyExaminedLayout(

@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
+import pl.mareklangiewicz.ulog.hack.ulog
 import pl.mareklangiewicz.uwidgets.*
 
 @Composable fun rememberUNomadicComposeScope(density: Density = LocalDensity.current) =
@@ -15,7 +16,7 @@ import pl.mareklangiewicz.uwidgets.*
 
 class UNomadicComposeScope(
   override val density: Density,
-  log: (Any?) -> Unit = { ulogd(it.ustr) },
+  log: (Any?) -> Unit = { ulog.d(it.ustr) },
 ) : UComposeScope {
   private var acontent by mutableStateOf<@Composable () -> Unit>({})
   private var isComposing by mutableStateOf(false)
