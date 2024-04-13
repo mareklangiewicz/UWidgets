@@ -6,12 +6,20 @@
 // gradle.logSomeEventsToFile(rootProject.projectDir.toOkioPath() / "my.gradle.log")
 
 pluginManagement {
-  // includeBuild("../DepsKt")
   repositories {
     mavenLocal()
     google()
     gradlePluginPortal()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+  }
+
+  val depsDir = File("../DepsKt")
+  val depsInclude =
+    // depsDir.exists()
+    false
+  if (depsInclude) {
+    logger.warn("Including local build $depsDir")
+    includeBuild(depsDir)
   }
 }
 
@@ -41,3 +49,12 @@ rootProject.name = "UWidgets"
 include(":uwidgets", ":uwidgets-udemo", ":uwidgets-udemo-app")
 
 
+val kgroundDir = File("../KGround/kground")
+val kgroundInclude =
+  // kgroundDir.exists()
+  false
+if (kgroundInclude) {
+  logger.warn("Adding local kground module.")
+  include(":kground")
+  project(":kground").projectDir = kgroundDir
+}

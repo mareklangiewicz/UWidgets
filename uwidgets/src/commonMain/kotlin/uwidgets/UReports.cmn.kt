@@ -2,6 +2,7 @@ package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.*
+import pl.mareklangiewicz.kground.getCurrentTimeMs
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.usystem.*
@@ -41,7 +42,7 @@ class UReports(val log: (Any?) -> Unit = { ulogd(it.ustr) }) : Iterable<Entry> {
     entries.add(Entry(r))
   }
 
-  data class Entry(val report: UReport, val timeMS: Long = nowTimeMs()) {
+  data class Entry(val report: UReport, val timeMS: Long = getCurrentTimeMs()) {
     val key: String get() = report.first
     val data: Any? get() = report.second
   }

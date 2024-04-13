@@ -5,7 +5,6 @@ package pl.mareklangiewicz.udata
 import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.unit.*
-import kotlin.math.*
 
 /**
  * These cryptic shortcuts below are kind of an experiment.
@@ -13,17 +12,6 @@ import kotlin.math.*
  * that should be short and memorized by user (instead of long and descriptive).
  * I'm very much aware it's against any sane coding convention. :)
  */
-
-@Stable inline val Number.int get() = toInt()
-@Stable inline val Number.lng get() = toLong()
-@Stable inline val Number.dbl get() = toDouble()
-@Stable inline val Number.flt get() = toFloat()
-
-@Stable inline val Float.intr get() = roundToInt()
-@Stable inline val Float.lngr get() = roundToLong()
-@Stable inline val Double.intr get() = roundToInt()
-@Stable inline val Double.lngr get() = roundToLong()
-
 
 @Stable inline val Dp.square get() = DpSize(this, this)
 @Stable inline val Float.square get() = Size(this, this)
@@ -56,14 +44,4 @@ import kotlin.math.*
   minH: Int = height,
   maxH: Int = Constraints.Infinity,
 ) = Constraints(minW, maxW, minH, maxH)
-
-@Stable fun Any?.markIfNull(markNotNull: String = "nn", markNull: String = "n"): String =
-  if (this != null) markNotNull else markNull
-
-@Stable fun String.limit(limit: Int = 64, limitIndicator: String = "..") =
-  if (length > limit) substring(0, limit - limitIndicator.length) + limitIndicator else this
-
-
-@Stable fun String.containsOneOf(vararg substrings: String) = substrings.any { it in this }
-
 

@@ -14,6 +14,7 @@ import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
+import pl.mareklangiewicz.kground.getCurrentTimeMs
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.usystem.*
@@ -99,7 +100,7 @@ fun UReports.linesUStr() = reversed().mapIndexed { idx, entry ->
 
 fun UReports.summaryUStr() =
   if (size > 0 && get(0).key.endsWith(" compose")) UBinReportsSummary(this).toString()
-  else nowTimeMs().asTimeUStr() + " ureports size " + size
+  else getCurrentTimeMs().asTimeUStr() + " ureports size " + size
 
 fun UReports.allUStr() = (listOf("*** " + summaryUStr()) + linesUStr())
 
@@ -116,7 +117,7 @@ private class UBinReportsSummary(ureports: UReports) {
   var lastMeasuring: Pair<Constraints, IntSize>? = null
     private set
   val reportsSize: Int
-  val summaryTimeMs: Long = nowTimeMs()
+  val summaryTimeMs: Long = getCurrentTimeMs()
 
   init {
     reportsSize = ureports.size

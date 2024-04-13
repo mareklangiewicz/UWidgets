@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
+import pl.mareklangiewicz.text.*
 import pl.mareklangiewicz.uspek.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
@@ -44,7 +45,7 @@ suspend fun UComposeScope.MyExaminedLayoutUSpekFun() = with(density) {
 
         "only root rigid father is composed measured and placed" so {
           true eq ureports.all {
-            it.key.startsWith("rigid father") && it.key.containsOneOf("compose", "measure", "place")
+            it.key.startsWith("rigid father") && it.key.containsAny("compose", "measure", "place")
           }
         }
 

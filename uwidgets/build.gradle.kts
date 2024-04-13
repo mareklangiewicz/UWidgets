@@ -23,9 +23,18 @@ plugins {
 repositories { maven(repos.composeJbDev) }
 
 defaultBuildTemplateForFullMppLib {
-  api(Langiewicz.kground) // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
-
+  api(findProject(":kground") ?: Langiewicz.kground)
   // api(Com.GitHub.Ajalt.Mordant.mordant)
+}
+
+// FIXME: remove hardcoded versions
+configurations.all {
+  resolutionStrategy.dependencySubstitution {
+    // substitute(module("pl.mareklangiewicz:uspek")).using(module("pl.mareklangiewicz:uspek:0.0.33"))
+    // substitute(module("pl.mareklangiewicz:uspekx-junit5")).using(module("pl.mareklangiewicz:uspekx-junit5:0.0.33"))
+    substitute(module("pl.mareklangiewicz:kground")).using(module("pl.mareklangiewicz:kground:0.0.49"))
+    // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
+  }
 }
 
 

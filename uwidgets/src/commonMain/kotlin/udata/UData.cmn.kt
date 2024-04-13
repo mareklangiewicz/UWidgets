@@ -7,8 +7,6 @@ import androidx.compose.ui.unit.*
 var ULeakyDataEnabled: Boolean = false
 var ULeakyDataEnabledDom: Boolean = ULeakyDataEnabled
 
-inline fun <reified E> mutableListOfNulls(size: Int) = MutableList<E?>(size) { null }
-
 fun IntSize.copyToUPlaceableData(w: Int = width, h: Int = height, measuredW: Int = w, measuredH: Int = h) =
   UPlaceableData(w, h, measuredW, measuredH)
 
