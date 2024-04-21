@@ -36,11 +36,11 @@ val enablePublishing = findProject(":kground") == null
 // exception: publishToMavenLocal for debugging
 
 defaultBuildTemplateForRootProject(
-  langaraLibDetails(
+  myLibDetails(
     name = "UWidgets",
     description = "Micro widgets for Compose Multiplatform",
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-    version = Ver(0, 0, 13),
+    version = Ver(0, 0, 14),
     settings = LibSettings(
       withJs = enableJs,
       withSonatypeOssPublishing = enablePublishing,
