@@ -29,6 +29,13 @@ defaultBuildTemplateForFullMppApp(details) {
   implementation(project(":uwidgets-udemo"))
 }
 
+
+setMyWeirdSubstitutions(
+  // "uspek" to "0.0.33", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/uspek/
+  // "uspek-junit5" to "0.0.33",
+  "kground" to "0.0.51", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
+)
+
 // FIXME NOW: update do I need it? If so it should be moved into "Full MPP App Build Template"
 // // TODO_later: should I already start using experimental DSL in default scripts?
 // // like: web.experimental.application {} ?? analyze it. Usage example:
