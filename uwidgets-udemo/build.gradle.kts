@@ -37,7 +37,7 @@ setMyWeirdSubstitutions(
   "kground" to "0.0.51", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
 )
 
-// region [Full MPP Lib Build Template]
+// region [[Full MPP Lib Build Template]]
 
 fun Project.defaultBuildTemplateForFullMppLib(
   details: LibDetails = rootExtLibDetails,
@@ -70,11 +70,11 @@ fun Project.defaultBuildTemplateForFullMppLib(
   }
 }
 
-// endregion [Full MPP Lib Build Template]
+// endregion [[Full MPP Lib Build Template]]
 
 
 
-// region [Kotlin Module Build Template]
+// region [[Kotlin Module Build Template]]
 
 // Kind of experimental/temporary.. not sure how it will evolve yet,
 // but currently I need these kind of substitutions/locals often enough
@@ -259,9 +259,9 @@ fun TaskContainer.withPublishingPrintln() = withType<AbstractPublishToMaven>().c
   }
 }
 
-// endregion [Kotlin Module Build Template]
+// endregion [[Kotlin Module Build Template]]
 
-// region [MPP Module Build Template]
+// region [[MPP Module Build Template]]
 
 /**
  * Only for very standard small libs. In most cases it's better to not use this function.
@@ -389,9 +389,9 @@ fun KotlinMultiplatformExtension.jsDefault(
   }
 }
 
-// endregion [MPP Module Build Template]
+// endregion [[MPP Module Build Template]]
 
-// region [Compose MPP Module Build Template]
+// region [[Compose MPP Module Build Template]]
 
 /** Only for very standard compose mpp libs. In most cases, it's better to not use this function. */
 @OptIn(ExperimentalComposeLibrary::class)
@@ -491,11 +491,11 @@ fun KotlinMultiplatformExtension.allDefaultSourceSetsForCompose(
   }
 }
 
-// endregion [Compose MPP Module Build Template]
+// endregion [[Compose MPP Module Build Template]]
 
 
 
-// region [Andro Common Build Template]
+// region [[Andro Common Build Template]]
 
 /** @param ignoreCompose Should be set to true if compose mpp is configured instead of compose andro */
 fun DependencyHandler.defaultAndroDeps(
@@ -634,9 +634,9 @@ fun Project.defaultPublishingOfAndroApp(
 ) = defaultPublishingOfAndroLib(lib, componentName)
 
 
-// endregion [Andro Common Build Template]
+// endregion [[Andro Common Build Template]]
 
-// region [Andro Lib Build Template]
+// region [[Andro Lib Build Template]]
 
 fun Project.defaultBuildTemplateForAndroLib(
   details: LibDetails = rootExtLibDetails,
@@ -714,4 +714,4 @@ fun LibraryExtension.defaultAndroLibPublishAllVariants(
   }
 }
 
-// endregion [Andro Lib Build Template]
+// endregion [[Andro Lib Build Template]]
