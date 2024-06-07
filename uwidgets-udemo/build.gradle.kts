@@ -11,6 +11,7 @@ import pl.mareklangiewicz.utils.*
 plugins {
   plugAll(
     plugs.KotlinMulti,
+    plugs.KotlinMultiCompose,
     plugs.Compose,
     plugs.MavenPublish,
     plugs.Signing,
@@ -32,9 +33,9 @@ defaultBuildTemplateForFullMppLib(details) {
 }
 
 setMyWeirdSubstitutions(
-  // "uspek" to "0.0.33", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/uspek/
-  // "uspek-junit5" to "0.0.33",
-  "kground" to "0.0.51", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
+  // "uspek" to "0.0.35", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/uspek/
+  // "uspek-junit5" to "0.0.35",
+  "kground" to "0.0.57", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
 )
 
 // region [[Full MPP Lib Build Template]]

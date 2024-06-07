@@ -9,6 +9,7 @@ import pl.mareklangiewicz.uspek.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
 import kotlin.math.*
+import pl.mareklangiewicz.bad.chkEq
 
 // TODO_later: use context receiver for UComposeScope
 @Suppress("CanBeVal")
@@ -44,7 +45,7 @@ suspend fun UComposeScope.MyExaminedLayoutUSpekFun() = with(density) {
       "With no children" so {
 
         "only root rigid father is composed measured and placed" so {
-          true eq ureports.all {
+          true chkEq ureports.all {
             it.key.startsWith("rigid father") && it.key.containsAny("compose", "measure", "place")
           }
         }
@@ -109,7 +110,7 @@ suspend fun UComposeScope.MyExaminedLayoutUSpekFun() = with(density) {
             ureports.eqAt(24, 3)
           }
           "cyan son outer gets placed again the same way" so { ureports.eqAt(25, 13) }
-          "cyan son inner placing is skipped" so { false eq ureports[26].key.startsWith("cyan") }
+          "cyan son inner placing is skipped" so { false chkEq ureports[26].key.startsWith("cyan") }
           // probably because compose notice there was nothing inside to actually place
 
           "blue son gets placed with fixed rigid father size" so {
@@ -118,7 +119,7 @@ suspend fun UComposeScope.MyExaminedLayoutUSpekFun() = with(density) {
             ureports[28].hasKeyAndData("blue son inner placed count", 0)
           }
           "rigid father is placed with two children" so { ureports[29].hasKeyAndData("rigid father placed count", 2) }
-          "no other reports" so { ureports.size eq 30 }
+          "no other reports" so { ureports.size chkEq 30 }
         }
 
         "When green son stretched horizontally gets enabled" so {
@@ -142,7 +143,7 @@ suspend fun UComposeScope.MyExaminedLayoutUSpekFun() = with(density) {
             ureports.eqAt(24, 3)
           }
           "cyan son outer gets placed again the same way" so { ureports.eqAt(25, 13) }
-          "cyan son inner placing is skipped" so { false eq ureports[26].key.startsWith("cyan") }
+          "cyan son inner placing is skipped" so { false chkEq ureports[26].key.startsWith("cyan") }
           // probably because compose notice there was nothing inside to actually place
 
           "green son gets placed stretched horizontally" so {
@@ -155,7 +156,7 @@ suspend fun UComposeScope.MyExaminedLayoutUSpekFun() = with(density) {
             ureports[28].hasKeyAndData("green son inner placed count", 0)
           }
           "rigid father is placed with two children" so { ureports[29].hasKeyAndData("rigid father placed count", 2) }
-          "no other reports" so { ureports.size eq 30 }
+          "no other reports" so { ureports.size chkEq 30 }
         }
         // TODO: other types UROW UCOLUMN
       }
