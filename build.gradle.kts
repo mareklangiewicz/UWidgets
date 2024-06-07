@@ -12,7 +12,7 @@ plugins {
 }
 
 
-val enableJs = false
+val enableJs = true
 // TODO TRACK NEW JS BLOCKING ISSUE:
 // https://youtrack.jetbrains.com/issue/KT-67330/K2-Wasm-Compose-const-val-property-must-have-a-const-initializer
 //

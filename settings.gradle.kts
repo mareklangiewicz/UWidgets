@@ -15,8 +15,8 @@ val buildScanPublishingAllowed =
   // false
 
 val kgroundLocalAllowed =
-  true
-  // false
+  // true
+  false
 
 // region [[My Settings Stuff <~~]]
 // ~~>".*/Deps\.kt"~~>"../DepsKt"<~~
