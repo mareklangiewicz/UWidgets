@@ -166,7 +166,7 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
 // }
 //
 
-@Composable fun USwitch(state: MutableState<Int>, vararg options: Pair<String, Int>) = UAllStartRow {
+@Composable fun USwitchInt(state: MutableState<Int>, vararg options: Pair<String, Int>) = UAllStartRow {
   for ((label, value) in options) UText(
     text = label,
     mod = Mod.onUClick { state.value = value },
@@ -176,7 +176,7 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
   )
 }
 
-@Composable fun USwitch(state: MutableState<Long>, vararg options: Pair<String, Long>) = UAllStartRow {
+@Composable fun USwitchLong(state: MutableState<Long>, vararg options: Pair<String, Long>) = UAllStartRow {
   for ((label, value) in options) UText(
     text = label,
     mod = Mod.onUClick { state.value = value },
@@ -186,7 +186,7 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
   )
 }
 
-@Composable fun USwitch(state: MutableState<Float>, vararg options: Pair<String, Float>) = UAllStartRow {
+@Composable fun USwitchFloat(state: MutableState<Float>, vararg options: Pair<String, Float>) = UAllStartRow {
   for ((label, value) in options) UText(
     text = label,
     mod = Mod.onUClick { state.value = value },
@@ -196,7 +196,7 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
   )
 }
 
-@Composable fun USwitch(state: MutableState<String>, vararg options: Pair<String, String>) = UAllStartRow {
+@Composable fun USwitchString(state: MutableState<String>, vararg options: Pair<String, String>) = UAllStartRow {
   for ((label, value) in options) UText(
     text = label,
     mod = Mod.onUClick { state.value = value },

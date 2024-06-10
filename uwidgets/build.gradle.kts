@@ -473,7 +473,6 @@ fun KotlinMultiplatformExtension.allDefaultSourceSetsForCompose(
     if (settings.withJs) {
       val jsMain by getting {
         dependencies {
-          implementation(compose.runtime)
           if (withComposeHtmlCore) implementation(compose.html.core)
           if (withComposeHtmlSvg) implementation(compose.html.svg)
         }
