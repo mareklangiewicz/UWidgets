@@ -26,7 +26,7 @@ val enableJs = true
 // at org.jetbrains.kotlin.backend.common.serialization.signature.PublicIdSignatureComputer.inFile(IdSignatureFactory.kt:40)
 
 
-val enableAndro = false
+val enableAndro = true
 // TODO TRACK MAJOR ISSUE WITH ANDROID (MY REPORT):
 //  https://youtrack.jetbrains.com/issue/KT-64621/K2-Beta2-compileDebugSources-exception-with-Compose-MPP
 // TODO TRACK ANDRO ISSUE (this one can take a while, so I added workaround already - "onMyPointerEvent"):
