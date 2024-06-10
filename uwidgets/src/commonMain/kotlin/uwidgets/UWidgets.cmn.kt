@@ -146,7 +146,27 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
   labelOff: String = " off ",
 ) = UAllStartRow { for (s in states) USwitch(s, labelOn, labelOff) }
 
-@Composable fun <T> USwitch(state: MutableState<T>, vararg options: Pair<String, T>) = UAllStartRow {
+
+
+// region Workaround for USwitch issue
+
+// Can not use generics in vararg options pairs, so I have to define USwitch for each type separately
+// TODO_later: go back to generic implementation when they fix my reported issue:
+// https://youtrack.jetbrains.com/issue/KT-68964/K2-JS-compilation-error-when-composable-fun-with-vararg-is-used
+
+
+// @Composable fun <T> USwitch(state: MutableState<T>, vararg options: Pair<String, T>) = UAllStartRow {
+//   for ((label, value) in options) UText(
+//     text = label,
+//     mod = Mod.onUClick { state.value = value },
+//     center = true,
+//     bold = state.value == value,
+//     mono = true,
+//   )
+// }
+//
+
+@Composable fun USwitch(state: MutableState<Int>, vararg options: Pair<String, Int>) = UAllStartRow {
   for ((label, value) in options) UText(
     text = label,
     mod = Mod.onUClick { state.value = value },
@@ -156,8 +176,50 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
   )
 }
 
-@Composable inline fun <reified E : Enum<E>> USwitchEnum(state: MutableState<E>) =
-  USwitch(state, *(enumValues<E>().map { it.name to it }.toTypedArray()))
+@Composable fun USwitch(state: MutableState<Long>, vararg options: Pair<String, Long>) = UAllStartRow {
+  for ((label, value) in options) UText(
+    text = label,
+    mod = Mod.onUClick { state.value = value },
+    center = true,
+    bold = state.value == value,
+    mono = true,
+  )
+}
+
+@Composable fun USwitch(state: MutableState<Float>, vararg options: Pair<String, Float>) = UAllStartRow {
+  for ((label, value) in options) UText(
+    text = label,
+    mod = Mod.onUClick { state.value = value },
+    center = true,
+    bold = state.value == value,
+    mono = true,
+  )
+}
+
+@Composable fun USwitch(state: MutableState<String>, vararg options: Pair<String, String>) = UAllStartRow {
+  for ((label, value) in options) UText(
+    text = label,
+    mod = Mod.onUClick { state.value = value },
+    center = true,
+    bold = state.value == value,
+    mono = true,
+  )
+}
+
+@Composable inline fun <reified E : Enum<E>> USwitchEnum(state: MutableState<E>) = UAllStartRow {
+  // USwitch(state, *(enumValues<E>().map { it.name to it }.toTypedArray()))
+  for (ev in enumValues<E>()) UText(
+    text = ev.name,
+    mod = Mod.onUClick { state.value = ev },
+    center = true,
+    bold = state.value == ev,
+    mono = true,
+  )
+}
+
+// endregion Workaround for USwitch issue
+
+
 
 @Composable fun UProgress(
   pos: Double,
