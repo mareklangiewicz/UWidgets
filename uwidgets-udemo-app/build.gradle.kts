@@ -20,13 +20,22 @@ plugins {
 repositories { maven(repos.composeJbDev) }
 
 val namespace = "pl.mareklangiewicz.udemapp"
-val details = rootExtLibDetails.copy(
+
+val defDetails = rootExtLibDetails
+val defSettings = defDetails.settings
+val newSettings = defSettings.copy(
+  andro = null
+  // FIXME: Temp workaround for issue with compiling release variant (debug variant works, so undo it to run debug app)
+)
+
+val newDetails = defDetails.copy(
   namespace = namespace,
   appId = namespace,
   appMainPackage = namespace,
+  settings = newSettings,
 )
 
-defaultBuildTemplateForFullMppApp(details) {
+defaultBuildTemplateForFullMppApp(newDetails) {
   implementation(project(":uwidgets-udemo"))
 }
 
@@ -34,7 +43,7 @@ defaultBuildTemplateForFullMppApp(details) {
 setMyWeirdSubstitutions(
   // "uspek" to "0.0.35", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/uspek/
   // "uspek-junit5" to "0.0.35",
-  "kground" to "0.0.57", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
+  "kground" to "0.0.58", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
 )
 
 // FIXME NOW: update do I need it? If so it should be moved into "Full MPP App Build Template"
@@ -63,7 +72,7 @@ fun Project.defaultBuildTemplateForFullMppApp(
 
   if (details.settings.withAndro) {
     extensions.configure<ApplicationExtension> {
-      defaultAndroApp(ignoreCompose = true) // compose mpp configured already
+      defaultAndroApp(details, ignoreCompose = true) // compose mpp configured already
     }
     // this is "single platform way" / "android way" to declare deps,
     // it would be more "correct" to configure everything "mpp way" (android deps too),

@@ -25,13 +25,12 @@ repositories { maven(repos.composeJbDev) }
 
 defaultBuildTemplateForFullMppLib {
   api(Langiewicz.kground) // setMyWeirdSubstitutions can change it to local project (depending on settings.gradle.kts).
-  // api(Com.GitHub.Ajalt.Mordant.mordant)
 }
 
 setMyWeirdSubstitutions(
   // "uspek" to "0.0.35", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/uspek/
   // "uspek-junit5" to "0.0.35",
-  "kground" to "0.0.57", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
+  "kground" to "0.0.58", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
 )
 
 // region [[Full MPP Lib Build Template]]
@@ -52,7 +51,7 @@ fun Project.defaultBuildTemplateForFullMppLib(
 
   if (details.settings.withAndro) {
     extensions.configure<LibraryExtension> {
-      defaultAndroLib(ignoreCompose = true) // compose mpp configured already
+      defaultAndroLib(details, ignoreCompose = true) // compose mpp configured already
     }
 
     // this is "single platform way" / "android way" to declare deps,
