@@ -12,7 +12,7 @@ plugins {
   plugAll(
     plugs.KotlinMulti,
     plugs.KotlinMultiCompose,
-    plugs.Compose,
+    plugs.ComposeJb,
     plugs.MavenPublish,
     plugs.Signing,
   )
@@ -103,7 +103,6 @@ fun RepositoryHandler.addRepos(settings: LibReposSettings) = with(settings) {
   if (withKotlinx) maven(repos.kotlinx)
   if (withKotlinxHtml) maven(repos.kotlinxHtml)
   if (withComposeJbDev) maven(repos.composeJbDev)
-  if (withComposeCompilerAxDev) maven(repos.composeCompilerAxDev)
   if (withKtorEap) maven(repos.ktorEap)
   if (withJitpack) maven(repos.jitpack)
 }
@@ -114,7 +113,6 @@ fun RepositoryHandler.addRepos(settings: LibReposSettings) = with(settings) {
 fun TaskCollection<Task>.defaultKotlinCompileOptions(
   jvmTargetVer: String? = null, // it's better to use jvmToolchain (normally done in fun allDefault)
   renderInternalDiagnosticNames: Boolean = false,
-  suppressComposeCheckKotlinVer: Ver? = null,
 ) = withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
   compilerOptions {
     apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0) // FIXME_later: add param.
@@ -122,11 +120,6 @@ fun TaskCollection<Task>.defaultKotlinCompileOptions(
     if (renderInternalDiagnosticNames) freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
     // useful, for example, to suppress some errors when accessing internal code from some library, like:
     // @file:Suppress("INVISIBLE_MEMBER", "INVISIBLE_REFERENCE", "EXPOSED_PARAMETER_TYPE", "EXPOSED_PROPERTY_TYPE", "CANNOT_OVERRIDE_INVISIBLE_MEMBER")
-    suppressComposeCheckKotlinVer?.ver?.let {
-      freeCompilerArgs.add(
-        "-Pplugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=$it",
-      )
-    }
   }
 }
 
@@ -397,14 +390,6 @@ fun Project.defaultBuildTemplateForComposeMppLib(
   ignoreAndroPublish: Boolean = false, // so user have to explicitly say THAT he wants to ignore it.
   addCommonMainDependencies: KotlinDependencyHandler.() -> Unit = {},
 ) = with(details.settings.compose ?: error("Compose settings not set.")) {
-  extensions.configure<ComposeExtension> {
-    withComposeCompiler?.let {
-      kotlinCompilerPlugin.set(it.mvn)
-    }
-    withComposeCompilerAllowWrongKotlinVer?.ver?.let {
-      kotlinCompilerPluginArgs.add("suppressKotlinVersionCompatibilityCheck=$it")
-    }
-  }
   if (withComposeTestUiJUnit5)
     logger.warn("Compose UI Tests with JUnit5 are not supported yet! Configuring JUnit5 anyway.")
   defaultBuildTemplateForBasicMppLib(
@@ -590,17 +575,9 @@ fun CommonExtension<*, *, *, *, *, *>.defaultCompileOptions(
   }
 }
 
-fun CommonExtension<*, *, *, *, *, *>.defaultComposeStuff(withComposeCompiler: Dep? = null) {
+fun CommonExtension<*, *, *, *, *, *>.defaultComposeStuff() {
   buildFeatures {
     compose = true
-  }
-  composeOptions {
-    kotlinCompilerExtensionVersion = withComposeCompiler?.run {
-      require(group == AndroidX.Compose.Compiler.compiler.group) {
-        "Wrong compiler group: $group. Only AndroidX compose compilers are supported on android (without mpp)."
-      }
-      ver?.ver ?: error("Compose compiler without version provided: $this")
-    }
   }
 }
 
@@ -656,7 +633,6 @@ fun Project.defaultBuildTemplateForAndroLib(
   configurations.checkVerSync()
   tasks.defaultKotlinCompileOptions(
     jvmTargetVer = null, // jvmVer is set jvmToolchain in fun allDefault
-    suppressComposeCheckKotlinVer = details.settings.compose?.withComposeCompilerAllowWrongKotlinVer,
   )
   defaultGroupAndVerAndDescription(details)
   if (andro.publishAllVariants) defaultPublishingOfAndroLib(details, "default")
@@ -673,7 +649,7 @@ fun LibraryExtension.defaultAndroLib(
   defaultCompileOptions(jvmVer = null) // actually it does nothing now. jvm ver is normally configured via jvmToolchain
   defaultDefaultConfig(details)
   defaultBuildTypes()
-  details.settings.compose?.takeIf { !ignoreCompose }?.let { defaultComposeStuff(it.withComposeCompiler) }
+  details.settings.compose?.takeIf { !ignoreCompose }?.let { defaultComposeStuff() }
   defaultPackagingOptions()
 }
 

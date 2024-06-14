@@ -6,13 +6,13 @@ plugins {
   plug(plugs.NexusPublish)
   plug(plugs.KotlinMulti) apply false
   plug(plugs.KotlinMultiCompose) apply false
-  plug(plugs.Compose) apply false // https://github.com/JetBrains/compose-multiplatform/issues/3459
+  plug(plugs.ComposeJb) apply false // https://github.com/JetBrains/compose-multiplatform/issues/3459
   plug(plugs.AndroLib) apply false
   plug(plugs.AndroApp) apply false
 }
 
 
-val enableJs = true
+val enableJs = false
 // TODO TRACK NEW JS BLOCKING ISSUE:
 // https://youtrack.jetbrains.com/issue/KT-67330/K2-Wasm-Compose-const-val-property-must-have-a-const-initializer
 //
@@ -26,7 +26,7 @@ val enableJs = true
 // at org.jetbrains.kotlin.backend.common.serialization.signature.PublicIdSignatureComputer.inFile(IdSignatureFactory.kt:40)
 
 
-val enableAndro = true
+val enableAndro = false
 // TODO TRACK MAJOR ISSUE WITH ANDROID (MY REPORT):
 //  https://youtrack.jetbrains.com/issue/KT-64621/K2-Beta2-compileDebugSources-exception-with-Compose-MPP
 // TODO TRACK ANDRO ISSUE (this one can take a while, so I added workaround already - "onMyPointerEvent"):
@@ -46,7 +46,6 @@ defaultBuildTemplateForRootProject(
       withJs = enableJs,
       withSonatypeOssPublishing = enablePublishing,
       compose = LibComposeSettings(
-        withComposeCompiler = ComposeCompilerJb,
         withComposeHtmlCore = enableJs,
         withComposeHtmlSvg = enableJs,
         withComposeTestHtmlUtils = enableJs,
