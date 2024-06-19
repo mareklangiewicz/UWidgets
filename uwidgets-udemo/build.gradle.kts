@@ -33,9 +33,8 @@ defaultBuildTemplateForFullMppLib(details) {
 }
 
 setMyWeirdSubstitutions(
-  // "uspek" to "0.0.35", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/uspek/
-  // "uspek-junit5" to "0.0.35",
-  "kground" to "0.0.58", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
+  "abcdk" to "0.0.23", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/abcdk/
+  "kground" to "0.0.59", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
 )
 
 // region [[Full MPP Lib Build Template]]

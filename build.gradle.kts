@@ -12,7 +12,7 @@ plugins {
 }
 
 
-val enableJs = false
+val enableJs = true
 // TODO TRACK NEW JS BLOCKING ISSUE:
 // https://youtrack.jetbrains.com/issue/KT-67330/K2-Wasm-Compose-const-val-property-must-have-a-const-initializer
 //
@@ -26,7 +26,7 @@ val enableJs = false
 // at org.jetbrains.kotlin.backend.common.serialization.signature.PublicIdSignatureComputer.inFile(IdSignatureFactory.kt:40)
 
 
-val enableAndro = false
+val enableAndro = true
 // TODO TRACK MAJOR ISSUE WITH ANDROID (MY REPORT):
 //  https://youtrack.jetbrains.com/issue/KT-64621/K2-Beta2-compileDebugSources-exception-with-Compose-MPP
 // TODO TRACK ANDRO ISSUE (this one can take a while, so I added workaround already - "onMyPointerEvent"):
@@ -41,7 +41,7 @@ defaultBuildTemplateForRootProject(
     name = "UWidgets",
     description = "Micro widgets for Compose Multiplatform",
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-    version = Ver(0, 0, 17),
+    version = Ver(0, 0, 18),
     settings = LibSettings(
       withJs = enableJs,
       withSonatypeOssPublishing = enablePublishing,
