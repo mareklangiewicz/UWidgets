@@ -8,6 +8,7 @@ import androidx.compose.ui.window.WindowPosition.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
+import pl.mareklangiewicz.uwidgets.udata.*
 
 private class UWindowAwtState(val ustate: UWindowState) : WindowState {
   override var isMinimized by ustate::isMinimized

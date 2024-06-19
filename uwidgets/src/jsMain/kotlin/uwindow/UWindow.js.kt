@@ -8,6 +8,7 @@ import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.umath.*
+import pl.mareklangiewicz.uwidgets.udata.*
 
 //  1  TODO NOW: fix resizing in y direction
 //  2  TODO NOW: fix other alignments issues

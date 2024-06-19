@@ -1,10 +1,11 @@
 @file:Suppress("unused")
 
-package pl.mareklangiewicz.udata
+package pl.mareklangiewicz.uwidgets.udata
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.unit.*
+import pl.mareklangiewicz.udata.*
 
 /**
  * These cryptic shortcuts below are kind of an experiment.

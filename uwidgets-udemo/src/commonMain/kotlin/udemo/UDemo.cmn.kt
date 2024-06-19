@@ -14,6 +14,7 @@ import pl.mareklangiewicz.uwindow.*
 import kotlin.math.*
 import kotlin.random.*
 import pl.mareklangiewicz.ulog.hack.ulog
+import pl.mareklangiewicz.uwidgets.udata.*
 
 @Composable
 fun UDemo() = UAllStretch {
@@ -154,7 +155,7 @@ fun UDemo() = UAllStretch {
   var rendering by ustate("DOM")
   UAllStartColumn {
     UText("Align switches:")
-    val options = UAlignmentType.values().map { it.css }.toTypedArray()
+    val options = entries.map { it.css }.toTypedArray()
     UTabs(*options) { idx, tab -> switch1 = UAlignmentType.css(tab) }
     UTabs(*options) { idx, tab -> switch2 = UAlignmentType.css(tab) }
     UTabs(*options) { idx, tab -> switch3 = UAlignmentType.css(tab) }

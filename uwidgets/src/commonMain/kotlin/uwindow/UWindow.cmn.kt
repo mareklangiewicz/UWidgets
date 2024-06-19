@@ -8,6 +8,7 @@ import pl.mareklangiewicz.umath.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
+import pl.mareklangiewicz.uwidgets.udata.*
 
 @Stable interface UWindowState {
 

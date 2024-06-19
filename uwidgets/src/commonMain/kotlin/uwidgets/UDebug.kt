@@ -19,6 +19,7 @@ import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.ulog.hack.ulog
 import pl.mareklangiewicz.usystem.*
+import pl.mareklangiewicz.uwidgets.udata.*
 
 @Deprecated("I had some strange issues with Mod.composed {..} and with lambdas")
 // See comment at: UChildrenComposedMod

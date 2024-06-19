@@ -1,4 +1,4 @@
-package pl.mareklangiewicz.udata
+package pl.mareklangiewicz.uwidgets.udata
 
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.layout.*

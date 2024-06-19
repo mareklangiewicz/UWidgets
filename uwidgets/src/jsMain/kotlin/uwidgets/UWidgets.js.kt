@@ -15,6 +15,7 @@ import org.w3c.dom.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
+import pl.mareklangiewicz.uwidgets.udata.*
 
 @Composable internal fun UCoreBinImplDom(
   type: UBinType,

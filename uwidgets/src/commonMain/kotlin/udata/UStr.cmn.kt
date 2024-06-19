@@ -1,10 +1,11 @@
 @file:Suppress("unused")
 
-package pl.mareklangiewicz.udata
+package pl.mareklangiewicz.uwidgets.udata
 
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.unit.*
+import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.usystem.*
 import pl.mareklangiewicz.uwindow.*
 

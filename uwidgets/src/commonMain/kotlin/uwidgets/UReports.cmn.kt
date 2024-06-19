@@ -8,6 +8,7 @@ import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.ulog.hack.ulog
 import pl.mareklangiewicz.usystem.*
 import pl.mareklangiewicz.uwidgets.UReports.*
+import pl.mareklangiewicz.uwidgets.udata.*
 
 /**
  * Micro reporting tools. Mostly for USpek tests of composables, but also to debug stuff manually/visually.

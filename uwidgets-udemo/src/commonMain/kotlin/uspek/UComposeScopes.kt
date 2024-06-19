@@ -10,6 +10,7 @@ import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.ulog.hack.ulog
 import pl.mareklangiewicz.uwidgets.*
+import pl.mareklangiewicz.uwidgets.udata.*
 
 @Composable fun rememberUNomadicComposeScope(density: Density = LocalDensity.current) =
   remember { UNomadicComposeScope(density) }

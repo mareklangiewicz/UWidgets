@@ -15,6 +15,7 @@ import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
 import kotlin.random.*
+import pl.mareklangiewicz.uwidgets.udata.*
 
 /** @param withBackgroundBox without it the background of the "scene" will be white */
 @Composable fun USkikoBoxDom(
