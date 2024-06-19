@@ -4,6 +4,7 @@ import android.os.*
 import androidx.activity.*
 import androidx.activity.compose.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.tooling.preview.Preview
 import pl.mareklangiewicz.udemo.UDemo
 
 class MainActivity : ComponentActivity() {
@@ -16,7 +17,7 @@ class MainActivity : ComponentActivity() {
 }
 
 
-// @Preview(showBackground = true)
+@Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
   UDemo()

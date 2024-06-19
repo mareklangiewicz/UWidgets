@@ -39,6 +39,16 @@ defaultBuildTemplateForFullMppApp(newDetails) {
   implementation(project(":uwidgets-udemo"))
 }
 
+kotlin {
+  sourceSets {
+    val androidMain by getting {
+      dependencies {
+        implementation(AndroidX.Compose.Ui.tooling_preview)
+      }
+    }
+  }
+}
+
 
 setMyWeirdSubstitutions(
   "abcdk" to "0.0.23", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/abcdk/
