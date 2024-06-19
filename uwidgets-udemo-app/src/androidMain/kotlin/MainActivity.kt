@@ -1,4 +1,4 @@
-package pl.mareklangiewicz.uwidgets
+package pl.mareklangiewicz.udemoapp
 
 import android.os.*
 import androidx.activity.*
