@@ -7,6 +7,7 @@ import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.ulog.hack.ulog
 import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.uwidgets.*
+import pl.mareklangiewicz.uwidgets.udata.*
 
 // TODO_later: move it to USpek:uspek-compose (when API becomes more stable)
 @OptIn(ComposeWebExperimentalTestsApi::class)
