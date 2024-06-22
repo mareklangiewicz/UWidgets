@@ -7,8 +7,8 @@ plugins {
   plug(plugs.KotlinMulti) apply false
   plug(plugs.KotlinMultiCompose) apply false
   plug(plugs.ComposeJb) apply false // https://github.com/JetBrains/compose-multiplatform/issues/3459
-  plug(plugs.AndroLib) apply false
-  plug(plugs.AndroApp) apply false
+  plug(plugs.AndroLibEdge) apply false
+  plug(plugs.AndroAppEdge) apply false
 }
 
 
@@ -45,7 +45,7 @@ defaultBuildTemplateForRootProject(
     name = "UWidgets",
     description = "Micro widgets for Compose Multiplatform",
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-    version = Ver(0, 0, 20),
+    version = Ver(0, 0, 21),
     settings = LibSettings(
       withJs = enableJs,
       withSonatypeOssPublishing = enablePublishing,
