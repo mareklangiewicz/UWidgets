@@ -51,8 +51,8 @@ kotlin {
 
 
 setMyWeirdSubstitutions(
-  "abcdk" to "0.0.23", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/abcdk/
-  "kground" to "0.0.59", // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
+  "kground" to rootExtString["verKGround"],
+  "abcdk" to rootExtString["verAbcdK"],
 )
 
 // FIXME NOW: update do I need it? If so it should be moved into "Full MPP App Build Template"
