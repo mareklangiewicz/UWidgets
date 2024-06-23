@@ -12,7 +12,7 @@ plugins {
   plugAll(
     plugs.KotlinMulti,
     plugs.KotlinMultiCompose,
-    plugs.ComposeJb,
+    plugs.ComposeJbNoVer,
     plugs.MavenPublish,
     plugs.Signing,
   )
