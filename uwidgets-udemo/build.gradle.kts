@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED_VARIABLE")
-
 import org.jetbrains.compose.*
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.plugin.*
@@ -30,6 +28,18 @@ defaultBuildTemplateForFullMppLib(details) {
   api(project(":uwidgets"))
   api(Langiewicz.uspek)
   api(Langiewicz.kground) // setMyWeirdSubstitutions can change it to local project (depending on settings.gradle.kts).
+}
+
+kotlin {
+  sourceSets {
+    val androidMain by getting {
+      dependencies {
+        // will be integrated in templates when preview is commonized
+        implementation(AndroidX.Compose.Ui.tooling)
+        implementation(AndroidX.Compose.Ui.tooling_preview)
+      }
+    }
+  }
 }
 
 setMyWeirdSubstitutions(
