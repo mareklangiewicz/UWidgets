@@ -6,7 +6,6 @@ import androidx.compose.ui.geometry.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.udata.*
-import pl.mareklangiewicz.usystem.*
 import pl.mareklangiewicz.uwindow.*
 
 // TODO_later: more multi-platform formatting options

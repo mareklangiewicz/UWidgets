@@ -9,16 +9,13 @@ import androidx.compose.ui.draw.*
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.input.pointer.*
-import androidx.compose.ui.input.pointer.PointerEventType.*
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
-import pl.mareklangiewicz.kground.getCurrentTimeMs
-import pl.mareklangiewicz.udata.*
+import pl.mareklangiewicz.kground.*
 import pl.mareklangiewicz.ulog.*
-import pl.mareklangiewicz.ulog.hack.ulog
-import pl.mareklangiewicz.usystem.*
+import pl.mareklangiewicz.ulog.hack.*
 import pl.mareklangiewicz.uwidgets.udata.*
 
 @Deprecated("I had some strange issues with Mod.composed {..} and with lambdas")
