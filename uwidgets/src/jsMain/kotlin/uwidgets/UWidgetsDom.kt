@@ -6,18 +6,49 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.*
 import androidx.compose.web.events.*
 import org.jetbrains.compose.web.attributes.*
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.*
+import pl.mareklangiewicz.annotations.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
 import pl.mareklangiewicz.uwidgets.udata.*
+import pl.mareklangiewicz.uwindow.*
 
-@Composable internal fun UCoreBinImplDom(
+@Composable fun UWidgetsDom(content: @Composable () -> Unit) =
+  CompositionLocalProvider(UWidgets.Local provides UWidgetsDom(), content)
+
+// TODO_later: UWidgetsDom(private val useBrowserWindows: Boolean = false) ??
+private class UWidgetsDom : UWidgets {
+
+  @Composable override fun Bin(type: UBinType, mod: Mod, content: @Composable () -> Unit) {
+    BinDom(type, mod, content)
+  }
+
+  @Composable override fun Text(text: String, mod: Mod, bold: Boolean, mono: Boolean, maxLines: Int) {
+    TextDom(text, mod, bold, mono, maxLines)
+  }
+
+  @Composable override fun Tabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) {
+    TabsDom(*tabs, onSelected = onSelected)
+  }
+
+  @Composable override fun Window(state: UWindowState, onClose: () -> Unit, content: @Composable () -> Unit) {
+    UWindowDom(state, onClose, content)
+  }
+
+  @ExperimentalApi
+  @Composable override fun SkikoBox(size: DpSize?, content: @Composable () -> Unit) {
+    USkikoBoxDom(size, content = content)
+  }
+}
+
+@Composable private fun BinDom(
   type: UBinType,
   mod: Mod = Mod,
   content: @Composable () -> Unit,
@@ -32,7 +63,7 @@ import pl.mareklangiewicz.uwidgets.udata.*
   val ponUClick = p.onUClick
   val ponUDrag = p.onUDrag
   val ponUWheel = p.onUWheel
-  URawBinDom(
+  RawBinDom(
     type, p.ualignHoriz, p.ualignVerti,
     addStyle = {
       p.width?.let { width((it - pborderWidth * 2 - ppadding * 2).value.px) }
@@ -88,8 +119,9 @@ private fun SyntheticEvent<*>.consume() {
   preventDefault(); stopPropagation()
 }
 
+// TODO_someday: change it to private after fixing+refactoring USkikoBoxDom
 /** @param inline false -> div; true -> span and css display: inline-grid instead of grid */
-@Composable internal fun URawBinDom(
+@Composable internal fun RawBinDom(
   type: UBinType,
   alignHoriz: UAlignmentType,
   alignVerti: UAlignmentType,
@@ -125,8 +157,8 @@ private val LocalUBinType = staticCompositionLocalOf<UBinType?> { null }
 
 val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
 
-@Composable internal fun URawTextImplDom(text: String, mod: Mod, bold: Boolean, mono: Boolean, maxLines: Int) =
-  URawBinDom(
+@Composable private fun TextDom(text: String, mod: Mod, bold: Boolean, mono: Boolean, maxLines: Int) =
+  RawBinDom(
     UBOX, USTART, USTART, inline = true,
     addStyle = {
       if (maxLines == 1) property("text-overflow", "clip") // TODO: better support for maxLines > 1 on JS
@@ -135,7 +167,7 @@ val Color.cssRgba get() = rgba(red * 255f, green * 255f, blue * 255f, alpha)
     },
   ) { Text(text) }
 
-@Composable internal fun UTabsImplDom(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
+@Composable private fun TabsDom(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) =
   UTabsCmn(*tabs, onSelected = onSelected)
 
 private fun StyleScope.ustyleChildFor(parentType: UBinType, horizontal: UAlignmentType, vertical: UAlignmentType) {

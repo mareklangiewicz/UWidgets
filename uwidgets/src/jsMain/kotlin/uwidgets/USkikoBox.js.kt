@@ -18,13 +18,13 @@ import kotlin.random.*
 import pl.mareklangiewicz.uwidgets.udata.*
 
 /** @param withBackgroundBox without it the background of the "scene" will be white */
-@Composable fun USkikoBoxDom(
+@Composable internal fun USkikoBoxDom(
   size: DpSize? = null,
   withBackgroundBox: Boolean = true,
   content: @Composable () -> Unit,
 ) {
   var currentSize by ustate(DpSize.Zero)
-  URawBinDom(
+  RawBinDom(
     UBOX, USTRETCH, USTRETCH,
     addStyle = {
       size?.let {

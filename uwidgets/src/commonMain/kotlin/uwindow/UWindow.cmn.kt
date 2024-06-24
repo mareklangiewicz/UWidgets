@@ -3,7 +3,6 @@ package pl.mareklangiewicz.uwindow
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.unit.*
-import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.umath.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.*

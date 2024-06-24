@@ -12,6 +12,7 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwindow.*
 import kotlin.math.*
 import kotlin.random.*
+import pl.mareklangiewicz.annotations.*
 import pl.mareklangiewicz.ulog.hack.ulog
 import pl.mareklangiewicz.uwidgets.udata.*
 
@@ -96,12 +97,17 @@ fun UDemo() = UAllStretch {
 }
 
 // FIXME NOW: remove this temporary code
+@OptIn(ExperimentalApi::class)
 @Composable fun UDemoTemp() = UAllStartColumn {
   var rendering by ustate("DOM and Canvas")
   UTabs("DOM and Canvas", "DOM", "Canvas") { idx, tab -> rendering = tab }
   URow {
     if ("DOM" in rendering) UBackgroundBox(Mod.usize(160.dp, 320.dp)) { UDemoTempContent() }
-    if ("Canvas" in rendering) USkikoBox(DpSize(160.dp, 320.dp)) { UDemoTempContent() }
+    if ("Canvas" in rendering) USkikoBox(DpSize(160.dp, 320.dp)) {
+      UWidgetsSki {
+        UDemoTempContent()
+      }
+    }
   }
 }
 
@@ -146,6 +152,7 @@ fun UDemo() = UAllStretch {
   }
 }
 
+@OptIn(ExperimentalApi::class)
 @Composable fun UDemo0() = UAllStretchColumn {
   var switch1 by ustate(USTART)
   var switch2 by ustate(USTART)
@@ -164,7 +171,7 @@ fun UDemo() = UAllStretch {
   }
   URow {
     if ("DOM" in rendering) UBackgroundBox { UDemo0Content(switch1, switch2, switch3, switch4) }
-    if ("Canvas" in rendering) USkikoBox { UDemo0Content(switch1, switch2, switch3, switch4) }
+    if ("Canvas" in rendering) USkikoBox { UWidgetsSki { UDemo0Content(switch1, switch2, switch3, switch4) } }
   }
 }
 
@@ -250,10 +257,13 @@ fun UDemo() = UAllStretch {
   }
 }
 
+@OptIn(ExperimentalApi::class)
 @Composable fun UDemo3(size: DpSize, withHorizontalScroll: Boolean, withVerticalScroll: Boolean) {
   USkikoBox {
-    UAllStretch {
-      UDemo3TabsSki(size, withHorizontalScroll, withVerticalScroll)
+    UWidgetsSki {
+      UAllStretch {
+        UDemo3TabsSki(size, withHorizontalScroll, withVerticalScroll)
+      }
     }
   }
 }

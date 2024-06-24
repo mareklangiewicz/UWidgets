@@ -1,5 +1,6 @@
 package pl.mareklangiewicz.udemo
 
+import androidx.compose.runtime.*
 import org.jetbrains.compose.web.*
 import pl.mareklangiewicz.uwidgets.*
 
@@ -13,6 +14,8 @@ fun main() {
     console.log("Rendering whole demo app on one big canvas")
     // inside UDemo there are some comparisons with dom based and canvas/skiko based stuff side by side,
     // but in this configuration, the "dom" versions are actually also canvas/skiko based.
-    renderComposableCanvasAppOnWasmReady("Whole UDemo in Canvas (No DOM impl used)") { UDemo() }
-  } else renderComposableInBody { UDemo() }
+    renderComposableCanvasAppOnWasmReady("Whole UDemo in Canvas (No DOM impl used)") { AppDom() }
+  } else renderComposableInBody { AppDom() }
 }
+
+@Composable private fun AppDom() = UWidgetsDom { UDemo() }

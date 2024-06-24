@@ -3,16 +3,17 @@ package pl.mareklangiewicz.udemo
 import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.unit.*
-import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.text.*
 import pl.mareklangiewicz.uspek.*
 import pl.mareklangiewicz.uwidgets.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
 import kotlin.math.*
+import pl.mareklangiewicz.annotations.*
 import pl.mareklangiewicz.bad.chkEq
 import pl.mareklangiewicz.uwidgets.udata.*
 
 // TODO_later: use context receiver for UComposeScope
+@OptIn(ExperimentalApi::class)
 @Suppress("CanBeVal")
 suspend fun UComposeScope.MyExaminedLayoutUSpekFun() = with(density) {
 
@@ -28,15 +29,17 @@ suspend fun UComposeScope.MyExaminedLayoutUSpekFun() = with(density) {
     var withSon4Blue by mutableStateOf(false)
     setContent {
       USkikoBox {
-        MyExaminedLayout(
-          type = type,
-          contentSize = rigidSizeDp,
-          withSon1Cyan = withSon1Cyan,
-          withSon2Red = withSon2Red,
-          withSon3Green = withSon3Green,
-          withSon4Blue = withSon4Blue,
-          onUReport = ureports::invoke,
-        )
+        UWidgetsSki {
+          MyExaminedLayout(
+            type = type,
+            contentSize = rigidSizeDp,
+            withSon1Cyan = withSon1Cyan,
+            withSon2Red = withSon2Red,
+            withSon3Green = withSon3Green,
+            withSon4Blue = withSon4Blue,
+            onUReport = ureports::invoke,
+          )
+        }
       }
     }
     awaitIdle()

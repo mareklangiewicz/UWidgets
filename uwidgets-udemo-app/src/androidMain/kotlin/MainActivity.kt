@@ -4,21 +4,18 @@ import android.os.*
 import androidx.activity.*
 import androidx.activity.compose.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.tooling.preview.Preview
-import pl.mareklangiewicz.udemo.UDemo
+import androidx.compose.ui.tooling.preview.*
+import pl.mareklangiewicz.udemo.*
+import pl.mareklangiewicz.uwidgets.*
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContent {
-      UDemo()
-    }
+    setContent { AppAndro() }
   }
 }
 
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
-  UDemo()
-}
+private fun AppAndro() = UWidgetsSki { UDemo() }

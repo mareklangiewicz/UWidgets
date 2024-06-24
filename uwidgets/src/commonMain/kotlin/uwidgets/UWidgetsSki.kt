@@ -12,19 +12,52 @@ import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
+import pl.mareklangiewicz.annotations.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
+import pl.mareklangiewicz.uwindow.*
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable internal fun UCoreBinImplSki(type: UBinType, mod: Mod = Mod, content: @Composable () -> Unit) {
+@Composable fun UWidgetsSki(useM3Tabs: Boolean = false, content: @Composable () -> Unit) =
+  CompositionLocalProvider(UWidgets.Local provides UWidgetsSki(useM3Tabs), content)
+
+internal open class UWidgetsSki(private val useM3Tabs: Boolean = false) : UWidgets {
+
+  @Composable override fun Bin(type: UBinType, mod: Mod, content: @Composable () -> Unit) { BinSki(type, mod, content) }
+
+  @Composable override fun Text(text: String, mod: Mod, bold: Boolean, mono: Boolean, maxLines: Int) {
+    TextSki(text, mod, bold, mono, maxLines)
+  }
+
+  @Composable override fun Tabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) {
+    TabsSki(*tabs, useM3Tabs = useM3Tabs, onSelected = onSelected)
+  }
+
+  /**
+   * This version is assuming it is composed directly inside some big UBox which represents kind of a workspace
+   * It will be overridden in platform implementations, where native windows are supported
+   * (on Desktop AWT, on Web DOM, maybe someday on Android with Fragment?)
+   */
+  @Composable override fun Window(state: UWindowState, onClose: () -> Unit, content: @Composable () -> Unit) {
+    UWindowInUBox(state, onClose, content)
+  }
+
+  @ExperimentalApi
+  @Composable override fun SkikoBox(size: DpSize?, content: @Composable () -> Unit) {
+    // No need to start new compose window - we are already in skiko based composition
+    UBackgroundBox(Mod.usize(size), content = content)
+  }
+}
+
+
+  @Composable private fun BinSki(type: UBinType, mod: Mod = Mod, content: @Composable () -> Unit) {
   // TODO_later: make sure .materialize here is ok (Layout does it internally again later)
   val m = currentComposer.materialize(mod)
   val p = UProps.install(m)
   val hScrollS = if (p.uscrollHoriz) rememberScrollState() else null
   val vScrollS = if (p.uscrollVerti) rememberScrollState() else null
-  URawBinSki(
+  RawBinSki(
     type = type,
     mod = m
       .padding(p.margin)
@@ -86,7 +119,7 @@ private fun Mod.onUWheelSki(onWheel: (Offset) -> Unit) = onMyPointerEvent(Pointe
   onWheel(it.changes.first().scrollDelta)
 }
 
-@Composable private fun URawBinSki(
+@Composable private fun RawBinSki(
   type: UBinType,
   mod: Mod = Mod,
   parentAlignMod: UAlignDataMod,
@@ -395,13 +428,7 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
   UEND -> parentSize - childSize
 }
 
-@Composable internal fun URawTextImplSki(
-  text: String,
-  mod: Mod,
-  bold: Boolean = false,
-  mono: Boolean = false,
-  maxLines: Int = 1,
-) {
+@Composable private fun TextSki(text: String, mod: Mod, bold: Boolean, mono: Boolean, maxLines: Int) {
   val style = LocalTextStyle.current.copy(
     fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
     fontFamily = if (mono) FontFamily.Monospace else FontFamily.Default,
@@ -409,16 +436,16 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
   Text(text, mod, maxLines = maxLines, style = style)
 }
 
-@Composable internal fun UTabsImplSki(
+@Composable private fun TabsSki(
   vararg tabs: String,
-  useM3TabRow: Boolean = false,
+  useM3Tabs: Boolean,
   onSelected: (index: Int, tab: String) -> Unit,
 ) {
-  if (useM3TabRow) UTabsImplM3TabRow(tabs = tabs, onSelected = onSelected)
+  if (useM3Tabs) TabsM3TabRow(tabs = tabs, onSelected = onSelected)
   else UTabsCmn(tabs = tabs, onSelected = onSelected)
 }
 
-@Composable private fun UTabsImplM3TabRow(vararg tabs: String, onSelected: (index: Int, tab: String) -> Unit) =
+@Composable private fun TabsM3TabRow(vararg tabs: String, onSelected: (index: Int, tab: String) -> Unit) =
   UAllStartBox {
     var selectedTabIndex by ustate(0)
     TabRow(selectedTabIndex = selectedTabIndex) {
@@ -431,7 +458,3 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
       }
     }
   }
-
-/** No need to start new compose window - we are already in skiko based composition */
-@Composable internal fun UFakeSkikoBoxImplSki(size: DpSize? = null, content: @Composable () -> Unit) =
-  UBackgroundBox(Mod.usize(size), content = content)

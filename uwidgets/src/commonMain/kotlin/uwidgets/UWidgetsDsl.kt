@@ -6,21 +6,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
+import pl.mareklangiewicz.annotations.*
 import pl.mareklangiewicz.udata.*
 import pl.mareklangiewicz.utheme.*
 import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 import pl.mareklangiewicz.uwidgets.UBinType.*
 import pl.mareklangiewicz.uwidgets.udata.*
-
-enum class UBinType { UBOX, UROW, UCOLUMN }
-
-enum class UAlignmentType(val css: String) {
-  USTART("start"), UEND("end"), UCENTER("center"), USTRETCH("stretch");
-
-  companion object {
-    fun css(css: String) = UAlignmentType.values().first { it.css == css }
-  }
-}
+import pl.mareklangiewicz.uwindow.*
 
 @Composable fun UBin(
   type: UBinType,
@@ -29,8 +21,7 @@ enum class UAlignmentType(val css: String) {
   content: @Composable () -> Unit,
 ) {
   val childrenMod = LocalUChildrenMod.current
-  @Suppress("RemoveRedundantQualifierName") // IDE issue
-  UCoreBin(type, if (childrenMod == null) mod else Mod.childrenMod().then(mod)) {
+  UWidgets.Local.current.Bin(type, if (childrenMod == null) mod else Mod.childrenMod().then(mod)) {
     UDepth { CompositionLocalProvider(LocalUChildrenMod provides null, content = content) }
   }
 }
@@ -72,7 +63,7 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
  * UBox that only sets background and stretches. Doesn't change depth, doesn't have any borders, margins, paddings.
  * @param color null means default which means taken from UTheme */
 @Composable fun UBackgroundBox(mod: Mod = Mod, color: Color? = null, content: @Composable () -> Unit = {}) =
-  UCoreBin(UBOX, mod.ustyleBlank(backgroundColor = color).ualign(USTRETCH, USTRETCH), content)
+  UWidgets.Local.current.Bin(UBOX, mod.ustyleBlank(backgroundColor = color).ualign(USTRETCH, USTRETCH), content)
 
 @Composable fun UBoxEnabledIf(enabled: Boolean, content: @Composable () -> Unit) = UBox {
   content()
@@ -93,8 +84,10 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
   center: Boolean = false,
   bold: Boolean = false,
   mono: Boolean = false,
-) =
-  UBox(mod.ualign(UCENTER.takeIf { center }, UCENTER.takeIf { center })) { URawText(text, mod, bold, mono) }
+  maxLines: Int = 1,
+) = UBox(mod.ualign(UCENTER.takeIf { center }, UCENTER.takeIf { center })) {
+  UWidgets.Local.current.Text(text, mod, bold, mono, maxLines)
+}
 
 // For now just minimal abstraction - TODO_someday maybe: sth more like button (but still in some sense "micro")
 @Composable fun UBtn(
@@ -106,6 +99,22 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
   onUClick: OnUClick,
 ) =
   UText(text, mod.onUClick(onUClick), center, bold, mono)
+
+@Composable fun UWindow(
+  state: UWindowState = rememberUWindowState(),
+  onClose: () -> Unit = {},
+  content: @Composable () -> Unit,
+) { UWidgets.Local.current.Window(state, onClose, content) }
+
+
+@ExperimentalApi
+@Composable fun USkikoBox(size: DpSize? = null, content: @Composable () -> Unit) =
+  UWidgets.Local.current.SkikoBox(size, content)
+
+
+@Composable fun UTabs(vararg tabs: String, onSelected: (idx: Int, tab: String) -> Unit) {
+  UWidgets.Local.current.Tabs(*tabs, onSelected = onSelected)
+}
 
 // Renaming tab -> _ breaks layout inspector in AS!!
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
@@ -232,13 +241,14 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
   val gapwidth = 100
   val w1 = (gapwidth * fraction).int
   val w2 = gapwidth - w1
+  val uw = UWidgets.Local.current
   UAllCenter {
     URow {
-      URawText(min.ustr, bold = bold, mono = true)
-      UCoreBin(UBOX, mod = Mod.ustyleBlank(backgroundColor = Color.Blue, padding = 2.dp).usize(w1.dp, 4.dp)) {}
-      URawText(pos.ustr, bold = bold, mono = true)
-      UCoreBin(UBOX, mod = Mod.ustyleBlank(backgroundColor = Color.White, padding = 2.dp).usize(w2.dp, 4.dp)) {}
-      URawText(max.ustr, bold = bold, mono = true)
+      uw.Text(min.ustr, Mod, bold, mono = true, maxLines = 1)
+      uw.Bin(UBOX, mod = Mod.ustyleBlank(backgroundColor = Color.Blue, padding = 2.dp).usize(w1.dp, 4.dp)) {}
+      uw.Text(pos.ustr, Mod, bold, mono = true, maxLines = 1)
+      uw.Bin(UBOX, mod = Mod.ustyleBlank(backgroundColor = Color.White, padding = 2.dp).usize(w2.dp, 4.dp)) {}
+      uw.Text(max.ustr, Mod, bold, mono = true, maxLines = 1)
     }
   }
 }

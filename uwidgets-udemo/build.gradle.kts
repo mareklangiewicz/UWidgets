@@ -17,7 +17,7 @@ plugins {
   plug(plugs.AndroLibNoVer) apply false // will be applied conditionally depending on LibSettings
 }
 
-// workaround for crazy gradle bugs like this one or simillar:
+// workaround for crazy gradle bugs like this one or similar:
 // https://youtrack.jetbrains.com/issue/KT-43500/KJS-IR-Failed-to-resolve-Kotlin-library-on-attempting-to-resolve-compileOnly-transitive-dependency-from-direct-dependency
 repositories { maven(repos.composeJbDev) }
 
