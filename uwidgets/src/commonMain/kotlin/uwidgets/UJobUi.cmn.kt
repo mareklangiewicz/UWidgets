@@ -79,6 +79,6 @@ fun UJobUi(
   UJobUi(Mod, jobTitle, jobContext, jobStart, block)
 
   // FIXME: move UReportsUi to more common (so it works without USkikoBox) (no skiko in KoWebExt)
-  if (!currentComposer.isDom) UReportsUi(ureports)
+  if (UWidgets.Local.current is UWidgetsSki) UReportsUi(ureports)
   else println("FIXME! move UReportsUi")
 }
