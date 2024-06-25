@@ -22,17 +22,11 @@ repositories { maven(repos.composeJbDev) }
 val newNamespace = "pl.mareklangiewicz.udemapp"
 
 val defDetails = rootExtLibDetails
-val defSettings = defDetails.settings
-val newSettings = defSettings.copy(
-  // andro = null
-  // // FIXME: Temp workaround for issue with compiling release variant (debug variant works, so undo it to run debug app)
-)
 
 val newDetails = defDetails.copy(
   namespace = newNamespace,
   appId = newNamespace,
   appMainPackage = newNamespace,
-  settings = newSettings,
 )
 
 defaultBuildTemplateForFullMppApp(newDetails) {
