@@ -29,7 +29,6 @@ defaultBuildTemplateForFullMppLib {
 
 setMyWeirdSubstitutions(
   "kground" to rootExtString["verKGround"],
-  "abcdk" to rootExtString["verAbcdK"],
 )
 
 // region [[Full MPP Lib Build Template]]

@@ -46,7 +46,6 @@ kotlin {
 
 setMyWeirdSubstitutions(
   "kground" to rootExtString["verKGround"],
-  "abcdk" to rootExtString["verAbcdK"],
 )
 
 // FIXME NOW: update do I need it? If so it should be moved into "Full MPP App Build Template"

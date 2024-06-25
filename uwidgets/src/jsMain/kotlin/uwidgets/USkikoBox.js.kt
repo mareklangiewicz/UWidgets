@@ -87,7 +87,7 @@ private fun randomId(prefix: String = "id") = prefix + Random.nextLong(from = 10
  * @see androidx.compose.ui.window.ComposeWindow
  * Update: I'm changing it to be just a wrapper around fun CanvasBasedWindow
  * @see androidx.compose.ui.window.CanvasBasedWindow
- * (if navigating to source fails: it's the same file as ComposeWindow (ComposeWindow.js.kt)
+ * (if navigating to source fails: it's the same file as ComposeWindow (ComposeWindow.web.kt)
  * CanvasBasedWindow implementation has some problems:
  * - it's experimental (can disappear),
  * - disposing is not implemented at all (are they waiting for skiko?)

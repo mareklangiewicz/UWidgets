@@ -36,8 +36,7 @@ val enablePublishing = findProject(":kground") == null
 // (see settings.gradle.kts) so it would also publish these with wrong description and ver etc.
 // exception: publishToMavenLocal for debugging
 
-rootExtString["verKGround"] = "0.0.59" // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
-rootExtString["verAbcdK"] = "0.0.23" // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/abcdk/
+rootExtString["verKGround"] = "0.0.60" // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
 
 
 defaultBuildTemplateForRootProject(
