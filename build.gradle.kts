@@ -1,16 +1,20 @@
-import pl.mareklangiewicz.deps.*
+
+// region [[Full Root Build Imports and Plugs]]
+
 import pl.mareklangiewicz.defaults.*
 import pl.mareklangiewicz.utils.*
+import pl.mareklangiewicz.deps.*
 
 plugins {
-  plug(plugs.NexusPublish)
   plug(plugs.KotlinMulti) apply false
   plug(plugs.KotlinMultiCompose) apply false
-  plug(plugs.ComposeJb) apply false // https://github.com/JetBrains/compose-multiplatform/issues/3459
-  plug(plugs.AndroLibEdge) apply false
-  plug(plugs.AndroAppEdge) apply false
+  plug(plugs.ComposeJb) apply false
+  plug(plugs.AndroLib) apply false
+  plug(plugs.AndroApp) apply false
+  plug(plugs.NexusPublish)
 }
 
+// endregion [[Full Root Build Imports and Plugs]]
 
 val enableJs = true
 // TODO TRACK NEW JS BLOCKING ISSUE:
@@ -36,7 +40,7 @@ val enablePublishing = findProject(":kground") == null
 // (see settings.gradle.kts) so it would also publish these with wrong description and ver etc.
 // exception: publishToMavenLocal for debugging
 
-rootExtString["verKGround"] = "0.0.60" // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
+rootExtString["verKGround"] = "0.0.61" // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
 
 
 defaultBuildTemplateForRootProject(
@@ -44,7 +48,7 @@ defaultBuildTemplateForRootProject(
     name = "UWidgets",
     description = "Micro widgets for Compose Multiplatform",
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-    version = Ver(0, 0, 23),
+    version = Ver(0, 0, 24),
     settings = LibSettings(
       withJs = enableJs,
       withSonatypeOssPublishing = enablePublishing,
@@ -53,7 +57,7 @@ defaultBuildTemplateForRootProject(
         withComposeHtmlSvg = enableJs,
         withComposeTestHtmlUtils = enableJs,
       ),
-      andro = if (enableAndro) LibAndroSettings() else null,
+      andro = if (enableAndro) LibAndroSettings(sdkCompilePreview = Vers.AndroSdkPreview) else null,
     ),
   ), // stuff like appMainPackage, namespace, etc. are customized at module level.
 )
@@ -83,7 +87,7 @@ fun Project.defaultBuildTemplateForRootProject(details: LibDetails? = null) {
  * * MYKOTLIBS_ossrhPassword
  * * MYKOTLIBS_sonatypeStagingProfileId
  * * First three of these used in fun pl.mareklangiewicz.defaults.defaultSigning
- * * See DepsKt/template-mpp/template-mpp-lib/build.gradle.kts
+ * * See KGround/template-full/template-full-lib/build.gradle.kts
  */
 fun ExtraPropertiesExtension.addDefaultStuffFromSystemEnvs(envKeyMatchPrefix: String = "MYKOTLIBS_") =
   addAllFromSystemEnvs(envKeyMatchPrefix)

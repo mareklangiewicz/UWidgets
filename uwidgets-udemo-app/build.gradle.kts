@@ -1,7 +1,10 @@
+
+// region [[Full MPP App Build Imports and Plugs]]
+
+import com.android.build.api.dsl.*
 import org.jetbrains.compose.*
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.plugin.*
-import com.android.build.api.dsl.*
 import pl.mareklangiewicz.defaults.*
 import pl.mareklangiewicz.deps.*
 import pl.mareklangiewicz.utils.*
@@ -14,6 +17,8 @@ plugins {
   )
   plug(plugs.AndroAppNoVer) apply false // will be applied conditionally depending on LibSettings
 }
+
+// endregion [[Full MPP App Build Imports and Plugs]]
 
 // workaround for crazy gradle bugs like this one or simillar:
 // https://youtrack.jetbrains.com/issue/KT-43500/KJS-IR-Failed-to-resolve-Kotlin-library-on-attempting-to-resolve-compileOnly-transitive-dependency-from-direct-dependency
@@ -180,7 +185,7 @@ fun MavenPublication.defaultPOM(lib: LibDetails) = pom {
   scm { url put lib.githubUrl }
 }
 
-/** See also: root project template-mpp: addDefaultStuffFromSystemEnvs */
+/** See also: root project template-full: addDefaultStuffFromSystemEnvs */
 fun Project.defaultSigning(
   keyId: String = rootExtString["signing.keyId"],
   key: String = rootExtReadFileUtf8TryOrNull("signing.keyFile") ?: rootExtString["signing.key"],
@@ -239,15 +244,15 @@ Hacky workaround for gradle error with signing+publishing on gradle 8.1-rc-1:
 FAILURE: Build failed with an exception.
 
 * What went wrong:
-A problem was found with the configuration of task ':template-mpp-lib:signJvmPublication' (type 'Sign').
-  - Gradle detected a problem with the following location: '/home/marek/code/kotlin/DepsKt/template-mpp/template-mpp-lib/build/libs/template-mpp-lib-0.0.02-javadoc.jar.asc'.
+A problem was found with the configuration of task ':template-full-lib:signJvmPublication' (type 'Sign').
+  - Gradle detected a problem with the following location: '/home/marek/code/kotlin/KGround/template-full/template-full-lib/build/libs/template-full-lib-0.0.02-javadoc.jar.asc'.
 
-    Reason: Task ':template-mpp-lib:publishJsPublicationToMavenLocal' uses this output of task ':template-mpp-lib:signJvmPublication' without declaring an explicit or implicit dependency. This can lead to incorrect results being produced, depending on what order the tasks are executed.
+    Reason: Task ':template-full-lib:publishJsPublicationToMavenLocal' uses this output of task ':template-full-lib:signJvmPublication' without declaring an explicit or implicit dependency. This can lead to incorrect results being produced, depending on what order the tasks are executed.
 
     Possible solutions:
-      1. Declare task ':template-mpp-lib:signJvmPublication' as an input of ':template-mpp-lib:publishJsPublicationToMavenLocal'.
-      2. Declare an explicit dependency on ':template-mpp-lib:signJvmPublication' from ':template-mpp-lib:publishJsPublicationToMavenLocal' using Task#dependsOn.
-      3. Declare an explicit dependency on ':template-mpp-lib:signJvmPublication' from ':template-mpp-lib:publishJsPublicationToMavenLocal' using Task#mustRunAfter.
+      1. Declare task ':template-full-lib:signJvmPublication' as an input of ':template-full-lib:publishJsPublicationToMavenLocal'.
+      2. Declare an explicit dependency on ':template-full-lib:signJvmPublication' from ':template-full-lib:publishJsPublicationToMavenLocal' using Task#dependsOn.
+      3. Declare an explicit dependency on ':template-full-lib:signJvmPublication' from ':template-full-lib:publishJsPublicationToMavenLocal' using Task#mustRunAfter.
 
     Please refer to https://docs.gradle.org/8.1-rc-1/userguide/validation_problems.html#implicit_dependency for more details about this problem.
 
@@ -405,8 +410,6 @@ fun KotlinMultiplatformExtension.jsDefault(
 // region [[MPP App Build Template]]
 
 fun Project.defaultBuildTemplateForBasicMppApp(
-  appMainPackage: String,
-  appMainFun: String = "main",
   details: LibDetails = rootExtLibDetails,
   ignoreCompose: Boolean = false, // so user have to explicitly say THAT he wants to ignore compose settings here.
   ignoreAndroTarget: Boolean = false, // so user have to explicitly say IF he wants to ignore it.
@@ -439,7 +442,7 @@ fun Project.defaultBuildTemplateForBasicMppApp(
     if (details.settings.withNativeLinux64) linuxX64 {
       binaries {
         executable {
-          entryPoint = "$appMainPackage.$appMainFun"
+          entryPoint = "${details.appMainPackage}.${details.appMainFun}"
         }
       }
     }
@@ -734,6 +737,7 @@ fun Project.defaultBuildTemplateForAndroApp(
   val variant = andro.publishVariant.takeIf { andro.publishOneVariant }
   repositories { addRepos(details.settings.repos) }
   extensions.configure<KotlinMultiplatformExtension> {
+    androidTarget()
     details.settings.withJvmVer?.let { jvmToolchain(it.toInt()) } // works for jvm and android
   }
   extensions.configure<ApplicationExtension> {
@@ -762,7 +766,7 @@ fun ApplicationExtension.defaultAndroApp(
   ignoreCompose: Boolean = false,
 ) {
   val andro = details.settings.andro ?: error("No andro settings.")
-  compileSdk = andro.sdkCompile
+  andro.sdkCompilePreview?.let { compileSdkPreview = it } ?: run { compileSdk = andro.sdkCompile }
   defaultCompileOptions(jvmVer = null) // actually it does nothing now. jvm ver is normally configured via jvmToolchain
   defaultDefaultConfig(details)
   defaultBuildTypes()
@@ -774,7 +778,7 @@ fun ApplicationExtension.defaultDefaultConfig(details: LibDetails) = defaultConf
   val asettings = details.settings.andro ?: error("No andro settings.")
   applicationId = details.appId
   namespace = details.namespace
-  targetSdk = asettings.sdkTarget
+  asettings.sdkTargetPreview?.let { targetSdkPreview = it } ?: run { targetSdk = asettings.sdkTarget }
   minSdk = asettings.sdkMin
   versionCode = details.appVerCode
   versionName = details.appVerName
