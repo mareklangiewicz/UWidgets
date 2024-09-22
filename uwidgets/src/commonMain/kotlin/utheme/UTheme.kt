@@ -5,17 +5,17 @@ import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.uwidgets.*
 // import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
-/**
- * Warning: default values reuse mutable states with colors, sizes etc.
- * This means children modifying those states influence parents look!
- * It's intentional for now: I want to experiment with it a bit.
- * Later I probably will change to one of two designs:
- * 1. MaterialTheme.colorScheme
- *    (mutable states with copying - complex but allows fine grained updates without any allocations?)
- *    (TODO_later: experiment with crazy animations)
- * 2. MaterialTheme.shapes
- *    (immutable - simple but less reactive/dynamic)
- */
+// /**
+//  * Warning: default values reuse mutable states with colors, sizes etc.
+//  * This means children modifying those states influence parents look!
+//  * It's intentional for now: I want to experiment with it a bit.
+//  * Later I probably will change to one of two designs:
+//  * 1. MaterialTheme.colorScheme
+//  *    (mutable states with copying - complex but allows fine grained updates without any allocations?)
+//  *    (TODO_later: experiment with crazy animations)
+//  * 2. MaterialTheme.shapes
+//  *    (immutable - simple but less reactive/dynamic)
+//  */
 // @Composable fun UTheme(
 //   colors: UColors = lightUColors(),
 //   sizes: USizes = USizes(),
@@ -31,19 +31,19 @@ import pl.mareklangiewicz.uwidgets.*
 // TODO_someday: support themes resembling winamp themes like:
 // https://twitter.com/Ajumplakdibampa/status/1555828578667085824
 // (maybe also more classic ones)
-
-
-/**
- * Note to users:
- * UAl* composables are just sugar to change UTheme.alignments easily. So it's for changing "defaults" in subtree.
- * It's not needed at all if we just want to set alignment for particular element. Just use Mod.ualign(..).
- * Note to devs:
- * Default values are read from outer theme mutable states. It can probably be very inefficient
- * (recomposing whole subtree when any inherited alignment type changes), but let's not care about that.
- * For now let's assume compose machinery is clever enough to optimize such cases.
- * Also, I want to try to keep UWidgets ("micro" widgets) implementation small/"micro".
- * (so for now I'm reluctant to introducing additional copying like in material3 colorScheme)
- */
+//
+//
+// /**
+//  * Note to users:
+//  * UAl* composables are just sugar to change UTheme.alignments easily. So it's for changing "defaults" in subtree.
+//  * It's not needed at all if we just want to set alignment for particular element. Just use Mod.ualign(..).
+//  * Note to devs:
+//  * Default values are read from outer theme mutable states. It can probably be very inefficient
+//  * (recomposing whole subtree when any inherited alignment type changes), but let's not care about that.
+//  * For now let's assume compose machinery is clever enough to optimize such cases.
+//  * Also, I want to try to keep UWidgets ("micro" widgets) implementation small/"micro".
+//  * (so for now I'm reluctant to introducing additional copying like in material3 colorScheme)
+//  */
 // @Composable fun UAlign(
 //   horizontal: UAlignmentType = UTheme.alignments.horizontal,
 //   vertical: UAlignmentType = UTheme.alignments.vertical,
@@ -74,8 +74,8 @@ import pl.mareklangiewicz.uwidgets.*
 //
 // @Composable fun UAllStretchColumn(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
 //   UAllStretch { UColumn(mod, selected, content) }
-
-
+//
+//
 // object UTheme {
 //
 //   val colors: UColors
@@ -93,22 +93,26 @@ import pl.mareklangiewicz.uwidgets.*
 //     @ReadOnlyComposable
 //     get() = LocalUAlignments.current
 // }
-
-class USizes(ubinMargin: Dp = 1.dp, ubinBorder: Dp = 1.dp, ubinPadding: Dp = 1.dp) {
-  val ubinMargin = ubinMargin
-  val ubinBorder = ubinBorder
-  val ubinPadding = ubinPadding
-}
-
+//
+// class USizes(ubinMargin: Dp = 1.dp, ubinBorder: Dp = 1.dp, ubinPadding: Dp = 1.dp) {
+//   val ubinMargin = ubinMargin
+//   val ubinBorder = ubinBorder
+//   val ubinPadding = ubinPadding
+// }
+//
 // class UAlignments(horizontal: UAlignmentType = USTART, vertical: UAlignmentType = USTART) {
 //   val horizontal = horizontal
 //   val vertical = vertical
 // }
 
 
-val LocalUColors = staticCompositionLocalOf { lightUColors() }
+val LocalUColors = staticCompositionLocalOf {
+  "fjdskl"
+  // lightUColors()
+}
+val ble = lightUColors()
 
-val LocalUSizes = staticCompositionLocalOf { USizes() }
+// val LocalUSizes = staticCompositionLocalOf { USizes() }
 
 // val LocalUAlignments = staticCompositionLocalOf { UAlignments() }
 
