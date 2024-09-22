@@ -9,7 +9,6 @@ val Color.Companion.DarkBlue get() = Color(0xFF000088)
 val Color.Companion.DarkDarkBlue get() = Color(0xFF000044)
 val Color.Companion.DarkDarkGray get() = Color(0xFF222222)
 
-@Stable
 class UColors(
   ubinContent: Color,
   ubinBaseBackground: Color,
@@ -20,12 +19,12 @@ class UColors(
   // TODO_someday: tint border differently if scrollable??
 ) {
 
-  var ubinContent by mutableStateOf(ubinContent)
-  var ubinBaseBackground by mutableStateOf(ubinBaseBackground)
-  var ubinTintBackground by mutableStateOf(ubinTintBackground)
-  var ubinTintBorder by mutableStateOf(ubinTintBorder)
-  var ubinTintBorderSelected by mutableStateOf(ubinTintBorderSelected)
-  var ubinTintBorderClickable by mutableStateOf(ubinTintBorderClickable)
+  val ubinContent = ubinContent
+  val ubinBaseBackground = ubinBaseBackground
+  val ubinTintBackground = ubinTintBackground
+  val ubinTintBorder = ubinTintBorder
+  val ubinTintBorderSelected = ubinTintBorderSelected
+  val ubinTintBorderClickable = ubinTintBorderClickable
 
   val ubinBackground
     @Composable

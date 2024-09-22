@@ -2,20 +2,26 @@ package pl.mareklangiewicz.udemo
 
 import androidx.compose.runtime.*
 import org.jetbrains.compose.web.*
-import pl.mareklangiewicz.uwidgets.*
-
-private val demoWholeAppOnCanvas: Boolean = false
-// private val demoWholeAppOnCanvas: Boolean = true
+import pl.mareklangiewicz.utheme.LocalAli
 
 fun main() {
-  console.log("UDemo App Js started.")
-  console.log("Kotlin version: ${KotlinVersion.CURRENT}")
-  if (demoWholeAppOnCanvas) {
-    console.log("Rendering whole demo app on one big canvas")
-    // inside UDemo there are some comparisons with dom based and canvas/skiko based stuff side by side,
-    // but in this configuration, the "dom" versions are actually also canvas/skiko based.
-    renderComposableCanvasAppOnWasmReady("Whole UDemo in Canvas (No DOM impl used)") { AppDom() }
-  } else renderComposableInBody { AppDom() }
+  println("bla".getCompileErr()) // debug works fine; assemble fails (on task compileProductionExecutableKotlinJs)
+  renderComposableInBody {}
 }
 
-@Composable private fun AppDom() = UWidgetsDom { UDemo() }
+
+fun Any.getCompileErr(): Boolean = when {
+  this is ULong -> true
+  else -> false
+}
+
+// needed to reproduce compile error even though not used
+@Composable private fun AppDom() {
+
+  CompositionLocalProvider(
+    // LocalAli provides "Ali2", // this line is not even needed to reproduce
+  ) {
+    LocalAli.current
+  }
+}
+

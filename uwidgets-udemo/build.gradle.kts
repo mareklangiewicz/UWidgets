@@ -24,7 +24,7 @@ plugins {
 
 // workaround for crazy gradle bugs like this one or similar:
 // https://youtrack.jetbrains.com/issue/KT-43500/KJS-IR-Failed-to-resolve-Kotlin-library-on-attempting-to-resolve-compileOnly-transitive-dependency-from-direct-dependency
-repositories { maven(repos.composeJbDev) }
+// repositories { maven(repos.composeJbDev) }
 
 val namespace = "pl.mareklangiewicz.uwidemo"
 val details = rootExtLibDetails.copy(namespace = namespace)
@@ -37,13 +37,13 @@ defaultBuildTemplateForFullMppLib(details) {
 
 kotlin {
   sourceSets {
-    val androidMain by getting {
-      dependencies {
-        // will be integrated in templates when preview is commonized
-        implementation(AndroidX.Compose.Ui.tooling)
-        implementation(AndroidX.Compose.Ui.tooling_preview)
-      }
-    }
+    // val androidMain by getting {
+    //   dependencies {
+    //     // will be integrated in templates when preview is commonized
+    //     implementation(AndroidX.Compose.Ui.tooling)
+    //     implementation(AndroidX.Compose.Ui.tooling_preview)
+    //   }
+    // }
   }
 }
 

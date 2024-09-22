@@ -17,9 +17,9 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
  *    (immutable - simple but less reactive/dynamic)
  */
 @Composable fun UTheme(
-  colors: UColors = UTheme.colors,
-  sizes: USizes = UTheme.sizes,
-  alignments: UAlignments = UTheme.alignments,
+  colors: UColors = lightUColors(),
+  sizes: USizes = USizes(),
+  alignments: UAlignments = UAlignments(),
   content: @Composable () -> Unit,
 ) = CompositionLocalProvider(
   LocalUColors provides colors,
@@ -94,20 +94,27 @@ object UTheme {
     get() = LocalUAlignments.current
 }
 
-@Stable class USizes(ubinMargin: Dp = 1.dp, ubinBorder: Dp = 1.dp, ubinPadding: Dp = 1.dp) {
-  var ubinMargin by mutableStateOf(ubinMargin)
-  var ubinBorder by mutableStateOf(ubinBorder)
-  var ubinPadding by mutableStateOf(ubinPadding)
+class USizes(ubinMargin: Dp = 1.dp, ubinBorder: Dp = 1.dp, ubinPadding: Dp = 1.dp) {
+  val ubinMargin = ubinMargin
+  val ubinBorder = ubinBorder
+  val ubinPadding = ubinPadding
 }
 
-@Stable class UAlignments(horizontal: UAlignmentType = USTART, vertical: UAlignmentType = USTART) {
-  var horizontal by mutableStateOf(horizontal)
-  var vertical by mutableStateOf(vertical)
+class UAlignments(horizontal: UAlignmentType = USTART, vertical: UAlignmentType = USTART) {
+  val horizontal = horizontal
+  val vertical = vertical
 }
 
 
-private val LocalUColors = staticCompositionLocalOf { lightUColors() }
+val LocalUColors = staticCompositionLocalOf { lightUColors() }
 
-private val LocalUSizes = staticCompositionLocalOf { USizes() }
+val LocalUSizes = staticCompositionLocalOf { USizes() }
 
-private val LocalUAlignments = staticCompositionLocalOf { UAlignments() }
+val LocalUAlignments = staticCompositionLocalOf { UAlignments() }
+
+
+
+
+
+
+val LocalAli = staticCompositionLocalOf<String> { "Aliii1" }

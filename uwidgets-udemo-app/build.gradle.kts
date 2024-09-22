@@ -22,7 +22,7 @@ plugins {
 
 // workaround for crazy gradle bugs like this one or simillar:
 // https://youtrack.jetbrains.com/issue/KT-43500/KJS-IR-Failed-to-resolve-Kotlin-library-on-attempting-to-resolve-compileOnly-transitive-dependency-from-direct-dependency
-repositories { maven(repos.composeJbDev) }
+// repositories { maven(repos.composeJbDev) }
 
 val newNamespace = "pl.mareklangiewicz.udemapp"
 
@@ -40,11 +40,11 @@ defaultBuildTemplateForFullMppApp(newDetails) {
 
 kotlin {
   sourceSets {
-    val androidMain by getting {
-      dependencies {
-        implementation(AndroidX.Compose.Ui.tooling_preview)
-      }
-    }
+    // val androidMain by getting {
+    //   dependencies {
+    //     implementation(AndroidX.Compose.Ui.tooling_preview)
+    //   }
+    // }
   }
 }
 
@@ -59,6 +59,16 @@ setMyWeirdSubstitutions(
 // // https://github.com/mipastgt/JavaForumStuttgartTalk2022/blob/1bdec6884c89def8ca461c084f6cb08553cffaa5/PolySpiralMpp/build.gradle.kts#L169
 // compose.experimental.web.application {} // needed for onWasmReady etc.
 
+//
+// configurations.configureEach {
+//   withDependencies {
+//     configureEach {
+//       when {
+//         group.orEmpty().contains("compose") -> println(this)
+//       }
+//     }
+//   }
+// }
 
 
 // region [[Full MPP App Build Template]]

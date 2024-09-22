@@ -17,8 +17,19 @@ plugins {
 
 // endregion [[Full Root Build Imports and Plugs]]
 
+val enableJvm = false
+
 val enableJs = true
-// TODO TRACK NEW JS BLOCKING ISSUE:
+// TODO NOW: investigate ktjs compilation issue on task: compileProductionExecutableKotlinJs
+//   e: java.lang.IllegalStateException: Class has no primary constructor: kotlin.ULong
+//   at org.jetbrains.kotlin.backend.common.InlineClassesUtils.getInlineClassUnderlyingType(CommonBackendContext.kt:112)
+//   at org.jetbrains.kotlin.ir.backend.js.utils.JsInlineClassesUtils.getInlinedClass(JsInlineClassesUtils.kt:27)
+//   at org.jetbrains.kotlin.ir.backend.js.transformers.irToJs.JsIntrinsicTransformers.lambda$34$lambda$18(JsIntrinsicTransformers.kt:184)
+//   at org.jetbrains.kotlin.ir.backend.js.transformers.irToJs.JsAstUtilsKt.translateCall(jsAstUtils.kt:174)
+
+
+
+// TODO_someday (check if actually fixed):
 // https://youtrack.jetbrains.com/issue/KT-67330/K2-Wasm-Compose-const-val-property-must-have-a-const-initializer
 //
 // > Task :uwidgets-udemo:compileKotlinJs FAILED
@@ -31,7 +42,7 @@ val enableJs = true
 // at org.jetbrains.kotlin.backend.common.serialization.signature.PublicIdSignatureComputer.inFile(IdSignatureFactory.kt:40)
 
 
-val enableAndro = true
+val enableAndro = false
 // TODO TRACK MAJOR ISSUE WITH ANDROID (MY REPORT):
 //  https://youtrack.jetbrains.com/issue/KT-64621/K2-Beta2-compileDebugSources-exception-with-Compose-MPP
 // TODO TRACK ANDRO ISSUE (this one can take a while, so I added workaround already - "onMyPointerEvent"):
@@ -41,7 +52,7 @@ val enablePublishing = findProject(":kground") == null
 // (see settings.gradle.kts) so it would also publish these with wrong description and ver etc.
 // exception: publishToMavenLocal for debugging
 
-rootExtString["verKGround"] = "0.0.73" // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
+rootExtString["verKGround"] = "0.0.79" // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
 
 
 defaultBuildTemplateForRootProject(
@@ -51,6 +62,7 @@ defaultBuildTemplateForRootProject(
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
     version = Ver(0, 0, 28),
     settings = LibSettings(
+      withJvm = enableJvm,
       withJs = enableJs,
       withSonatypeOssPublishing = enablePublishing,
       compose = LibComposeSettings(

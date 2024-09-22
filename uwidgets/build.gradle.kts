@@ -24,7 +24,7 @@ plugins {
 
 // workaround for crazy gradle bugs like this one or simillar:
 // https://youtrack.jetbrains.com/issue/KT-43500/KJS-IR-Failed-to-resolve-Kotlin-library-on-attempting-to-resolve-compileOnly-transitive-dependency-from-direct-dependency
-repositories { maven(repos.composeJbDev) }
+// repositories { maven(repos.composeJbDev) }
 
 defaultBuildTemplateForFullMppLib {
   api(Langiewicz.kground) // setMyWeirdSubstitutions can change it to local project (depending on settings.gradle.kts).
