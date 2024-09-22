@@ -17,8 +17,13 @@ plugins {
 
 // endregion [[Full Root Build Imports and Plugs]]
 
+val enableJvm = true
+
 val enableJs = true
-// TODO TRACK NEW JS BLOCKING ISSUE:
+// FIXME: Js production compilation can be broken. Track this:
+// https://youtrack.jetbrains.com/issue/KT-71656/K2-JS-compiler-error-Illegal-state-No-primary-constructor-ULong
+
+// TODO_someday: check this older issue
 // https://youtrack.jetbrains.com/issue/KT-67330/K2-Wasm-Compose-const-val-property-must-have-a-const-initializer
 //
 // > Task :uwidgets-udemo:compileKotlinJs FAILED
@@ -41,7 +46,7 @@ val enablePublishing = findProject(":kground") == null
 // (see settings.gradle.kts) so it would also publish these with wrong description and ver etc.
 // exception: publishToMavenLocal for debugging
 
-rootExtString["verKGround"] = "0.0.73" // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
+rootExtString["verKGround"] = "0.0.79" // https://s01.oss.sonatype.org/content/repositories/releases/pl/mareklangiewicz/kground/
 
 
 defaultBuildTemplateForRootProject(
@@ -49,8 +54,9 @@ defaultBuildTemplateForRootProject(
     name = "UWidgets",
     description = "Micro widgets for Compose Multiplatform",
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-    version = Ver(0, 0, 28),
+    version = Ver(0, 0, 29),
     settings = LibSettings(
+      withJvm = enableJvm,
       withJs = enableJs,
       withSonatypeOssPublishing = enablePublishing,
       compose = LibComposeSettings(
