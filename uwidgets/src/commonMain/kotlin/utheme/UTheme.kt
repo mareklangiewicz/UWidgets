@@ -1,6 +1,8 @@
 package pl.mareklangiewicz.utheme
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.uwidgets.*
 // import pl.mareklangiewicz.uwidgets.UAlignmentType.*
@@ -104,13 +106,14 @@ import pl.mareklangiewicz.uwidgets.*
 //   val horizontal = horizontal
 //   val vertical = vertical
 // }
-
-
-val LocalUColors = staticCompositionLocalOf {
-  "fjdskl"
-  // lightUColors()
-}
-val ble = lightUColors()
+//
+//
+// val LocalUColors = staticCompositionLocalOf {
+//   "fjdskl"
+//   // lightUColors()
+// }
+// val ble = UColors(Black, Black, Black, Black, Black)
+val x = Black.copy(alpha = 0.5f)
 
 // val LocalUSizes = staticCompositionLocalOf { USizes() }
 

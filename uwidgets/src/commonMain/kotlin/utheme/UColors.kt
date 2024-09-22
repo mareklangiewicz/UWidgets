@@ -15,7 +15,7 @@ class UColors(
   ubinTintBackground: Color,
   ubinTintBorder: Color,
   ubinTintBorderSelected: Color,
-  ubinTintBorderClickable: Color = ubinTintBorderSelected.copy(alpha = ubinTintBorderSelected.alpha / 2),
+  ubinTintBorderClickable: Color = ubinTintBorderSelected.copy(alpha = 0.5f),
   // TODO_someday: tint border differently if scrollable??
 ) {
 
@@ -24,20 +24,20 @@ class UColors(
   val ubinTintBackground = ubinTintBackground
   val ubinTintBorder = ubinTintBorder
   val ubinTintBorderSelected = ubinTintBorderSelected
-  val ubinTintBorderClickable = ubinTintBorderClickable
+  // val ubinTintBorderClickable = ubinTintBorderClickable
 
-  val ubinBackground
-    @Composable
-    @ReadOnlyComposable
-    get() = ubinTintBackground
-      .copy(alpha = ubinTintBackground.alpha * UDepth.appearance)
-      .compositeOver(ubinBaseBackground)
-
-  @Composable fun ubinBorder(selected: Boolean = false, clickable: Boolean = false) =
-    ubinBackground
-      .tintIf(true, ubinTintBorder)
-      .tintIf(selected, ubinTintBorderSelected)
-      .tintIf(clickable, ubinTintBorderClickable)
+  // val ubinBackground
+  //   @Composable
+  //   @ReadOnlyComposable
+  //   get() = ubinTintBackground
+  //     .copy(alpha = ubinTintBackground.alpha * UDepth.appearance)
+  //     .compositeOver(ubinBaseBackground)
+  //
+  // @Composable fun ubinBorder(selected: Boolean = false, clickable: Boolean = false) =
+  //   ubinBackground
+  //     .tintIf(true, ubinTintBorder)
+  //     .tintIf(selected, ubinTintBorderSelected)
+  //     .tintIf(clickable, ubinTintBorderClickable)
 }
 
 private fun Color.tintIf(condition: Boolean, tintColor: Color) =
