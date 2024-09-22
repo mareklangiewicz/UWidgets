@@ -56,7 +56,11 @@ develocity {
 
 // endregion [[My Settings Stuff]]
 
-include(":uwidgets", ":uwidgets-udemo", ":uwidgets-udemo-app")
+include(
+  ":uwidgets",
+  ":uwidgets-udemo",
+  ":uwidgets-udemo-app",
+)
 
 
 val kgroundDir = File(rootDir, "../KGround/kground").normalize()

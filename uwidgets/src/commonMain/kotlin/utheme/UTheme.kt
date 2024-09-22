@@ -3,7 +3,7 @@ package pl.mareklangiewicz.utheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
 import pl.mareklangiewicz.uwidgets.*
-import pl.mareklangiewicz.uwidgets.UAlignmentType.*
+// import pl.mareklangiewicz.uwidgets.UAlignmentType.*
 
 /**
  * Warning: default values reuse mutable states with colors, sizes etc.
@@ -16,17 +16,17 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
  * 2. MaterialTheme.shapes
  *    (immutable - simple but less reactive/dynamic)
  */
-@Composable fun UTheme(
-  colors: UColors = lightUColors(),
-  sizes: USizes = USizes(),
-  alignments: UAlignments = UAlignments(),
-  content: @Composable () -> Unit,
-) = CompositionLocalProvider(
-  LocalUColors provides colors,
-  LocalUSizes provides sizes,
-  LocalUAlignments provides alignments,
-  content = content,
-)
+// @Composable fun UTheme(
+//   colors: UColors = lightUColors(),
+//   sizes: USizes = USizes(),
+//   alignments: UAlignments = UAlignments(),
+//   content: @Composable () -> Unit,
+// ) = CompositionLocalProvider(
+//   LocalUColors provides colors,
+//   LocalUSizes provides sizes,
+//   LocalUAlignments provides alignments,
+//   content = content,
+// )
 
 // TODO_someday: support themes resembling winamp themes like:
 // https://twitter.com/Ajumplakdibampa/status/1555828578667085824
@@ -44,55 +44,55 @@ import pl.mareklangiewicz.uwidgets.UAlignmentType.*
  * Also, I want to try to keep UWidgets ("micro" widgets) implementation small/"micro".
  * (so for now I'm reluctant to introducing additional copying like in material3 colorScheme)
  */
-@Composable fun UAlign(
-  horizontal: UAlignmentType = UTheme.alignments.horizontal,
-  vertical: UAlignmentType = UTheme.alignments.vertical,
-  content: @Composable () -> Unit,
-) = UTheme(alignments = UAlignments(horizontal, vertical), content = content)
+// @Composable fun UAlign(
+//   horizontal: UAlignmentType = UTheme.alignments.horizontal,
+//   vertical: UAlignmentType = UTheme.alignments.vertical,
+//   content: @Composable () -> Unit,
+// ) = UTheme(alignments = UAlignments(horizontal, vertical), content = content)
+//
+// // I do it often so let's have this convenient fun even if it makes code less "micro"
+// // "UAll" prefix is also intentional to be similar to "UAlign" to play nicely with IDE completion
+// @Composable fun UAllStart(content: @Composable () -> Unit) = UAlign(USTART, USTART, content)
+// @Composable fun UAllEnd(content: @Composable () -> Unit) = UAlign(UEND, UEND, content)
+// @Composable fun UAllCenter(content: @Composable () -> Unit) = UAlign(UCENTER, UCENTER, content)
+// @Composable fun UAllStretch(content: @Composable () -> Unit) = UAlign(USTRETCH, USTRETCH, content)
+//
+// @Composable fun UAllStartBox(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
+//   UAllStart { UBox(mod, selected, content) }
+//
+// @Composable fun UAllStartRow(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
+//   UAllStart { URow(mod, selected, content) }
+//
+// @Composable fun UAllStartColumn(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
+//   UAllStart { UColumn(mod, selected, content) }
+//
+// @Composable fun UAllStretchBox(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
+//   UAllStretch { UBox(mod, selected, content) }
+//
+// @Composable fun UAllStretchRow(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
+//   UAllStretch { URow(mod, selected, content) }
+//
+// @Composable fun UAllStretchColumn(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
+//   UAllStretch { UColumn(mod, selected, content) }
 
-// I do it often so let's have this convenient fun even if it makes code less "micro"
-// "UAll" prefix is also intentional to be similar to "UAlign" to play nicely with IDE completion
-@Composable fun UAllStart(content: @Composable () -> Unit) = UAlign(USTART, USTART, content)
-@Composable fun UAllEnd(content: @Composable () -> Unit) = UAlign(UEND, UEND, content)
-@Composable fun UAllCenter(content: @Composable () -> Unit) = UAlign(UCENTER, UCENTER, content)
-@Composable fun UAllStretch(content: @Composable () -> Unit) = UAlign(USTRETCH, USTRETCH, content)
 
-@Composable fun UAllStartBox(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
-  UAllStart { UBox(mod, selected, content) }
-
-@Composable fun UAllStartRow(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
-  UAllStart { URow(mod, selected, content) }
-
-@Composable fun UAllStartColumn(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
-  UAllStart { UColumn(mod, selected, content) }
-
-@Composable fun UAllStretchBox(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
-  UAllStretch { UBox(mod, selected, content) }
-
-@Composable fun UAllStretchRow(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
-  UAllStretch { URow(mod, selected, content) }
-
-@Composable fun UAllStretchColumn(mod: Mod = Mod, selected: Boolean = false, content: @Composable () -> Unit) =
-  UAllStretch { UColumn(mod, selected, content) }
-
-
-object UTheme {
-
-  val colors: UColors
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalUColors.current
-
-  val sizes: USizes
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalUSizes.current
-
-  val alignments: UAlignments
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalUAlignments.current
-}
+// object UTheme {
+//
+//   val colors: UColors
+//     @Composable
+//     @ReadOnlyComposable
+//     get() = LocalUColors.current
+//
+//   val sizes: USizes
+//     @Composable
+//     @ReadOnlyComposable
+//     get() = LocalUSizes.current
+//
+//   val alignments: UAlignments
+//     @Composable
+//     @ReadOnlyComposable
+//     get() = LocalUAlignments.current
+// }
 
 class USizes(ubinMargin: Dp = 1.dp, ubinBorder: Dp = 1.dp, ubinPadding: Dp = 1.dp) {
   val ubinMargin = ubinMargin
@@ -100,17 +100,17 @@ class USizes(ubinMargin: Dp = 1.dp, ubinBorder: Dp = 1.dp, ubinPadding: Dp = 1.d
   val ubinPadding = ubinPadding
 }
 
-class UAlignments(horizontal: UAlignmentType = USTART, vertical: UAlignmentType = USTART) {
-  val horizontal = horizontal
-  val vertical = vertical
-}
+// class UAlignments(horizontal: UAlignmentType = USTART, vertical: UAlignmentType = USTART) {
+//   val horizontal = horizontal
+//   val vertical = vertical
+// }
 
 
 val LocalUColors = staticCompositionLocalOf { lightUColors() }
 
 val LocalUSizes = staticCompositionLocalOf { USizes() }
 
-val LocalUAlignments = staticCompositionLocalOf { UAlignments() }
+// val LocalUAlignments = staticCompositionLocalOf { UAlignments() }
 
 
 
