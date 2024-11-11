@@ -3,6 +3,7 @@ package pl.mareklangiewicz.uwidgets
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.*
 import pl.mareklangiewicz.kground.*
+import pl.mareklangiewicz.kground.tee.getRunningTimeMs
 import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.ulog.hack.*
 import pl.mareklangiewicz.uwidgets.UReports.*
@@ -42,13 +43,13 @@ class UReports(val log: (Any?) -> Unit = { ulog.d(it.ustr) }) : Iterable<Entry> 
     entries.add(Entry(r))
   }
 
-  data class Entry(val report: UReport, val timeMS: Long = getCurrentTimeMs()) {
+  data class Entry(val report: UReport, val timeMS: Long = getRunningTimeMs()) {
     val key: String get() = report.first
     val data: Any? get() = report.second
   }
 }
 
-fun Long.asTimeUStr() = (this / 1000.0).ustr.substring(startIndex = 7)
+fun Long.asTimeUStr() = ustr // FIXME: reanalyze
 
 val Entry.timeUStr get() = timeMS.asTimeUStr()
 
@@ -75,4 +76,3 @@ fun UReports.eqAt(vararg indices: Int) {
   val expected = this[indices[0]]
   for (i in indices.drop(1)) this[i].hasKeyAndData(expected.key, expected.data)
 }
-
