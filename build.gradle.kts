@@ -54,7 +54,7 @@ defaultBuildTemplateForRootProject(
     name = "UWidgets",
     description = "Micro widgets for Compose Multiplatform",
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-    version = Ver(0, 0, 32),
+    version = Ver(0, 0, 33),
     settings = LibSettings(
       withJvm = enableJvm,
       withJs = enableJs,
