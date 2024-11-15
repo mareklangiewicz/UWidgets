@@ -54,7 +54,7 @@ defaultBuildTemplateForRootProject(
     name = "UWidgets",
     description = "Micro widgets for Compose Multiplatform",
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-    version = Ver(0, 0, 34),
+    version = Ver(0, 0, 37),
     settings = LibSettings(
       withJvm = enableJvm,
       withJs = enableJs,
@@ -64,7 +64,7 @@ defaultBuildTemplateForRootProject(
         withComposeHtmlSvg = enableJs,
         withComposeTestHtmlUtils = enableJs,
       ),
-      andro = if (enableAndro) LibAndroSettings(sdkCompilePreview = Vers.AndroSdkPreview) else null,
+      andro = if (enableAndro) LibAndroSettings() else null,
     ),
   ), // stuff like appMainPackage, namespace, etc. are customized at module level.
 )
