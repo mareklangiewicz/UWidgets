@@ -37,15 +37,10 @@ jobs:
     - id: 'step-5'
       uses: 'actions/upload-artifact@v4'
       with:
-        path: 'uwidgets-demo-app/build/compose/binaries/main/deb/*.deb'
+        path: |-
+          uwidgets-demo-app/build/compose/binaries/main/deb/*.deb
+          uwidgets-demo-app/build/outputs/apk/debug/*.apk
+          uwidgets-demo-app/build/outputs/apk/release/*.apk
     - id: 'step-6'
-      uses: 'actions/upload-artifact@v4'
-      with:
-        path: 'uwidgets-demo-app/build/outputs/apk/debug/*.apk'
-    - id: 'step-7'
-      uses: 'actions/upload-artifact@v4'
-      with:
-        path: 'uwidgets-udemo-app/build/outputs/apk/release/*.apk'
-    - id: 'step-8'
       name: 'publishToSonatype closeAndReleaseSonatypeStagingRepository'
       run: './gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository --no-configuration-cache --no-parallel'
