@@ -42,7 +42,7 @@ pluginManagement {
 }
 
 plugins {
-  id("pl.mareklangiewicz.deps.settings") version "0.3.58" // https://plugins.gradle.org/search?term=mareklangiewicz
+  id("pl.mareklangiewicz.deps.settings") version "0.3.62" // https://plugins.gradle.org/search?term=mareklangiewicz
   id("com.gradle.develocity") version "3.18.2" // https://docs.gradle.com/develocity/gradle-plugin/
 }
 
@@ -56,7 +56,7 @@ develocity {
 
 // endregion [[My Settings Stuff]]
 
-include(":uwidgets", ":uwidgets-udemo", ":uwidgets-udemo-app")
+include(":uwidgets", ":uwidgets-demo", ":uwidgets-demo-app")
 
 
 val kgroundDir = File(rootDir, "../KGround/kground").normalize()
