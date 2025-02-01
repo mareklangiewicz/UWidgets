@@ -33,7 +33,7 @@ private class UPropMod(val key: UPropKey, val value: Any?) : Element
 @Suppress("UNCHECKED_CAST")
 internal class UProps private constructor() {
 
-  private val state = arrayOfNulls<Any>(UPropKey.values().size)
+  private val state = arrayOfNulls<Any>(UPropKey.entries.size)
 
   // Invariant: No allocations during UProps lifecycle
 

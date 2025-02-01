@@ -3,7 +3,6 @@
 package pl.mareklangiewicz.uwidgets
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.*
@@ -132,7 +131,10 @@ private fun SyntheticEvent<*>.consume() {
   content: @Composable () -> Unit,
 ) {
   onUReport?.invoke("ubin" to type)
-  val parentType = LocalUBinType.current
+  val localType = LocalUBinType.current
+  val parentType = remember { localType }
+    // remembering before closure is workaround for error in browser
+    // FIXME_later: analyze more how should I do it correctly / what is actual error here.
   val attrs: AttrsScope<HTMLElement>.() -> Unit = {
     style {
       ustyleFor(type, alignHoriz, alignVerti, inline)
