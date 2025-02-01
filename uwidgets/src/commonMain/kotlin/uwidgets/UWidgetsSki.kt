@@ -133,7 +133,7 @@ private fun Mod.onUWheelSki(onWheel: (Offset) -> Unit) = onMyPointerEvent(Pointe
     var maxChildHeight = 0
     when (type) {
       UBOX -> {
-        val placeables = lOMutN<Placeable?>(measurables.size)
+        val placeables = MutLONs<Placeable?>(measurables.size)
 
         measurables.forEachIndexed { idx, measurable ->
           val (uhorizontal, uvertical) = measurable.ualignMod ?: parentAlignMod
@@ -209,7 +209,7 @@ private fun Mod.onUWheelSki(onWheel: (Offset) -> Unit) = onMyPointerEvent(Pointe
       // so they don't get smaller than max of wrapped children size (especially when bin is unbounded)
       // (see last commit for UBOX)
       UROW -> {
-        val placeables = lOMutN<Placeable?>(measurables.size)
+        val placeables = MutLONs<Placeable?>(measurables.size)
         measurables.forEachIndexed { idx, measurable ->
           val (uhorizontal, uvertical) = measurable.ualignMod ?: parentAlignMod
           // skip measuring stretched items (when normal bounded row width) (will measure it later)
@@ -255,7 +255,7 @@ private fun Mod.onUWheelSki(onWheel: (Offset) -> Unit) = onMyPointerEvent(Pointe
       }
 
       UCOLUMN -> {
-        val placeables = lOMutN<Placeable?>(measurables.size)
+        val placeables = MutLONs<Placeable?>(measurables.size)
         measurables.forEachIndexed { idx, measurable ->
           val (uhorizontal, uvertical) = measurable.ualignMod ?: parentAlignMod
           // skip measuring stretched items (when normal bounded column height) (will measure it later)

@@ -9,7 +9,7 @@ plugins {
   plug(plugs.KotlinMulti) apply false
   plug(plugs.KotlinJvm) apply false
   plug(plugs.KotlinMultiCompose) apply false
-  plug(plugs.ComposeJbStable) apply false // ComposeJb(Edge) is very slow to sync, clean, build (jb dev repo issue)
+  plug(plugs.ComposeJb) apply false // ComposeJb(Edge) is very slow to sync, clean, build (jb dev repo issue)
   plug(plugs.AndroLib) apply false
   plug(plugs.AndroApp) apply false
   plug(plugs.NexusPublish)
@@ -54,7 +54,7 @@ defaultBuildTemplateForRootProject(
     name = "UWidgets",
     description = "Micro widgets for Compose Multiplatform",
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-    version = Ver(0, 0, 38),
+    version = Ver(0, 0, 39),
     settings = LibSettings(
       withJvm = enableJvm,
       withJs = enableJs,
