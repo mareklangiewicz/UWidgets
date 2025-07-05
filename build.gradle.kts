@@ -12,6 +12,7 @@ plugins {
   plug(plugs.ComposeJb) apply false // ComposeJb(Edge) is very slow to sync, clean, build (jb dev repo issue)
   plug(plugs.AndroLib) apply false
   plug(plugs.AndroApp) apply false
+  plug(plugs.VannikPublish) apply false
 }
 
 // endregion [[Full Root Build Imports and Plugs]]
@@ -45,7 +46,7 @@ val enablePublishing = findProject(":kground") == null
 // (see settings.gradle.kts) so it would also publish these with wrong description and ver etc.
 // exception: publishToMavenLocal for debugging
 
-rootExtString["verKGround"] = "0.1.07" // https://central.sonatype.com/artifact/pl.mareklangiewicz/kground/versions
+rootExtString["verKGround"] = "0.1.14" // https://central.sonatype.com/artifact/pl.mareklangiewicz/kground/versions
 
 
 defaultBuildTemplateForRootProject(
@@ -53,17 +54,17 @@ defaultBuildTemplateForRootProject(
     name = "UWidgets",
     description = "Micro widgets for Compose Multiplatform",
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-    version = Ver(0, 0, 40),
+    version = Ver(0, 0, 41),
     settings = LibSettings(
       withJvm = enableJvm,
       withJs = enableJs,
-      withSonatypeOssPublishing = enablePublishing,
+      withCentralPublish = enablePublishing,
       compose = LibComposeSettings(
         withComposeHtmlCore = enableJs,
         withComposeHtmlSvg = enableJs,
         withComposeTestHtmlUtils = enableJs,
       ),
-      andro = if (enableAndro) LibAndroSettings() else null,
+      andro = if (enableAndro) LibAndroSettings(sdkCompile = 36, sdkTarget = 36) else null,
     ),
   ), // stuff like appMainPackage, namespace, etc. are customized at module level.
 )

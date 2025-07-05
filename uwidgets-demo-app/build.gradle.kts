@@ -2,6 +2,7 @@
 // region [[Full MPP App Build Imports and Plugs]]
 
 import com.android.build.api.dsl.*
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import org.jetbrains.compose.*
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.plugin.*
@@ -189,9 +190,9 @@ fun MavenPom.defaultPOM(lib: LibDetails) {
 
 fun Project.defaultPublishing(lib: LibDetails) = extensions.configure<MavenPublishBaseExtension> {
   propertiesTryOverride("signingInMemoryKey", "signingInMemoryKeyPassword", "mavenCentralPassword")
-  if (lib.settings.withSonatypeOssPublishing)
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = false)
+  if (lib.settings.withCentralPublish) publishToMavenCentral(automaticRelease = false)
   signAllPublications()
+  signAllPublicationsFixSignatoryIfFound()
   // Note: artifactId is not lib.name but current project.name (module name)
   coordinates(groupId = lib.group, artifactId = name, version = lib.version.str)
   pom { defaultPOM(lib) }
@@ -285,7 +286,10 @@ fun KotlinMultiplatformExtension.allDefault(
       val jvmTest by getting {
         dependencies {
           if (withTestJUnit4) implementation(JUnit.junit)
-          if (withTestJUnit5) implementation(Org.JUnit.Jupiter.junit_jupiter_engine)
+          if (withTestJUnit5) {
+            implementation(Org.JUnit.Jupiter.junit_jupiter_engine)
+            runtimeOnly(Org.JUnit.Platform.junit_platform_launcher)
+          }
           if (withTestUSpekX) {
             implementation(Langiewicz.uspekx)
             if (withTestJUnit4) implementation(Langiewicz.uspekx_junit4)
@@ -634,7 +638,7 @@ fun Project.defaultPublishingOfAndroLib(
     extensions.configure<PublishingExtension> {
       publications.register<MavenPublication>(componentName) {
         from(components[componentName])
-        defaultPOM(lib)
+        pom { defaultPOM(lib) }
       }
     }
   }
@@ -677,10 +681,7 @@ fun Project.defaultBuildTemplateForAndroApp(
     jvmTargetVer = null, // jvmVer is set jvmToolchain in fun allDefault
   )
   defaultGroupAndVerAndDescription(details)
-  variant?.let {
-    defaultPublishingOfAndroApp(details, it)
-    defaultSigning()
-  }
+  variant?.let { defaultPublishingOfAndroApp(details, it) }
 }
 
 fun ApplicationExtension.defaultAndroApp(
