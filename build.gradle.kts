@@ -46,7 +46,7 @@ val enablePublishing = findProject(":kground") == null
 // (see settings.gradle.kts) so it would also publish these with wrong description and ver etc.
 // exception: publishToMavenLocal for debugging
 
-rootExtString["verKGround"] = "0.1.14" // https://central.sonatype.com/artifact/pl.mareklangiewicz/kground/versions
+rootExtString["verKGround"] = "0.1.15" // https://central.sonatype.com/artifact/pl.mareklangiewicz/kground/versions
 
 
 defaultBuildTemplateForRootProject(
@@ -64,7 +64,7 @@ defaultBuildTemplateForRootProject(
         withComposeHtmlSvg = enableJs,
         withComposeTestHtmlUtils = enableJs,
       ),
-      andro = if (enableAndro) LibAndroSettings(sdkCompile = 36, sdkTarget = 36) else null,
+      andro = if (enableAndro) LibAndroSettings() else null,
     ),
   ), // stuff like appMainPackage, namespace, etc. are customized at module level.
 )
