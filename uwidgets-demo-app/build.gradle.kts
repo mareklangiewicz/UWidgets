@@ -41,11 +41,13 @@ defaultBuildTemplateForFullMppApp(newDetails) {
 
 kotlin {
   sourceSets {
+/*
     val androidMain by getting {
       dependencies {
         implementation(AndroidX.Compose.Ui.tooling_preview)
       }
     }
+*/
   }
 }
 
@@ -610,7 +612,7 @@ fun MutableSet<String>.defaultAndroExcludedResources() = addAll(
   ),
 )
 
-fun CommonExtension<*, *, *, *, *, *>.defaultCompileOptions(
+fun CommonExtension.defaultCompileOptions(
   jvmVer: String? = null, // it's better to use jvmToolchain (normally done in fun allDefault)
 ) = compileOptions {
   jvmVer?.let {
@@ -619,13 +621,15 @@ fun CommonExtension<*, *, *, *, *, *>.defaultCompileOptions(
   }
 }
 
-fun CommonExtension<*, *, *, *, *, *>.defaultComposeStuff() {
+fun CommonExtension.defaultComposeStuff() {
+/*
   buildFeatures {
     compose = true
   }
+*/
 }
 
-fun CommonExtension<*, *, *, *, *, *>.defaultPackagingOptions() = packaging {
+fun CommonExtension.defaultPackagingOptions() = packaging {
   resources.excludes.defaultAndroExcludedResources()
 }
 

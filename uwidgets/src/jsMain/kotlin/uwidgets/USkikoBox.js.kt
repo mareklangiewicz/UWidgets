@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
+import androidx.compose.ui.window.ComposeViewport
 import kotlinx.browser.*
 import kotlinx.coroutines.*
 import org.jetbrains.compose.web.attributes.*
@@ -110,12 +111,18 @@ private class USkikoComposeWindow(canvas: HTMLCanvasElement) {
 
   @OptIn(ExperimentalComposeUiApi::class)
   fun setContent(content: @Composable () -> Unit) =
-    CanvasBasedWindow(
-      canvasElementId = canvasId,
-      requestResize = ::canvasRequestSize,
-      applyDefaultStyles = true,
+    ComposeViewport(
+      document.getElementById(canvasId)!!.parentElement!!,
       content = content,
     )
+    // UPDATE: I'm just trying fast to replace deprecated CanvasBasedWindow with ComposeViewport
+    // TODO NOW: It's incorrect! Read api changes, analyze and do it the right way!
+    // CanvasBasedWindow(
+    //   canvasElementId = canvasId,
+    //   requestResize = ::canvasRequestSize,
+    //   applyDefaultStyles = true,
+    //   content = content,
+    // )
 
   // FIXME: Fix disposing ASAP: we recreate USkikoBox all the time in tests [MyExaminedLayoutUSpekFun]
   fun dispose() = console.log("CanvasBasedWindow dispose is not implemented.")
@@ -138,10 +145,13 @@ fun renderComposableCanvasAppOnWasmReady(
   title: String? = null,
   content: @Composable () -> Unit,
 ) = onWasmReady {
-  val canvas = document.createElement("canvas")
-  val id = randomId("ccaowr")
-  canvas.id = id
-  document.body!!.replaceWith(canvas)
-  CanvasBasedWindow(title, id, content = content)
+  // val canvas = document.createElement("canvas")
+  // val id = randomId("ccaowr")
+  // canvas.id = id
+  // document.body!!.replaceWith(canvas)
+  // CanvasBasedWindow(title, id, content = content)
+  ComposeViewport(document.body!!, content = content)
+  // UPDATE: I'm just trying fast to replace deprecated CanvasBasedWindow with ComposeViewport
+  // TODO NOW: read api changes, analyze and do it the right way!
 
 }

@@ -36,7 +36,7 @@ val enableJs = true
 // at org.jetbrains.kotlin.backend.common.serialization.signature.PublicIdSignatureComputer.inFile(IdSignatureFactory.kt:40)
 
 
-val enableAndro = true
+val enableAndro = false
 // TODO TRACK MAJOR ISSUE WITH ANDROID (MY REPORT):
 //  https://youtrack.jetbrains.com/issue/KT-64621/K2-Beta2-compileDebugSources-exception-with-Compose-MPP
 // TODO TRACK ANDRO ISSUE (this one can take a while, so I added workaround already - "onMyPointerEvent"):
@@ -46,7 +46,7 @@ val enablePublishing = findProject(":kground") == null
 // (see settings.gradle.kts) so it would also publish these with wrong description and ver etc.
 // exception: publishToMavenLocal for debugging
 
-rootExtString["verKGround"] = "0.1.16" // https://central.sonatype.com/artifact/pl.mareklangiewicz/kground/versions
+rootExtString["verKGround"] = "0.1.18" // https://central.sonatype.com/artifact/pl.mareklangiewicz/kground/versions
 
 
 defaultBuildTemplateForRootProject(
@@ -54,7 +54,7 @@ defaultBuildTemplateForRootProject(
     name = "UWidgets",
     description = "Micro widgets for Compose Multiplatform",
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-    version = Ver(0, 0, 43),
+    version = Ver(0, 0, 45),
     settings = LibSettings(
       withJvm = enableJvm,
       withJs = enableJs,
