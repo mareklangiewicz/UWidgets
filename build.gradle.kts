@@ -46,7 +46,7 @@ val enablePublishing = findProject(":kground") == null
 // (see settings.gradle.kts) so it would also publish these with wrong description and ver etc.
 // exception: publishToMavenLocal for debugging
 
-rootExtString["verKGround"] = "0.1.18" // https://central.sonatype.com/artifact/pl.mareklangiewicz/kground/versions
+rootExtString["verKGround"] = "0.1.24" // https://central.sonatype.com/artifact/pl.mareklangiewicz/kground/versions
 
 
 defaultBuildTemplateForRootProject(
@@ -54,7 +54,7 @@ defaultBuildTemplateForRootProject(
     name = "UWidgets",
     description = "Micro widgets for Compose Multiplatform",
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-    version = Ver(0, 0, 45),
+    version = Ver(0, 0, 46),
     settings = LibSettings(
       withJvm = enableJvm,
       withJs = enableJs,
