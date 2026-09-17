@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+import pl.mareklangiewicz.deps.*
+import pl.mareklangiewicz.utils.extLib
+
 rootProject.name = "UWidgets"
 
 // import okio.Path.Companion.toOkioPath
@@ -42,8 +45,8 @@ pluginManagement {
 }
 
 plugins {
-  id("pl.mareklangiewicz.deps.settings") version "0.4.17" // https://plugins.gradle.org/search?term=mareklangiewicz
-  id("com.gradle.develocity") version "4.4.2" // https://docs.gradle.com/develocity/gradle-plugin/
+  id("pl.mareklangiewicz.deps.settings") version "0.4.59" // https://plugins.gradle.org/search?term=mareklangiewicz
+  id("com.gradle.develocity") version "4.5.1" // https://docs.gradle.com/develocity/gradle-plugin/
 }
 
 develocity {
@@ -55,6 +58,48 @@ develocity {
 }
 
 // endregion [[My Settings Stuff]]
+
+val enableJvm = true
+
+val enableJs = true
+// The root build.gradle.kts used to carry, next to this flag:
+//   FIXME: Js production compilation can be broken. Track this:
+//   https://youtrack.jetbrains.com/issue/KT-71656/K2-JS-compiler-error-Illegal-state-No-primary-constructor-ULong
+// Measured 2026-09-17 during the templatefun migration: it did NOT reproduce. Both
+// :uwidgets and :uwidgets-demo-app compileProductionExecutableKotlinJs succeed. What DOES bite is
+// heap -- at the old -Xmx2048m the same tasks died with OutOfMemoryError, and one of them surfaced
+// as a back-end CompilationException that reads exactly like a compiler bug. See gradle.properties.
+val enableAndro = false
+// TODO TRACK MAJOR ISSUE WITH ANDROID (MY REPORT):
+//  https://youtrack.jetbrains.com/issue/KT-64621/K2-Beta2-compileDebugSources-exception-with-Compose-MPP
+// TODO TRACK ANDRO ISSUE (this one can take a while, so I added workaround already - "onMyPointerEvent"):
+//  https://github.com/JetBrains/compose-multiplatform/issues/3167
+
+// Moved here from build.gradle.kts: the lib definition lives in settings now (gradle.extLib),
+// the same way template-raw/template-full do it, instead of rootExtLibDetails in the root build.
+gradle.extLib = lib(
+  info = myLibInfo(
+    name = "UWidgets",
+    description = "Micro widgets for Compose Multiplatform",
+    githubUrl = "https://github.com/mareklangiewicz/UWidgets",
+    version = Ver(0, 0, 46),
+  ),
+  flags = LibFlags(
+    withJvm = enableJvm,
+    withJs = enableJs,
+  ),
+  withCompose = true,
+  withAndro = enableAndro,
+  compose = LibCompose(
+    withComposeHtmlCore = enableJs,
+    withComposeHtmlSvg = enableJs,
+    withComposeTestHtmlUtils = enableJs,
+    // The reason this lib needs 0.4.59: its js target renders Compose UI on a skiko canvas
+    // (USkikoBoxDom -> ComposeViewport), so jsMain must hang off composeUiMain, not composeMain.
+    withComposeUiOnJs = enableJs,
+  ),
+  repos = LibRepos(withComposeJbDev = true),
+)
 
 include(":uwidgets", ":uwidgets-demo", ":uwidgets-demo-app")
 
