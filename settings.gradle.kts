@@ -45,7 +45,7 @@ pluginManagement {
 }
 
 plugins {
-  id("pl.mareklangiewicz.deps.settings") version "0.4.59" // https://plugins.gradle.org/search?term=mareklangiewicz
+  id("pl.mareklangiewicz.deps.settings") version "0.4.61" // https://plugins.gradle.org/search?term=mareklangiewicz
   id("com.gradle.develocity") version "4.5.1" // https://docs.gradle.com/develocity/gradle-plugin/
 }
 
@@ -94,7 +94,7 @@ gradle.extLib = lib(
     withComposeHtmlCore = enableJs,
     withComposeHtmlSvg = enableJs,
     withComposeTestHtmlUtils = enableJs,
-    // The reason this lib needs 0.4.59: its js target renders Compose UI on a skiko canvas
+    // The reason this lib needs at least 0.4.59: its js target renders Compose UI on a skiko canvas
     // (USkikoBoxDom -> ComposeViewport), so jsMain must hang off composeUiMain, not composeMain.
     withComposeUiOnJs = enableJs,
   ),
