@@ -26,7 +26,9 @@ plugins {
 // root lib's. Only the INFO differs -- flags/compose/andro are shared with gradle.extLib.
 val lib = gradle.extLib.let { it.copy(info = it.info.copy(namespace = "pl.mareklangiewicz.uwidemo")) }
 
-defaultBuildTemplateForFullMppLib(lib) {
+// Also published at pl.mareklangiewicz:uwidgets-demo, and also silently dropped by d51c44d.
+// Note `lib` stays POSITIONAL, so the new named argument follows it.
+defaultBuildTemplateForFullMppLib(lib, publish = LibPublish(toCentral = true)) {
   api(project(":uwidgets"))
   api(Langiewicz.uspek)
   api(Langiewicz.kground)

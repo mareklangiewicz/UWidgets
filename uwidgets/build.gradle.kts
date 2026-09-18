@@ -23,6 +23,11 @@ plugins {
 // endregion [[KMP Lib Build Imports and Plugs]]
 
 
-defaultBuildTemplateForFullMppLib {
+// Central publishing is restored here. It was ON before the templatefun migration
+// (withCentralPublish = enablePublishing, and enablePublishing = findProject(":kground") == null,
+// which is true in this repo), and d51c44d dropped the flag along with the local-kground
+// substitution hack it guarded -- turning Central OFF for a lib that is published at
+// pl.mareklangiewicz:uwidgets. As of 0.4.63 the intent is per-module and says so directly.
+defaultBuildTemplateForFullMppLib(publish = LibPublish(toCentral = true)) {
   api(Langiewicz.kground)
 }
