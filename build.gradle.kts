@@ -1,8 +1,9 @@
 
-// region [[KMP Root Build Template]]
+// region [[Full Root Build Imports and Plugs]]
 
 import pl.mareklangiewicz.defaults.*
 import pl.mareklangiewicz.utils.*
+import pl.mareklangiewicz.deps.*
 import pl.mareklangiewicz.templatefun.*
 
 plugins {
@@ -11,17 +12,16 @@ plugins {
   plug(plugs.KotlinJvm) apply false
   plug(plugs.KotlinMultiCompose) apply false
 
-  plug(plugs.ComposeJb) apply false // ComposeJb(Edge) is very slow to sync, clean, build (jb dev repo issue)
+  plug(plugs.ComposeJb) apply false // ComposeJbEdge can be very slow to sync, clean, build (jb dev repo issue)
 
   plug(plugs.AndroKmp) apply false
   plug(plugs.AndroApp) apply false
-
   plug(plugs.VannikPublish) apply false
 }
 
-defaultGroupAndVerAndDescription(gradle.extLib)
+// endregion [[Full Root Build Imports and Plugs]]
 
-// endregion [[KMP Root Build Template]]
+defaultGroupAndVerAndDescription(gradle.extLib)
 
 // Note: the lib definition (name/version/flags/compose) moved to settings.gradle.kts as
 // gradle.extLib, and the vendored root template that used to live here is gone -- it is

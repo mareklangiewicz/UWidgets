@@ -12,8 +12,8 @@ import pl.mareklangiewicz.utils.*
 import pl.mareklangiewicz.templatefun.*
 
 plugins {
-  id("pl.mareklangiewicz.templatefun")
   plugAll(
+    plugs.TemplateFunNoVer, // version comes from the root: a versioned request here fails in composite builds
     plugs.KotlinMulti,
     plugs.KotlinMultiCompose,
     plugs.ComposeJbNoVer,

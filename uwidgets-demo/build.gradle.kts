@@ -1,26 +1,28 @@
 
-// region [[KMP Lib Build Imports and Plugs]]
+// region [[Full MPP Lib Build Imports and Plugs]]
 
+import com.android.build.api.dsl.*
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import org.jetbrains.compose.*
 import org.jetbrains.kotlin.gradle.dsl.*
+import org.jetbrains.kotlin.gradle.plugin.*
 import pl.mareklangiewicz.defaults.*
 import pl.mareklangiewicz.deps.*
 import pl.mareklangiewicz.utils.*
-import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
-import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import pl.mareklangiewicz.templatefun.*
 
 plugins {
-  id("pl.mareklangiewicz.templatefun")
   plugAll(
+    plugs.TemplateFunNoVer, // version comes from the root: a versioned request here fails in composite builds
     plugs.KotlinMulti,
     plugs.KotlinMultiCompose,
     plugs.ComposeJbNoVer,
     plugs.VannikPublish,
   )
+  plug(plugs.AndroKmpNoVer) apply false // applied conditionally by defaultBuildTemplateForFullMppLib
 }
 
-// endregion [[KMP Lib Build Imports and Plugs]]
+// endregion [[Full MPP Lib Build Imports and Plugs]]
 
 // Its own namespace, so the published artifact and any android namespace stay distinct from the
 // root lib's. Only the INFO differs -- flags/compose/andro are shared with gradle.extLib.
