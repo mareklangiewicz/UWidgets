@@ -18,6 +18,7 @@ private enum class UPropKey {
 }
 
 typealias OnUClick = (Unit) -> Unit
+/** The drag delta in dp (not pixels), on every platform: use it as `DpOffset(x.dp, y.dp)` (`.dpo`). */
 typealias OnUDrag = (Offset) -> Unit
 typealias OnUWheel = (Offset) -> Unit
 typealias OnUReport = (UReport) -> Unit

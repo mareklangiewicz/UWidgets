@@ -84,18 +84,26 @@ internal open class UWidgetsSki(private val useM3Tabs: Boolean = false) : UWidge
 // FIXME NOW: jumps around. Check UWindowsDemoInternal()
 //  position - previousPosition is wrong when moving UBin while dragging!
 //  but looks like that's not the only issue here
-/** Reads the callback through [onUDragS] so recompositions don't restart the pointer input coroutine. */
+/**
+ * Drags on Alt + move (mouse), or on a pressed touch pointer moving (touch has no Alt).
+ * A touch drag is consumed, so an enclosing scroll container doesn't scroll along with it.
+ * Reads the callback through [onUDragS] so recompositions don't restart the pointer input coroutine.
+ */
 private fun Mod.onUDragSki(onUDragS: State<OnUDrag?>) = onPointerEvents(onUDragS) { e ->
-  if (e.type != PointerEventType.Move || !e.keyboardModifiers.isAltPressed) return@onPointerEvents
+  if (e.type != PointerEventType.Move) return@onPointerEvents
   val ch = e.changes.first()
-  if (ch.uptimeMillis - ch.previousUptimeMillis < 200) onUDragS.value?.invoke(ch.position - ch.previousPosition)
+  val touchDrag = ch.type == PointerType.Touch && ch.pressed && ch.previousPressed
+  if (!touchDrag && !e.keyboardModifiers.isAltPressed) return@onPointerEvents
+  if (touchDrag) ch.consume()
+  // Pixels -> dp: OnUDrag is in dp (see its kdoc), and px only equals dp at density 1 (desktop).
+  if (ch.uptimeMillis - ch.previousUptimeMillis < 200) onUDragS.value?.invoke((ch.position - ch.previousPosition) / density)
 }
 
 private fun Mod.onUWheelSki(onUWheelS: State<OnUWheel?>) = onPointerEvents(onUWheelS) { e ->
   if (e.type == PointerEventType.Scroll) onUWheelS.value?.invoke(e.changes.first().scrollDelta)
 }
 
-private fun Mod.onPointerEvents(key: Any?, onEvent: (PointerEvent) -> Unit) = pointerInput(key) {
+private fun Mod.onPointerEvents(key: Any?, onEvent: AwaitPointerEventScope.(PointerEvent) -> Unit) = pointerInput(key) {
   awaitPointerEventScope { while (true) onEvent(awaitPointerEvent()) }
 }
 
