@@ -79,5 +79,4 @@ fun UJobUi(
 
   // FIXME: move UReportsUi to more common (so it works without USkikoBox) (no skiko in KoWebExt)
   if (UWidgets.Local.current is UWidgetsSki) UReportsUi(ureports)
-  else println("FIXME! move UReportsUi")
 }

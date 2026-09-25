@@ -57,6 +57,8 @@ internal open class UWidgetsSki(private val useM3Tabs: Boolean = false) : UWidge
   val p = UProps.install(m)
   val hScrollS = if (p.uscrollHoriz) rememberScrollState() else null
   val vScrollS = if (p.uscrollVerti) rememberScrollState() else null
+  val onUDragS = rememberUpdatedState(p.onUDrag)
+  val onUWheelS = rememberUpdatedState(p.onUWheel)
   RawBinSki(
     type = type,
     mod = m
@@ -67,9 +69,9 @@ internal open class UWidgetsSki(private val useM3Tabs: Boolean = false) : UWidge
       // TODO: change .clickable to .onClick; use own nice looking multiplatform Indications,
       //  and maybe own predictable keyboard navigation (focus system is too unreliable and platform specific)
       //  But first check why onClick doesn't work on js in USkikoBox.
-      .andIfNotNull(p.onUDrag) { onUDrag -> onUDragSki(onUDrag) }
+      .andIf(p.onUDrag != null) { onUDragSki(onUDragS) }
       // TODO: UDrag with same config like in JS (required alt by default) (see UWidgets.js.kt)
-      .andIfNotNull(p.onUWheel) { onUWheel -> onUWheelSki(onUWheel) }
+      .andIf(p.onUWheel != null) { onUWheelSki(onUWheelS) }
       .background(p.backgroundColor)
       .border(p.borderWidth, p.borderColor)
       .padding(p.borderWidth + p.padding)
@@ -79,44 +81,22 @@ internal open class UWidgetsSki(private val useM3Tabs: Boolean = false) : UWidge
   ) { CompositionLocalProvider(LocalContentColor provides p.contentColor) { content() } }
 }
 
-// FIXME NOW: jumps around (when using lastPosition). Check UWindowsDemoInternal()
-//  position - lastPosition is wrong when moving UBin while dragging!
+// FIXME NOW: jumps around. Check UWindowsDemoInternal()
+//  position - previousPosition is wrong when moving UBin while dragging!
 //  but looks like that's not the only issue here
-//  Update: on the other hand: when using previousPosition it doesn't work without button pressed...
-@OptIn(ExperimentalComposeUiApi::class)
-private fun Mod.onUDragSki(onUDrag: (Offset) -> Unit) = composed {
-  val currentOnUDrag by rememberUpdatedState(onUDrag)
-  // var lastPosition by ustate(Offset.Unspecified)
-  this
-    // .onMyPointerEvent(PointerEventType.Enter) { lastPosition = it.changes.first().position }
-    // .onMyPointerEvent(PointerEventType.Exit) { lastPosition = Offset.Unspecified }
-    .onMyPointerEvent(PointerEventType.Move) {
-      if (
-        it.keyboardModifiers.isAltPressed //&& it.buttons.isPrimaryPressed
-      ) {
-        // for (ch in it.changes) {
-        //     println("ch")
-        //     println(ch)
-        // }
-        val ch = it.changes.first()
-        // ch.consume()
-        // if (lastPosition.isSpecified) {
-        if (ch.uptimeMillis - ch.previousUptimeMillis < 200) {
-          // val delta = ch.position - lastPosition
-          val delta = ch.position - ch.previousPosition
-          // println("xxx delta: ${ch.position} - ${lastPosition} == $delta")
-          println("xxx delta: ${ch.position} - ${ch.previousPosition} == $delta")
-          currentOnUDrag(delta)
-        }
-        // lastPosition = ch.position
-      }
-      // else lastPosition = Offset.Unspecified
-    }
+/** Reads the callback through [onUDragS] so recompositions don't restart the pointer input coroutine. */
+private fun Mod.onUDragSki(onUDragS: State<OnUDrag?>) = onPointerEvents(onUDragS) { e ->
+  if (e.type != PointerEventType.Move || !e.keyboardModifiers.isAltPressed) return@onPointerEvents
+  val ch = e.changes.first()
+  if (ch.uptimeMillis - ch.previousUptimeMillis < 200) onUDragS.value?.invoke(ch.position - ch.previousPosition)
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
-private fun Mod.onUWheelSki(onWheel: (Offset) -> Unit) = onMyPointerEvent(PointerEventType.Scroll) {
-  onWheel(it.changes.first().scrollDelta)
+private fun Mod.onUWheelSki(onUWheelS: State<OnUWheel?>) = onPointerEvents(onUWheelS) { e ->
+  if (e.type == PointerEventType.Scroll) onUWheelS.value?.invoke(e.changes.first().scrollDelta)
+}
+
+private fun Mod.onPointerEvents(key: Any?, onEvent: (PointerEvent) -> Unit) = pointerInput(key) {
+  awaitPointerEventScope { while (true) onEvent(awaitPointerEvent()) }
 }
 
 @Composable private fun RawBinSki(
@@ -448,7 +428,7 @@ private fun UAlignmentType.startPositionFor(childSize: Int, parentSize: Int) = w
 @Composable private fun TabsM3TabRow(vararg tabs: String, onSelected: (index: Int, tab: String) -> Unit) =
   UAllStartBox {
     var selectedTabIndex by ustate(0)
-    TabRow(selectedTabIndex = selectedTabIndex) {
+    PrimaryTabRow(selectedTabIndex = selectedTabIndex) {
       tabs.forEachIndexed { index, title ->
         Tab(
           text = { Text(title, style = MaterialTheme.typography.titleSmall) },

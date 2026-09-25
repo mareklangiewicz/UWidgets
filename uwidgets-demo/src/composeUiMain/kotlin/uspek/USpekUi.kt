@@ -27,7 +27,7 @@ import pl.mareklangiewicz.uwidgets.*
   UAllStart {
     val delays = listOf(0, 10, 20, 80, 160, 400, 800, 1600, 3200)
     val options = delays.map { it.toString() to it.toLong() }.toTypedArray()
-    USwitchLong(uspekDelayMsS, *options)
+    USwitch(uspekDelayMsS, *options)
   }
   key(uspekDelayMsS.value) {
     USpekUi { delay(uspekDelayMsS.value); suspekContent() }

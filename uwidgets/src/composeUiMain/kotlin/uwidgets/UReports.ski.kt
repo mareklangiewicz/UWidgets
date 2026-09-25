@@ -18,22 +18,12 @@ import pl.mareklangiewicz.ulog.*
 import kotlin.coroutines.*
 import pl.mareklangiewicz.uwidgets.udata.*
 
-private const val isSlowStateDebounced: Boolean = true // false means delayed but not debounced
-
-@OptIn(ExperimentalComposeApi::class)
-@Composable private fun <T> slowStateOf(init: T, delayMs: Long = 200, calculation: () -> T) =
-  if (isSlowStateDebounced) debouncedStateOf(init, delayMs, calculation) else delayedStateOfBroken(
-    init,
-    delayMs,
-    calculation,
-  )
-
 // TODO_later: move it to "more common" code using other uwidgets, so it can be used with DOM "backend" too
 @Composable fun UReportsUi(reports: UReports, mod: Mod = Mod, reversed: Boolean = false) {
   CompositionLocalProvider(LocalDensity provides Density(1f)) {
     val vScrollS = rememberScrollState()
     Column(mod.scroll(verticalS = vScrollS)) {
-      val r by slowStateOf(emptyList()) { reports.toList() }
+      val r by debouncedStateOf(emptyList()) { reports.toList() }
       for (idx in if (reversed) r.indices.reversed() else r.indices) {
         val entry = r[idx]
         Row(Mod.background(Color.White.darken(.06f * (idx % 4))).padding(2.dp)) {

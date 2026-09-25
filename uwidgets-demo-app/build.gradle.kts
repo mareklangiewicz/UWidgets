@@ -25,8 +25,11 @@ plugins {
 // namespace/id/appMainPackage all move together: `id` is the generic reverse-DNS slot that used to
 // be `appId`, and it defaults to namespace, so setting namespace alone would already carry it.
 // Spelled out anyway, because this app's identity is the thing being stated.
+// andro = null: this KMP app stays jvm + js. The android app is :uwidgets-demo-app-andro, because
+// AGP 9 forbids the KMP plugin and the android application plugin in one module.
 val lib = gradle.extLib.let {
   it.copy(
+    andro = null,
     info = it.info.copy(
       namespace = "pl.mareklangiewicz.udemapp",
       id = "pl.mareklangiewicz.udemapp",

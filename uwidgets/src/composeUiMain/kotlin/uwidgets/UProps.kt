@@ -13,7 +13,7 @@ import pl.mareklangiewicz.uwidgets.UPropKey.*
 import pl.mareklangiewicz.uwidgets.UScrollStyle.*
 
 private enum class UPropKey {
-  EWidth, EHeight, EAddX, EAddY, EMargin, EContentColor, EBackgroundColor, EBorderColor, EBorderWidth, EPadding,
+  EWidth, EHeight, EAddX, EAddY, EMargin, EContentColor, EBackgroundColor, EBorderColor, EUSelected, EBorderWidth, EPadding,
   EOnUClick, EOnUDrag, EOnUWheel, EOnUReport, EUAlignHoriz, EUAlignVerti, EUScrollHoriz, EUScrollVerti, EUScrollStyle,
 }
 
@@ -66,7 +66,7 @@ internal class UProps private constructor() {
   val margin: Dp @Composable get() = EMargin readOr { UTheme.sizes.ubinMargin }
   val contentColor: Color @Composable get() = EContentColor readOr { UTheme.colors.ubinContent }
   val backgroundColor: Color @Composable get() = EBackgroundColor readOr { UTheme.colors.ubinBackground }
-  val borderColor: Color @Composable get() = EBorderColor readOr { UTheme.colors.ubinBorder(/*FIXME*/clickable = onUClick != null) } // also: draggable?wheelable?
+  val borderColor: Color @Composable get() = EBorderColor readOr { UTheme.colors.ubinBorder(selected = uselected, clickable = onUClick != null) } // also: draggable?wheelable?
   val borderWidth: Dp @Composable get() = EBorderWidth readOr { UTheme.sizes.ubinBorder }
   val padding: Dp @Composable get() = EPadding readOr { UTheme.sizes.ubinPadding }
   val onUClick: OnUClick? @Composable get() = state[EOnUClick.ordinal] as? OnUClick
@@ -75,6 +75,7 @@ internal class UProps private constructor() {
   val onUReport: OnUReport? @Composable get() = state[EOnUReport.ordinal] as? OnUReport
   val ualignHoriz: UAlignmentType @Composable get() = EUAlignHoriz readOr { UTheme.alignments.horizontal }
   val ualignVerti: UAlignmentType @Composable get() = EUAlignVerti readOr { UTheme.alignments.vertical }
+  val uselected: Boolean get() = EUSelected readOr { false }
   val uscrollHoriz: Boolean get() = EUScrollHoriz readOr { false }
   val uscrollVerti: Boolean get() = EUScrollVerti readOr { false }
   val uscrollStyle: UScrollStyle get() = EUScrollStyle readOr { UBASIC }
@@ -108,6 +109,7 @@ fun Mod.umargin(margin: Dp?) = uprop(EMargin, margin)
 fun Mod.ucontentColor(contentColor: Color?) = uprop(EContentColor, contentColor)
 fun Mod.ubackgroundColor(backgroundColor: Color?) = uprop(EBackgroundColor, backgroundColor)
 fun Mod.uborderColor(borderColor: Color?) = uprop(EBorderColor, borderColor)
+fun Mod.uselected(selected: Boolean?) = uprop(EUSelected, selected)
 fun Mod.uborderWidth(borderWidth: Dp?) = uprop(EBorderWidth, borderWidth)
 fun Mod.upadding(padding: Dp?) = uprop(EPadding, padding)
 fun Mod.ualignHoriz(horiz: UAlignmentType?) = uprop(EUAlignHoriz, horiz)
@@ -120,25 +122,18 @@ fun Mod.uscroll(horiz: Boolean = false, verti: Boolean = false, style: UScrollSt
   uscrollHoriz(horiz).uscrollVerti(verti).uscrollStyle(style)
 
 
-@Composable fun Mod.ucolors(
+fun Mod.ucolors(
   contentColor: Color? = null,
   backgroundColor: Color? = null,
   borderColor: Color? = null,
 ) = ucontentColor(contentColor).ubackgroundColor(backgroundColor).uborderColor(borderColor)
 
-@Composable fun Mod.uborder(
+fun Mod.uborder(
   color: Color? = null,
   width: Dp? = null,
 ) = uborderColor(color).uborderWidth(width)
 
-@Composable fun Mod.ustyle(
-  margin: Dp? = null,
-  contentColor: Color? = null,
-  backgroundColor: Color? = null,
-  borderColor: Color? = null,
-) = ucontentColor(contentColor).ubackgroundColor(backgroundColor).uborderColor(borderColor)
-
-@Composable fun Mod.ustyle(
+fun Mod.ustyle(
   margin: Dp? = null,
   contentColor: Color? = null,
   backgroundColor: Color? = null,

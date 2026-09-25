@@ -35,22 +35,3 @@ fun UMenuTree(tree: UCallbackTree, dispatcher: CoroutineDispatcher) {
 }
 
 // TODO_later: UButton that appears clickable on JVM AND JS; use it in all places where it makes sense
-
-@Composable
-fun UMenuTreeWithFilter(tree: UCallbackTree, dispatcher: CoroutineDispatcher) {
-  // TODO_NOW: filtering with Kim
-  UColumn {
-//            logw("ARARARA") // FIXME: see if correctly called (no looping) and remove
-//            MyFilter()
-    UMenuTree(tree, dispatcher)
-  }
-}
-
-//@Composable
-// private fun MyFilter() {
-//    val model = LocalKim.current
-//    val mod = Wide.border(1.dp, if (model.isFocused) Color.Red else Color.Gray).padding(1.dp)
-//    DBox(mod) { DText(model.text) }
-//}
-
-

@@ -1,6 +1,6 @@
 package pl.mareklangiewicz.udemapp
 
-import androidx.compose.desktop.ui.tooling.preview.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*

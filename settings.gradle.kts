@@ -32,7 +32,7 @@ pluginManagement {
 }
 
 plugins {
-  id("pl.mareklangiewicz.deps.settings") version "0.4.65" // https://plugins.gradle.org/search?term=mareklangiewicz
+  id("pl.mareklangiewicz.deps.settings") version "0.4.68" // https://plugins.gradle.org/search?term=mareklangiewicz
   id("com.gradle.develocity") version "4.6.0" // https://docs.gradle.com/develocity/gradle-plugin/
 }
 
@@ -63,11 +63,13 @@ val enableJs = true
 // :uwidgets and :uwidgets-demo-app compileProductionExecutableKotlinJs succeed. What DOES bite is
 // heap -- at the old -Xmx2048m the same tasks died with OutOfMemoryError, and one of them surfaced
 // as a back-end CompilationException that reads exactly like a compiler bug. See gradle.properties.
-val enableAndro = false
-// TODO TRACK MAJOR ISSUE WITH ANDROID (MY REPORT):
-//  https://youtrack.jetbrains.com/issue/KT-64621/K2-Beta2-compileDebugSources-exception-with-Compose-MPP
-// TODO TRACK ANDRO ISSUE (this one can take a while, so I added workaround already - "onMyPointerEvent"):
-//  https://github.com/JetBrains/compose-multiplatform/issues/3167
+val enableAndro = true
+// Android: the libs (:uwidgets, :uwidgets-demo) get an android target (AGP 9 KMP library plugin,
+// applied by defaultBuildTemplateForFullMppLib), and the android demo APP is the separate plain-AGP
+// module :uwidgets-demo-app-andro -- AGP 9 gives a KMP module no application shape.
+// Older notes here tracked KT-64621 (a K2 Beta2 compile crash) and CMP #3167 (onPointerEvent
+// missing on android, worked around by an expect/actual onMyPointerEvent). Both are gone: drag and
+// wheel use common pointerInput now, so there is nothing android-specific left to work around.
 
 // Moved here from build.gradle.kts: the lib definition lives in settings now (gradle.extLib),
 // the same way template-raw/template-full do it, instead of rootExtLibDetails in the root build.
@@ -76,7 +78,7 @@ gradle.extLib = lib(
     name = "UWidgets",
     description = "Micro widgets for Compose Multiplatform",
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-    version = Ver(0, 0, 46),
+    version = Ver(0, 0, 47),
   ),
   flags = LibFlags(
     withJvm = enableJvm,
@@ -96,3 +98,4 @@ gradle.extLib = lib(
 )
 
 include(":uwidgets", ":uwidgets-demo", ":uwidgets-demo-app")
+if (enableAndro) include(":uwidgets-demo-app-andro")

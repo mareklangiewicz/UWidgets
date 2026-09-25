@@ -20,13 +20,11 @@ import pl.mareklangiewicz.uwidgets.udata.*
 fun UDemo() = UAllStretch {
   val udemo2sizeS = ustate(100)
   val (hscrollS, vscrollS) = ustates(true, true)
-  val ulensZoomS = ustate(1f) // 1f disables ulens
-  UColumn(Mod.ulens(ulensZoomS.value)) {
+  UColumn {
     UAllStartRow {
-      USwitchInt(udemo2sizeS, "100" to 100, "200" to 200, "400" to 400, "800" to 800)
+      USwitch(udemo2sizeS, "100" to 100, "200" to 200, "400" to 400, "800" to 800)
       USwitch(hscrollS, "hscroll on", "hscroll off")
       USwitch(vscrollS, "vscroll on", "vscroll off")
-      USwitchFloat(ulensZoomS, "lens off" to 1f, "2x" to 2f, "3x" to 3f, "4x" to 4f)
       UText(text = "kotlin:${KotlinVersion.CURRENT}")
     }
     UTabs(

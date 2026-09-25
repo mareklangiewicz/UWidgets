@@ -15,7 +15,7 @@ class UComposeWebTestScope(
   private val webTestScope: TestScope,
   log: (Any?) -> Unit = { ulog.d(it.ustr) },
 ) : UComposeScope {
-  override fun setContent(composable: @Composable () -> Unit) = webTestScope.composition(composable)
+  override fun setContent(content: @Composable () -> Unit) = webTestScope.composition(content)
   override suspend fun awaitIdle() = webTestScope.waitForRecompositionComplete()
   override val density: Density = Density(1f)
   override val ureports: UReports = UReports(log)

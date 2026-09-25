@@ -19,16 +19,6 @@ import pl.mareklangiewicz.ulog.*
 import pl.mareklangiewicz.ulog.hack.*
 import pl.mareklangiewicz.uwidgets.udata.*
 
-@Deprecated("I had some strange issues with Mod.composed {..} and with lambdas")
-// See comment at: UChildrenComposedMod
-@Composable fun UChildrenComposedDebug(
-  keyPrefix: String = "",
-  interactive: Boolean = false,
-  content: @Composable () -> Unit,
-) =
-  UChildrenComposedMod(factory = { udebug(keyPrefix, interactive) }, content = content)
-
-
 @Suppress("ComposableModifierFactory")
 @Composable fun Mod.udebug(keyPrefix: String = "", interactive: Boolean = false) =
   onUReportWithDebug(null, keyPrefix, interactive)
@@ -49,16 +39,25 @@ import pl.mareklangiewicz.uwidgets.udata.*
       { r -> onUReport(r); ureports(r) }
     }
   }
-  return onUReport(on, keyPrefix).drawWithUReports(measurer, ureports, interactive)
+  val scaleS = ustate(.5f)
+  val startS = ustate(Offset(10f, 10f))
+  return onUReport(on, keyPrefix).drawWithUReports(measurer, ureports, scaleS, startS, interactive)
 }
 
+/** [scaleS] and [startS] are what the interactive gestures change; pass remembered states (see [onUReportWithDebug]). */
 @OptIn(ExperimentalTextApi::class)
-fun Mod.drawWithUReports(measurer: TextMeasurer, ureports: UReports, interactive: Boolean = false): Mod = composed {
-  var scale by ustate(.5f)
-  var start by ustate(Offset(10f, 10f))
-  this
+fun Mod.drawWithUReports(
+  measurer: TextMeasurer,
+  ureports: UReports,
+  scaleS: MutableState<Float>,
+  startS: MutableState<Offset>,
+  interactive: Boolean = false,
+): Mod {
+  var scale by scaleS
+  var start by startS
+  return this
     .andIf(interactive) {
-      pointerInput(measurer, ureports) {
+      pointerInput(measurer, ureports, scaleS, startS) {
         coroutineScope {
           // TODO NOW: more cool gestures changing what drawUReports shows
           launch {
