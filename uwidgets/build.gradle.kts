@@ -33,7 +33,3 @@ plugins {
 defaultBuildTemplateForFullMppLib(publish = LibPublish(toCentral = true)) {
   api(Langiewicz.kground)
 }
-
-// Compose UI test on jvm, for layout regressions (UTabsLayoutTest). The lib does not set
-// withComposeTestUi, so the template adds no ui-test artifact anywhere.
-kotlin { sourceSets { jvmTest { dependencies { implementation(Org.JetBrains.Compose.Ui.test) } } } }

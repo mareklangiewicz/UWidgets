@@ -93,6 +93,9 @@ gradle.extLib = lib(
     // The reason this lib needs at least 0.4.59: its js target renders Compose UI on a skiko canvas
     // (USkikoBoxDom -> ComposeViewport), so jsMain must hang off composeUiMain, not composeMain.
     withComposeUiOnJs = enableJs,
+    // An explicit LibCompose skips defaultLibCompose, so this derived flag has to be set by hand:
+    // without it no Compose ui-test artifact reaches jvmTest (layout USpeks run there).
+    withComposeTestUi = enableJvm,
   ),
   repos = LibRepos(withComposeJbDev = true),
 )

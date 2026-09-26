@@ -198,16 +198,21 @@ private fun Mod.onPointerEvents(key: Any?, onEvent: AwaitPointerEventScope.(Poin
       // (see last commit for UBOX)
       UROW -> {
         val placeables = MutLONs<Placeable?>(measurables.size)
+        var widthTaken = 0
         measurables.forEachIndexed { idx, measurable ->
           val (uhorizontal, uvertical) = measurable.ualignMod ?: parentAlignMod
           // skip measuring stretched items (when normal bounded row width) (will measure it later)
           uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth && return@forEachIndexed
+          // Only the width left by earlier items (like foundation Row). See the same in UCOLUMN below.
           placeables[idx] = measurable.measure(
             parentConstraints.copy(
               minWidth = 0,
+              maxWidth =
+                if (parentConstraints.hasBoundedWidth) (parentConstraints.maxWidth - widthTaken).coerceAtLeast(0)
+                else parentConstraints.maxWidth,
               minHeight = if (uvertical == USTRETCH && parentConstraints.hasBoundedHeight) parentConstraints.maxHeight else 0,
             ),
-          )
+          ).also { widthTaken += it.width }
         }
         val fixedWidthTaken = placeables.sumOf { it?.width ?: 0 }
         val itemStretchedCount = placeables.count { it == null }
