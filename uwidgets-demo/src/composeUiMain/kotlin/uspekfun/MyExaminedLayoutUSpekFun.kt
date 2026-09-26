@@ -113,17 +113,17 @@ suspend fun UComposeScope.MyExaminedLayoutUSpekFun() = with(density) {
             ureports.eqAt(23, 2)
             ureports.eqAt(24, 3)
           }
-          "cyan son outer gets placed again the same way" so { ureports.eqAt(25, 13) }
-          "cyan son inner placing is skipped" so { false chkEq ureports[26].key.startsWith("cyan") }
-          // probably because compose notice there was nothing inside to actually place
+          // Compose skips placing cyan son again (outer and inner): nothing about it changed.
+          // (This used to expect "cyan son outer placed" re-reported here, with only the inner skipped.)
+          "cyan son placing is skipped" so { false chkEq ureports[25].key.startsWith("cyan") }
 
           "blue son gets placed with fixed rigid father size" so {
-            ureports[26].hasPlacedCoordinates("blue son outer") { size == rigidSizePx && positionInParent == Offset.Zero }
-            ureports[27].hasKeyAndData("blue son inner place in", rigidSizePx)
-            ureports[28].hasKeyAndData("blue son inner placed count", 0)
+            ureports[25].hasPlacedCoordinates("blue son outer") { size == rigidSizePx && positionInParent == Offset.Zero }
+            ureports[26].hasKeyAndData("blue son inner place in", rigidSizePx)
+            ureports[27].hasKeyAndData("blue son inner placed count", 0)
           }
-          "rigid father is placed with two children" so { ureports[29].hasKeyAndData("rigid father placed count", 2) }
-          "no other reports" so { ureports.size chkEq 30 }
+          "rigid father is placed with two children" so { ureports[28].hasKeyAndData("rigid father placed count", 2) }
+          "no other reports" so { ureports.size chkEq 29 }
         }
 
         "When green son stretched horizontally gets enabled" so {
@@ -146,21 +146,21 @@ suspend fun UComposeScope.MyExaminedLayoutUSpekFun() = with(density) {
             ureports.eqAt(23, 2)
             ureports.eqAt(24, 3)
           }
-          "cyan son outer gets placed again the same way" so { ureports.eqAt(25, 13) }
-          "cyan son inner placing is skipped" so { false chkEq ureports[26].key.startsWith("cyan") }
-          // probably because compose notice there was nothing inside to actually place
+          // Compose skips placing cyan son again (outer and inner): nothing about it changed.
+          // (This used to expect "cyan son outer placed" re-reported here, with only the inner skipped.)
+          "cyan son placing is skipped" so { false chkEq ureports[25].key.startsWith("cyan") }
 
           "green son gets placed stretched horizontally" so {
-            ureports[26].hasPlacedCoordinates("green son outer") {
+            ureports[25].hasPlacedCoordinates("green son outer") {
               size == greenSonActualSizePx
                 && boundsInParent.left == 0f
                 && boundsInParent.bottom.roundToInt() == rigidSizePx.height
             }
-            ureports[27].hasKeyAndData("green son inner place in", greenSonActualSizePx)
-            ureports[28].hasKeyAndData("green son inner placed count", 0)
+            ureports[26].hasKeyAndData("green son inner place in", greenSonActualSizePx)
+            ureports[27].hasKeyAndData("green son inner placed count", 0)
           }
-          "rigid father is placed with two children" so { ureports[29].hasKeyAndData("rigid father placed count", 2) }
-          "no other reports" so { ureports.size chkEq 30 }
+          "rigid father is placed with two children" so { ureports[28].hasKeyAndData("rigid father placed count", 2) }
+          "no other reports" so { ureports.size chkEq 29 }
         }
         // TODO: other types UROW UCOLUMN
       }
