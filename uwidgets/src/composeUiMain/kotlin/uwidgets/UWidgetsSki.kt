@@ -244,16 +244,23 @@ private fun Mod.onPointerEvents(key: Any?, onEvent: AwaitPointerEventScope.(Poin
 
       UCOLUMN -> {
         val placeables = MutLONs<Placeable?>(measurables.size)
+        var heightTaken = 0
         measurables.forEachIndexed { idx, measurable ->
           val (uhorizontal, uvertical) = measurable.ualignMod ?: parentAlignMod
           // skip measuring stretched items (when normal bounded column height) (will measure it later)
           uvertical == USTRETCH && parentConstraints.hasBoundedHeight && return@forEachIndexed
+          // Only the height left by earlier items (like foundation Column), not the full parent height.
+          // Otherwise a child that fills its max (fillMaxSize, LazyColumn, nested UTabs content)
+          // takes the full parent height and overflows the bottom by the height of its siblings.
           placeables[idx] = measurable.measure(
             parentConstraints.copy(
               minWidth = if (uhorizontal == USTRETCH && parentConstraints.hasBoundedWidth) parentConstraints.maxWidth else 0,
               minHeight = 0,
+              maxHeight =
+                if (parentConstraints.hasBoundedHeight) (parentConstraints.maxHeight - heightTaken).coerceAtLeast(0)
+                else parentConstraints.maxHeight,
             ),
-          )
+          ).also { heightTaken += it.height }
         }
         val fixedHeightTaken = placeables.sumOf { it?.height ?: 0 }
         val itemStretchedCount = placeables.count { it == null }
