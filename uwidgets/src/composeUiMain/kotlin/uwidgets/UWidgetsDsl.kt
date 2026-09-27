@@ -51,9 +51,10 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
 
 /**
  * UBox that only sets background and stretches. Doesn't change depth, doesn't have any borders, margins, paddings.
+ * These are only defaults: Mod.u* modifiers in [mod] come later in the chain, so they override them.
  * @param color null means default which means taken from UTheme */
 @Composable fun UBackgroundBox(mod: Mod = Mod, color: Color? = null, content: @Composable () -> Unit = {}) =
-  UWidgets.Local.current.Bin(UBOX, mod.ustyleBlank(backgroundColor = color).ualign(USTRETCH, USTRETCH), content)
+  UWidgets.Local.current.Bin(UBOX, Mod.ustyleBlank(backgroundColor = color).ualign(USTRETCH, USTRETCH).then(mod), content)
 
 @Composable fun UBoxEnabledIf(enabled: Boolean, content: @Composable () -> Unit) = UBox {
   content()
@@ -75,7 +76,7 @@ private val LocalUChildrenMod = staticCompositionLocalOf<(Mod.() -> Mod)?> { nul
   bold: Boolean = false,
   mono: Boolean = false,
   maxLines: Int = 1,
-) = UBox(mod.ualign(UCENTER.takeIf { center }, UCENTER.takeIf { center })) {
+) = UBox(mod.andIf(center) { ualign(UCENTER, UCENTER) }) { // ualign(null, null) would reset the mod's alignment
   UWidgets.Local.current.Text(text, Mod, bold, mono, maxLines)
 }
 

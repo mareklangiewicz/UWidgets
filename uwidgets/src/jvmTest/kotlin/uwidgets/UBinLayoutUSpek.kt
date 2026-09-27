@@ -78,6 +78,24 @@ private suspend fun UComposeUSpekScope.ubinLayoutUSpek() {
     }
   }
 
+  "On caller mod aligning to end in 400dp UBox" so {
+    suspend fun showInBox(son: @Composable () -> Unit) = show { UBox(Mod.usize(400.dp, 400.dp).testTag("bin")) { son() } }
+    fun chkInBottomEndQuarter(tag: String) {
+      val bin = bounds("bin")
+      val son = bounds(tag)
+      assertTrue(son.left > bin.center.x && son.top > bin.center.y, "$tag at $son, bin center ${bin.center}")
+    }
+
+    "UText not centered keeps it" so {
+      showInBox { UText("text", Mod.ualign(UEND, UEND).testTag("text")) }
+      chkInBottomEndQuarter("text")
+    }
+    "UBackgroundBox keeps it" so {
+      showInBox { UBackgroundBox(Mod.ualign(UEND, UEND).usize(50.dp, 50.dp).testTag("bg")) }
+      chkInBottomEndQuarter("bg")
+    }
+  }
+
   for (depth in 1..3) "On $depth nested UTabs in rigid 400dp root" so {
 
     @Composable fun Tabs(level: Int) {

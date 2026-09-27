@@ -32,7 +32,7 @@ pluginManagement {
 }
 
 plugins {
-  id("pl.mareklangiewicz.deps.settings") version "0.4.68" // https://plugins.gradle.org/search?term=mareklangiewicz
+  id("pl.mareklangiewicz.deps.settings") version "0.4.69" // https://plugins.gradle.org/search?term=mareklangiewicz
   id("com.gradle.develocity") version "4.6.0" // https://docs.gradle.com/develocity/gradle-plugin/
 }
 
@@ -78,7 +78,7 @@ gradle.extLib = lib(
     name = "UWidgets",
     description = "Micro widgets for Compose Multiplatform",
     githubUrl = "https://github.com/mareklangiewicz/UWidgets",
-    version = Ver(0, 0, 47),
+    version = Ver(0, 0, 48),
   ),
   flags = LibFlags(
     withJvm = enableJvm,
