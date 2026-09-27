@@ -28,8 +28,10 @@ private class UPropMod(val key: UPropKey, val value: Any?) : Element
 /**
  * Default behavior for all Mod.u* parameters:
  * Mod below overrides upstream setting.
- * Null means it will be "default" (if not overridden below in Mod chain).
  * Defaults are taken from UTheme in most cases.
+ * Null passed to a single-prop Mod.u* fun (like [uwidth]) resets that prop to its default
+ * (if not overridden below in Mod chain).
+ * Null passed to a grouping Mod.u* fun (like [usize], [ustyle]) leaves that prop as it was upstream.
  */
 @Suppress("UNCHECKED_CAST")
 internal class UProps private constructor() {
@@ -95,15 +97,22 @@ internal class UProps private constructor() {
 
 @Suppress("NOTHING_TO_INLINE")
 private inline fun Mod.uprop(key: UPropKey, value: Any?) = then(UPropMod(key, value))
+
+/** For grouping Mod.u* funs: a null param means "don't touch", not "reset to default" (see [UProps]). */
+@Suppress("NOTHING_TO_INLINE")
+private inline fun Mod.upropOrSkip(key: UPropKey, value: Any?) = if (value == null) this else uprop(key, value)
+
 fun Mod.uwidth(width: Dp?) = uprop(EWidth, width)
 fun Mod.uheight(height: Dp?) = uprop(EHeight, height)
-fun Mod.usize(width: Dp? = null, height: Dp? = null) = uwidth(width).uheight(height)
+/** Null width or height leaves it as it was upstream. */
+fun Mod.usize(width: Dp? = null, height: Dp? = null) = upropOrSkip(EWidth, width).upropOrSkip(EHeight, height)
 fun Mod.usize(size: DpSize?) = usize(size?.width, size?.height)
 
 // these are like .offset on jvm and like left and top css properties on js/dom (and css position:relative)
 fun Mod.uaddx(x: Dp?) = uprop(EAddX, x)
 fun Mod.uaddy(y: Dp?) = uprop(EAddY, y)
-fun Mod.uaddxy(x: Dp?, y: Dp?) = uprop(EAddX, x).uprop(EAddY, y)
+/** Null x or y leaves it as it was upstream. */
+fun Mod.uaddxy(x: Dp?, y: Dp?) = upropOrSkip(EAddX, x).upropOrSkip(EAddY, y)
 fun Mod.uaddxy(offset: DpOffset?) = uaddxy(offset?.x, offset?.y)
 
 fun Mod.umargin(margin: Dp?) = uprop(EMargin, margin)
@@ -115,7 +124,9 @@ fun Mod.uborderWidth(borderWidth: Dp?) = uprop(EBorderWidth, borderWidth)
 fun Mod.upadding(padding: Dp?) = uprop(EPadding, padding)
 fun Mod.ualignHoriz(horiz: UAlignmentType?) = uprop(EUAlignHoriz, horiz)
 fun Mod.ualignVerti(verti: UAlignmentType?) = uprop(EUAlignVerti, verti)
-fun Mod.ualign(horiz: UAlignmentType? = null, verti: UAlignmentType? = null) = ualignHoriz(horiz).ualignVerti(verti)
+/** Null horiz or verti leaves it as it was upstream. */
+fun Mod.ualign(horiz: UAlignmentType? = null, verti: UAlignmentType? = null) =
+  upropOrSkip(EUAlignHoriz, horiz).upropOrSkip(EUAlignVerti, verti)
 fun Mod.uscrollHoriz(horiz: Boolean) = uprop(EUScrollHoriz, horiz)
 fun Mod.uscrollVerti(verti: Boolean) = uprop(EUScrollVerti, verti)
 fun Mod.uscrollStyle(style: UScrollStyle) = uprop(EUScrollStyle, style)
@@ -123,17 +134,23 @@ fun Mod.uscroll(horiz: Boolean = false, verti: Boolean = false, style: UScrollSt
   uscrollHoriz(horiz).uscrollVerti(verti).uscrollStyle(style)
 
 
+/** Null params leave these props as they were upstream. */
 fun Mod.ucolors(
   contentColor: Color? = null,
   backgroundColor: Color? = null,
   borderColor: Color? = null,
-) = ucontentColor(contentColor).ubackgroundColor(backgroundColor).uborderColor(borderColor)
+) = this
+  .upropOrSkip(EContentColor, contentColor)
+  .upropOrSkip(EBackgroundColor, backgroundColor)
+  .upropOrSkip(EBorderColor, borderColor)
 
+/** Null params leave these props as they were upstream. */
 fun Mod.uborder(
   color: Color? = null,
   width: Dp? = null,
-) = uborderColor(color).uborderWidth(width)
+) = upropOrSkip(EBorderColor, color).upropOrSkip(EBorderWidth, width)
 
+/** Null params leave these props as they were upstream. */
 fun Mod.ustyle(
   margin: Dp? = null,
   contentColor: Color? = null,
@@ -142,16 +159,16 @@ fun Mod.ustyle(
   borderWidth: Dp? = null,
   padding: Dp? = null,
 ) = this
-  .umargin(margin)
-  .ucontentColor(contentColor)
-  .ubackgroundColor(backgroundColor)
-  .uborderColor(borderColor)
-  .uborderWidth(borderWidth)
-  .upadding(padding)
+  .upropOrSkip(EMargin, margin)
+  .upropOrSkip(EContentColor, contentColor)
+  .upropOrSkip(EBackgroundColor, backgroundColor)
+  .upropOrSkip(EBorderColor, borderColor)
+  .upropOrSkip(EBorderWidth, borderWidth)
+  .upropOrSkip(EPadding, padding)
 
 /**
  * Concrete white style without borders, margins, paddings.
- * Set some param to null, to make UBin use default setting from UTheme.
+ * Set some param to null, to leave that prop as it was upstream (the UTheme default if nothing set it).
  */
 fun Mod.ustyleBlank(
   margin: Dp? = 0.dp,
@@ -160,13 +177,7 @@ fun Mod.ustyleBlank(
   borderColor: Color? = Color.White,
   borderWidth: Dp? = 0.dp,
   padding: Dp? = 0.dp,
-) = this
-  .umargin(margin)
-  .ucontentColor(contentColor)
-  .ubackgroundColor(backgroundColor)
-  .uborderColor(borderColor)
-  .uborderWidth(borderWidth)
-  .upadding(padding)
+) = ustyle(margin, contentColor, backgroundColor, borderColor, borderWidth, padding)
 
 /** Warning: it replaces upstream Mod.onUClick - see comment at UProps.toCache */
 // It would be better if non-null mods were accumulated (all called in outside in order)

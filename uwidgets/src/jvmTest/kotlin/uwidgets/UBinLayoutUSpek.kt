@@ -94,6 +94,17 @@ private suspend fun UComposeUSpekScope.ubinLayoutUSpek() {
       showInBox { UBackgroundBox(Mod.ualign(UEND, UEND).usize(50.dp, 50.dp).testTag("bg")) }
       chkInBottomEndQuarter("bg")
     }
+    "later ualign with only verti keeps horiz" so {
+      showInBox { UBox(Mod.ualign(UEND, UEND).ualign(verti = UEND).testTag("son")) {} }
+      chkInBottomEndQuarter("son")
+    }
+  }
+
+  "On later usize with only height in 400dp UBox" so {
+    show { UBox(Mod.usize(400.dp, 400.dp)) { UBox(Mod.usize(50.dp, 50.dp).usize(height = 80.dp).testTag("son")) {} } }
+    val son = bounds("son")
+    "keeps width" so { assertTrue(son.width in 50f..60f, "son width ${son.width}") }
+    "sets height" so { assertTrue(son.height in 80f..90f, "son height ${son.height}") }
   }
 
   for (depth in 1..3) "On $depth nested UTabs in rigid 400dp root" so {
