@@ -23,6 +23,21 @@ plugins {
 
 defaultGroupAndVerAndDescription(gradle.extLib)
 
+// WORKAROUND for https://youtrack.jetbrains.com/issue/KT-88539 (Kotlin 2.5.0-Beta1, fix planned for
+// 2.5.0-Beta2): the first incremental JS klib compile of a file that uses an inline function from
+// ANOTHER file of the same module crashes with "Cannot deserialize inline function from a non-Kotlin
+// library" (UWidgets: every jsMain edit using Dp.square). Disabling the pre-serialization intra-module
+// inliner keeps incremental compilation working. Measured 2026-09-27: three consecutive jsMain edits
+// green and incremental, ~45s each through :uwidgets-demo-app:jsBrowserDevelopmentWebpack (luagnd
+// docs/track/gradle-babysitter/issues/11-edit-loop.md). REMOVE on Kotlin 2.5.0-Beta2 or later.
+subprojects {
+  plugins.withId("org.jetbrains.kotlin.multiplatform") {
+    extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
+      compilerOptions { freeCompilerArgs.add("-XXLanguage:-IrIntraModuleInlinerBeforeKlibSerialization") }
+    }
+  }
+}
+
 // Note: the lib definition (name/version/flags/compose) moved to settings.gradle.kts as
 // gradle.extLib, and the vendored root template that used to live here is gone -- it is
 // plugs.TemplateFun's job now.
